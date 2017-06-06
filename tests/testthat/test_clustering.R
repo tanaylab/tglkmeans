@@ -3,13 +3,15 @@ library(tglkmeans)
 context('Correct output')
 test_that('all ids and clusters are present', {
 	nclust <- 30
-	data <- simulate_data(n=100, sd=0.3, nclust=nclust, frac_na=0.05)
-	res <- TGL_kmeans_tidy(data %>% select(id, x,y) , nclust, metric='euclid', verbose=F)
+	ndims <- 5
+	data <- simulate_data(n=200, sd=0.3, dims=5, nclust=nclust, frac_na=0.05)
+	res <- TGL_kmeans_tidy(data %>% select(id, starts_with('V')) , nclust, metric='euclid', verbose=F)
 
 	expect_equal(nrow(data), nrow(res$clust))
 	expect_true(all(data$id %in% res$cluster$id))
 
 	expect_equal(nclust, nrow(res$centers))
+	expect_equal(ndims, ncol(res$centers) - 1)
 	expect_equal(nclust, length(unique(res$clust$clust)))
 	expect_equal(nclust, length(unique(res$size$clust)))
 
@@ -23,24 +25,38 @@ test_that('all ids and clusters are present', {
 })
 
 
-
 context('Verbosity')
 test_that('quiet if verbose is turned off', {
 	data <- simulate_data(n=100, sd=0.3, nclust=30, frac_na=NULL)	
-	expect_silent(TGL_kmeans_tidy(data %>% select(id, x,y) , 30, metric='euclid', verbose=FALSE))
+	expect_silent(TGL_kmeans_tidy(data %>% select(id, starts_with('V')) , 30, metric='euclid', verbose=FALSE))
 })
 
-context('Correct Classification')
-test_that('clustering is reasonable: euclid', {
-	test_params <- expand.grid(n=c(100,1000), sd=c(0.05, 0.1, 0.3), nclust=c(5,10,30,100))  %>% filter(nclust < n)
+context('Correct Classification (low dim)')
+test_that('clustering is reasonable (low dim): euclid', {
+	test_params <- expand.grid(n=c(100), sd=c(0.05, 0.1, 0.3), nclust=c(5,30,100), dims=c(2,10))  %>% filter(nclust < n)
 	apply(test_params, 1, function(x) {		
-		expect_gt(test_clustering(x[1], x[2], x[3], 'euclid'), 0.9)
+		expect_gt(test_clustering(x[1], x[2], x[3], x[4], 'euclid'), 0.9)
 	})		
 })
 
-test_that('clustering with NA is reasonable: euclid', {
-	test_params <- expand.grid(n=c(100,1000), sd=c(0.05, 0.1, 0.3), nclust=c(5,10,30,100), frac_na=c(0.05, 0.1, 0.2))  %>% filter(nclust < n*(1-frac_na))
+test_that('clustering with NA is reasonable (low dim): euclid', {
+	test_params <- expand.grid(n=c(100), sd=c(0.05, 0.1, 0.3), nclust=c(5,30,100), frac_na=c(0.05, 0.1, 0.2), dims=c(2,10))  %>% filter(nclust < n*(1-frac_na))
 	apply(test_params, 1, function(x) {		
-		expect_gt(test_clustering(x[1], x[2], x[3], 'euclid', frac_na=x[4]), 0.85)
+		expect_gt(test_clustering(x[1], x[2], x[3], x[5], 'euclid', frac_na=x[4]), 0.75)
+	})		
+})
+
+context('Correct Classification (high dim)')
+test_that('clustering is reasonable (high dim): euclid', {
+	test_params <- expand.grid(n=c(500), sd=c(0.3), nclust=c(5,30), dims=c(300))  %>% filter(nclust < n)
+	apply(test_params, 1, function(x) {				
+		expect_gt(test_clustering(x[1], x[2], x[3], x[4], 'euclid'), 0.9)
+	})		
+})
+
+test_that('clustering with NA is reasonable (high dim): euclid', {
+	test_params <- expand.grid(n=c(500), sd=c(0.3), nclust=c(5,30), frac_na=c(0.1, 0.2), dims=c(300))  %>% filter(nclust < n*(1-frac_na))
+	apply(test_params, 1, function(x) {
+		expect_gt(test_clustering(x[1], x[2], x[3], x[5], 'euclid', frac_na=x[4]), 0.75)	
 	})		
 })

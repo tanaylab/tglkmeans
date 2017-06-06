@@ -4,8 +4,8 @@
 \alias{TGL_kmeans_tidy}
 \title{TGL kmeans tidy}
 \usage{
-TGL_kmeans_tidy(df, k, metric, max_iter = 40, min_delta = 0.0001,
-  verbose = TRUE)
+TGL_kmeans_tidy(df, k, metric = "euclid", max_iter = 40,
+  min_delta = 0.0001, verbose = TRUE)
 }
 \description{
 TGL kmeans tidy
