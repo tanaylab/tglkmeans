@@ -24,11 +24,24 @@ void vec2df(const vector<vector<float > >& vec, DataFrame& df){
     df = list;
 }
 
+void replace_na(DataFrame& df){
+    for(int i=0; i < df.ncol(); ++i){
+        NumericVector col = df[i];
+        for (int j=0; j < col.length(); ++j){
+            if (NumericVector::is_na(col[j])){
+                col[j] = REAL_MAX;
+            }
+        }
+    }
+}
+
 //' Run kmeans
 //'
 //' @param df data frame
 // [[Rcpp::export]]
-List TGL_kmeans_cpp(const StringVector& ids, const DataFrame& mat, const int& k, const String& metric, const double& max_iter=40, const double& min_delta=0.0001){
+List TGL_kmeans_cpp(const StringVector& ids, DataFrame& mat, const int& k, const String& metric, const double& max_iter=40, const double& min_delta=0.0001){
+
+    replace_na(mat);
 
     vector<vector<float> > data = as<vector<vector<float> > >(mat);
 
