@@ -7,7 +7,7 @@ NULL
 
 #' TGL kmeans tidy
 #' @export
-TGL_kmeans_tidy <- function(df, k, metric, max_iter = 40, min_delta = 0.0001, verbose=TRUE){
+TGL_kmeans_tidy <- function(df, k, metric='euclid', max_iter = 40, min_delta = 0.0001, verbose=TRUE){
     mat <- t(df[, -1])
 
     df <- as.data.frame(df)

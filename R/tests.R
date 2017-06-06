@@ -1,13 +1,12 @@
-simulate_data <- function(n=100, sd=0.3, nclust=30, frac_na=NULL){
+simulate_data <- function(n=100, sd=0.3, nclust=30, dims=2, frac_na=NULL){
 	data <- purrr::map_df(1:nclust, ~ 
-					as.data.frame(matrix(rnorm(n, mean=.x, sd = sd), ncol = 2)) %>%
-					rename(x=V1, y=V2) %>% 
+					as.data.frame(matrix(rnorm(n*dims, mean=.x, sd = sd), ncol = dims)) %>%
 					mutate(m = .x)) %>% 
 				tbl_df %>% 
 				mutate(id = 1:n()) %>%
-				select(id, x, y, m)
+				select(id, everything(), m)
 	if (!is.null(frac_na)){
-		data$x[sample(1:nrow(data), round(nrow(data)*frac_na))] <- NA
+		data$V1[sample(1:nrow(data), round(nrow(data)*frac_na))] <- NA
 	}
 	return(data)
 }
@@ -19,9 +18,9 @@ match_clusters <- function(data, res, nclust){
 	return(d)
 }
 
-test_clustering <- function(n, sd, nclust, method='euclid', frac_na=NULL){
-	data <- simulate_data(n=n, sd=sd, nclust=nclust)
-	res <- TGL_kmeans_tidy(data %>% select(id, x,y) , nclust, method, verbose=F)
+test_clustering <- function(n, sd, nclust, dims=2, method='euclid', frac_na=NULL){
+	data <- simulate_data(n=n, sd=sd, nclust=nclust, dims=dims)
+	res <- TGL_kmeans_tidy(data %>% select(id, starts_with('V')) , nclust, method, verbose=FALSE)
 	mres <- match_clusters(data, res, nclust)
 	frac_success <- sum(mres$m == mres$new_clust, na.rm=TRUE) / sum(!is.na(mres$new_clust))		
 	return(frac_success)	
