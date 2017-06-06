@@ -9,7 +9,7 @@ NULL
 #' @export
 TGL_kmeans_tidy <- function(df, k, metric, max_iter = 40, min_delta = 0.0001){
     mat <- t(df[, -1])
-    mat[is.na(mat)] <- .Machine$double.xmax
+    # mat[is.na(mat)] <- .Machine$double.xmax
 
     df <- as.data.frame(df)
     ids <- as.character(df[, 1])
@@ -17,7 +17,7 @@ TGL_kmeans_tidy <- function(df, k, metric, max_iter = 40, min_delta = 0.0001){
     column_names <- as.character(colnames(df)[-1])
 
     res <- TGL_kmeans_cpp(ids=ids, mat=mat, k=k, metric=metric, max_iter=max_iter, min_delta=min_delta)
-
+    browser()
     res$centers <- t(res$centers) %>%
         tbl_df %>%
         set_names(column_names) %>%

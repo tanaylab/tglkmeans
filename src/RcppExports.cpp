@@ -6,13 +6,13 @@
 using namespace Rcpp;
 
 // TGL_kmeans_cpp
-List TGL_kmeans_cpp(const StringVector& ids, const DataFrame& mat, const int& k, const String& metric, const double& max_iter, const double& min_delta);
+List TGL_kmeans_cpp(const StringVector& ids, DataFrame& mat, const int& k, const String& metric, const double& max_iter, const double& min_delta);
 RcppExport SEXP tglkmeans_TGL_kmeans_cpp(SEXP idsSEXP, SEXP matSEXP, SEXP kSEXP, SEXP metricSEXP, SEXP max_iterSEXP, SEXP min_deltaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const StringVector& >::type ids(idsSEXP);
-    Rcpp::traits::input_parameter< const DataFrame& >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< DataFrame& >::type mat(matSEXP);
     Rcpp::traits::input_parameter< const int& >::type k(kSEXP);
     Rcpp::traits::input_parameter< const String& >::type metric(metricSEXP);
     Rcpp::traits::input_parameter< const double& >::type max_iter(max_iterSEXP);
