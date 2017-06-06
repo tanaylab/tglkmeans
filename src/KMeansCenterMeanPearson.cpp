@@ -4,7 +4,6 @@
 
 #include <cmath>
 #include "KMeansCenterMeanPearson.h"
-#include "KMeans.h"
 
 float KMeansCenterMeanPearson::dist(const vector<float> &x)
 {

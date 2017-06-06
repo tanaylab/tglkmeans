@@ -5,7 +5,7 @@
 #include <algorithm>
 #include "KMeans.h"
 #include "Random.h"
-
+#include <Rcpp.h>
 
 KMeans::KMeans(const vector<vector<float>> &data, int k, vector<KMeansCenterBase *> &centers) :
         m_k(k),
@@ -15,29 +15,29 @@ KMeans::KMeans(const vector<vector<float>> &data, int k, vector<KMeansCenterBase
 }
 
 void KMeans::cluster(int max_iter, float min_assign_change_fraction) {
-    cerr << "KMEans: will generate seeds" << endl;
+    Rcpp::Rcout << "KMEans: will generate seeds" << endl;
     generate_seeds();
 
     int iter = 0;
     m_changes = 0;
 
-    cerr << "KMEans: reassign after init" << endl;
+    Rcpp::Rcout << "KMEans: reassign after init" << endl;
     reassign();
 
     while (iter < max_iter && m_changes / m_assignment.size() > min_assign_change_fraction) {
-        cerr << "KMEans: iter " << iter << endl;
+        Rcpp::Rcout << "KMEans: iter " << iter << endl;
         m_changes = 0;
         update_centers();
         reassign();
         iter++;
-        cerr << "KMEans: iter " << iter << " changed " << m_changes << endl;
+        Rcpp::Rcout << "KMEans: iter " << iter << " changed " << m_changes << endl;
     }
 }
 
 void KMeans::generate_seeds() {
-    cerr << "KMeans into generate seeds" << endl;
+    Rcpp::Rcout << "KMeans into generate seeds" << endl;
     for (int i = 0; i < m_k; i++) {
-        cerr << "at seed " << i << endl;
+        Rcpp::Rcout << "at seed " << i << endl;
         m_min_dist.resize(0);
         //compute minimal distance from centers
         //select next seed by sampling
@@ -46,18 +46,18 @@ void KMeans::generate_seeds() {
             seed_i = Random::fraction() * m_data.size();
         } else {
             update_min_distance(i);
-            cerr << "done update min distance" << endl;
+            Rcpp::Rcout << "done update min distance" << endl;
             sort(m_min_dist.begin(), m_min_dist.end());
             //select from 1/k of the data which is in the 1-1/2k quantile of the min distance
             int to_i = int(m_min_dist.size() * (1 - 1 / (2 * m_k)));
             int from_i = to_i - int(m_data.size() / m_k);
-            cerr << "seed range " << from_i << " " << to_i << endl;
+            Rcpp::Rcout << "seed range " << from_i << " " << to_i << endl;
             if (from_i < 0) {
                 from_i = 0;
             }
             int rnd_i = from_i + int(Random::fraction() * (to_i - from_i));
             seed_i = m_min_dist[rnd_i].second;
-            cerr << "picked up " << seed_i << " dist was " << m_min_dist[rnd_i].first << endl;
+            Rcpp::Rcout << "picked up " << seed_i << " dist was " << m_min_dist[rnd_i].first << endl;
         }
 
         add_new_core(seed_i, i);
@@ -91,7 +91,7 @@ void KMeans::update_min_distance(int cur_k) {
 }
 
 void KMeans::add_new_core(int seed_i, int center_i) {
-    cerr << "add new core from " << seed_i << " to " << center_i << endl;
+    Rcpp::Rcout << "add new core from " << seed_i << " to " << center_i << endl;
     m_centers[center_i]->reset_votes();
     m_centers[center_i]->vote(m_data[seed_i], 1);
     m_centers[center_i]->init_to_votes();
@@ -186,5 +186,5 @@ void KMeans::report_assignment(vector<string> &row_names, ostream &assign_tab) {
 }
 
 vector<int> KMeans::report_assignment_to_vector() {
-    return(vector<int>(m_assignment));
+    return std::vector<int>(m_assignment);
 }

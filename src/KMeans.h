@@ -4,9 +4,6 @@
 
 #ifndef TGLKMEANS_KMEANS_H
 #define TGLKMEANS_KMEANS_H
-#include <limits>
-
-#define REAL_MAX std::numeric_limits<float>::max()
 
 #include "KMeansCenterBase.h"
 

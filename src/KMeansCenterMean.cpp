@@ -4,7 +4,6 @@
 
 #include <limits>
 #include "KMeansCenterMean.h"
-#include "KMeans.h"
 
 void KMeansCenterMean::init(vector<float> &cent) {
     m_center = cent;

@@ -1,5 +1,6 @@
 #include "Ranking.h"
-#include "KMeans.h"
+#include <limits>
+#define REAL_MAX std::numeric_limits<float>::max()
 
 void mid_ranking(vector<float> &ranks, const list<int> &order, 
 						const vector<float> &vals)
@@ -11,7 +12,7 @@ void mid_ranking(vector<float> &ranks, const list<int> &order,
 		ranks[*i] = -REAL_MAX;
 		i++;
 	}
-	float prev_val;
+	float prev_val = 0;
        	if(i != order.end()) {
 		prev_val = vals[*i];
 	}
@@ -71,7 +72,7 @@ void cond_mid_ranking(vector<float> &ranks,
 		ranks[*i] = -REAL_MAX;
 		i++;
 	}
-	float prev_val;
+	float prev_val = 0;
        	if(i != order.end()) {
 		prev_val = vals[*i];
 	}

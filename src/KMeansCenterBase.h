@@ -8,6 +8,8 @@
 #include <vector>
 #include <iostream>
 #include <string>
+#include <limits>
+#define REAL_MAX std::numeric_limits<float>::max()
 
 using namespace std;
 

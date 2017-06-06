@@ -5,7 +5,7 @@
 #include <limits>
 #include <cmath>
 #include "KMeansCenterMeanEuclid.h"
-#include "KMeans.h"
+
 
 float KMeansCenterMeanEuclid::dist(const vector<float> &x) {
     vector<float>::const_iterator x_i = x.begin();
@@ -16,7 +16,7 @@ float KMeansCenterMeanEuclid::dist(const vector<float> &x) {
             dist2 += (*c_i - *x_i) * (*c_i - *x_i);
             n++;
         }
-//		cerr << "dist " << *c_i << " " << *x_i << " tot2 " << dist2 << " n " << n << endl;
+//		Rcpp::Rcout << "dist " << *c_i << " " << *x_i << " tot2 " << dist2 << " n " << n << endl;
         x_i++;
     }
     return (n > 0 ? sqrt(dist2) / n : REAL_MAX);
