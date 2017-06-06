@@ -29,7 +29,7 @@ float spearman(const vector<float> &v1, const vector<float> &v2,
 
 	while(r1 != max_r1) {
 		if(*r1 != -REAL_MAX) {
-//			cerr << "r1 r2 " << *r1 << " " << *r2 << endl;
+//			Rcpp::Rcout << "r1 r2 " << *r1 << " " << *r2 << endl;
 			cov += (*r1) * (*r2);
 
 			e1 += (*r1);
@@ -67,7 +67,7 @@ float spearman(const vector<float> &v1, const vector<float> &v2,
 	float t = cor * sqrt((num - 2.0)/fac);
 	float df = num - 2.0;
 	pv = betai(0.5 * df, 0.5, df/(df+t*t));
-//	cerr << "num " << num << " cor " << cor << " pv " << pv << endl;
+//	Rcpp::Rcout << "num " << num << " cor " << cor << " pv " << pv << endl;
 	return(cor);
 }
 
@@ -78,7 +78,7 @@ float corr_pv(float cor, int num)
 	float df = num - 2.0;
 	float pv = betai(0.5 * df, 0.5, df/(df+t*t));
 	return(pv);
-//	cerr << "num " << num << " cor " << cor << " pv " << pv << endl;
+//	Rcpp::Rcout << "num " << num << " cor " << cor << " pv " << pv << endl;
 	
 }
 
@@ -130,7 +130,7 @@ double betacf(double a, double b, double x){
             break; 	//Are we done?
     }
     if (m > MAXIT)  {
-        cerr << "a " << a << " or b " << b << " too big, or MAXIT too small in betacf, x = " << x << endl;
+        Rcpp::Rcout << "a " << a << " or b " << b << " too big, or MAXIT too small in betacf, x = " << x << endl;
     }
     return h;
 }
@@ -146,8 +146,6 @@ double dbl_gamma_ln(float xx)
             -1.231739572450155,
             0.1208650973866179e-2,
             -0.5395239384953e-5};
-
-    int j;
 
     y = x = xx;
 
@@ -166,7 +164,7 @@ double betai(double a, double b, double x)
 {
     double bt;
     if(x < 0.0 || x > 1.0) {
-        cerr << "Bad x " << x<< " in routine betai";
+        Rcpp::Rcout << "Bad x " << x<< " in routine betai";
         return(-1);
     }
     if(x == 0.0 || x == 1.0) {

@@ -7,17 +7,19 @@ NULL
 
 #' TGL kmeans tidy
 #' @export
-TGL_kmeans_tidy <- function(df, k, metric, max_iter = 40, min_delta = 0.0001){
+TGL_kmeans_tidy <- function(df, k, metric, max_iter = 40, min_delta = 0.0001, verbose=TRUE){
     mat <- t(df[, -1])
-    # mat[is.na(mat)] <- .Machine$double.xmax
 
     df <- as.data.frame(df)
     ids <- as.character(df[, 1])
 
     column_names <- as.character(colnames(df)[-1])
+    if (verbose){
+        res <- TGL_kmeans_cpp(ids=ids, mat=mat, k=k, metric=metric, max_iter=max_iter, min_delta=min_delta)
+    } else {
+        log <- capture.output(res <- TGL_kmeans_cpp(ids=ids, mat=mat, k=k, metric=metric, max_iter=max_iter, min_delta=min_delta))
+    }
 
-    res <- TGL_kmeans_cpp(ids=ids, mat=mat, k=k, metric=metric, max_iter=max_iter, min_delta=min_delta)
-    browser()
     res$centers <- t(res$centers) %>%
         tbl_df %>%
         set_names(column_names) %>%
@@ -29,13 +31,17 @@ TGL_kmeans_tidy <- function(df, k, metric, max_iter = 40, min_delta = 0.0001){
 
     res$size <- res$cluster %>% count(clust)
 
+    if (!verbose){
+        res$log <- log
+    }
+
     return(res)
 }
 
 # TGL kmeans
 #' @export
-TGL_kmeans <- function(df, k, metric, max_iter = 40, min_delta = 0.0001){
-    res <- TGL_kmeans_tidy(df=df, k=k, metric=metric, max_iter=max_iter, min_delta=min_delta)
+TGL_kmeans <- function(df, k, metric, max_iter = 40, min_delta = 0.0001, verbose=TRUE){
+    res <- TGL_kmeans_tidy(df=df, k=k, metric=metric, max_iter=max_iter, min_delta=min_delta, verbose=verbose)
 
     km <- list()
 
@@ -47,10 +53,10 @@ TGL_kmeans <- function(df, k, metric, max_iter = 40, min_delta = 0.0001){
 
     km$size <- tapply(km$clust, km$clust, length)
 
+    if (!verbose){
+        km$log <- res$log
+    }
+
     return(km)
 }
-
-
-
-
 

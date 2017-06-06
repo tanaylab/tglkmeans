@@ -54,7 +54,7 @@ List TGL_kmeans_cpp(const StringVector& ids, DataFrame& mat, const int& k, const
         }
     } else if (metric == "pearson") {
         for (int i = 0; i < k; i++) {
-            centers[i] = new KMeansCenterMeanEuclid(dim);
+            centers[i] = new KMeansCenterMeanPearson(dim);
         }
     } else if (metric == "spearman") {
         for (int i = 0; i < k; i++) {
@@ -76,7 +76,7 @@ List TGL_kmeans_cpp(const StringVector& ids, DataFrame& mat, const int& k, const
     vector<int> assignments = kmeans.report_assignment_to_vector();
     DataFrame clust_df = DataFrame::create( Named("id") = ids, _["clust"] = NumericVector::import(assignments.begin(), assignments.end()));
 
-    List res = List::create(Named("centers") = centers_df , _["cluster"] = clust_df);
+    List res = List::create(Named("centers") = centers_df, _["cluster"] = clust_df);
 
     return(res);
 }
