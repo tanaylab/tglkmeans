@@ -14,7 +14,7 @@ Basic usage of the package.
 
 ## Basic usage
 
-create 5 clusters normally distribution around 1 to 5
+create 5 clusters normally distributed around 1 to 5, with sd of 0.3:
 ```{r}
 library(tglkmeans)
 data <- purrr::map_df(1:5, ~ 
@@ -67,7 +67,27 @@ And plot the results:
 ```{r, fig.show='hold'}
 d %>% ggplot(aes(x=V1, y=V2, color=factor(new_clust), shape=factor(true_clust))) + geom_point() + scale_color_discrete(name='cluster') + scale_shape_discrete(name='true cluster')
 ```
+## Custom cluster ordering
+We can supply a function to order the clusters using `reorder_func` argument. The function would be applied to each   center and he clusters would be ordered by the result.
+```{r}
+km <- TGL_kmeans_tidy(data %>% select(id, starts_with('V')) , k=5, metric='euclid', verbose=FALSE, reorder_func=mean)
+km$centers
+```
 
+## Data with NA's
+tglkmeans can deal with NA's, as long as at least one dimension is not missing. for example:
+```{r}
+data$V1[sample(1:nrow(data), round(nrow(data)*0.2))] <- NA
+km <- TGL_kmeans_tidy(data %>% select(id, starts_with('V')) , k=5, metric='euclid', verbose=FALSE)
+d <- tglkmeans:::match_clusters(data, km, 5)
+sum(d$true_clust == d$new_clust, na.rm=TRUE) / sum(!is.na(d$new_clust))
+```
+and plotting the results (without the NA's) we get:
+```{r, fig.show='hold'}
+d %>% ggplot(aes(x=V1, y=V2, color=factor(new_clust), shape=factor(true_clust))) + geom_point() + scale_color_discrete(name='cluster') + scale_shape_discrete(name='true cluster')
+```
+
+## High dimensions
 Let's move to higher dimensions (and higher noise):
 ```{r}
 data <- purrr::map_df(1:30, ~ 
@@ -83,6 +103,7 @@ km <- TGL_kmeans_tidy(data %>% select(id, starts_with('V')) , k=30, metric='eucl
 d <- tglkmeans:::match_clusters(data, km, 30)
 sum(d$true_clust == d$new_clust, na.rm=TRUE) / sum(!is.na(d$new_clust))
 ```
+## Comparison with R vanilla kmeans 
 Let's compare it to R vanilla kmeans:
 
 ```{r}
@@ -93,4 +114,6 @@ d <- tglkmeans:::match_clusters(data, km_standard, 30)
 sum(d$true_clust == d$new_clust, na.rm=TRUE) / sum(!is.na(d$new_clust))
 
 ```
+
+
 
