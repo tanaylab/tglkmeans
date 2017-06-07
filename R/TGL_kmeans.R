@@ -15,17 +15,17 @@ NULL
 #' @param min_delta minimal change in assignments (fraction out of all observations) to continue iterating
 #' @param verbose display algorithm messages
 #' @param keep_log keep algorithm messages in 'log' field
-#' @param id_column \code{df} first column contains the observation id
+#' @param id_column \code{df}'s first column contains the observation id
 #' @param reorder_func function to reorder the clusters. operates on each center and orders by the result. e.g. \code{reorder_func == mean} would calculate the mean of each center and then would reorder the clusters accordingly. If \code{reorder_func == hclust} the centers would be ordered by hclust of the euclidian distance of the corelation matrix, i.e. \code{hclust(dist(cor(t(centers))))}
 #' if NULL, no reordering would be done.
-#' @param seed seed for the c++ random number generator (optional)
+#' @param seed seed for the c++ random number generator
 #'
 #' @return list with the following components:
 #' \describe{
 #'   \item{cluster:}{tibble with `id` column with the observation id (`1:n` if no id column was supplied), and `clust` column with the observation assigned cluster.}
 #'   \item{centers:}{tibble with `clust` column and the cluster centres.}
 #'   \item{size:}{tibble with `clust` column and `n` column with the number of points in each cluster.}
-#'   \item{log:}{messages from the algorithm run (only if `id_column == TRUE`).}
+#'   \item{log:}{messages from the algorithm run (only if \code{id_column == TRUE}).}
 #' }
 #'
 #' @export
@@ -144,7 +144,7 @@ reorder_clusters <- function(km, func='hclust'){
 #'   \item{cluster:}{A vector of integers (from ‘1:k’) indicating the cluster to which each point is allocated.}
 #'   \item{centers:}{A matrix of cluster centres.}
 #'   \item{size:}{The number of points in each cluster.}
-#'   \item{log:}{messages from the algorithm run (only if `id_column == TRUE`).}
+#'   \item{log:}{messages from the algorithm run (only if \code{id_column == TRUE}).}
 #' }
 #' @export
 TGL_kmeans <- function(df,

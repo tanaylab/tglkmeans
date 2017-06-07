@@ -36,9 +36,6 @@ void replace_na(DataFrame& df){
     }
 }
 
-//' Run kmeans
-//'
-//' @param df data frame
 // [[Rcpp::export]]
 List TGL_kmeans_cpp(const StringVector& ids, DataFrame& mat, const int& k, const String& metric, const double& max_iter=40, const double& min_delta=0.0001, const bool& random_seed=true, const int& seed=-1){
 
