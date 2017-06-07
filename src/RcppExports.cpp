@@ -6,8 +6,8 @@
 using namespace Rcpp;
 
 // TGL_kmeans_cpp
-List TGL_kmeans_cpp(const StringVector& ids, DataFrame& mat, const int& k, const String& metric, const double& max_iter, const double& min_delta);
-RcppExport SEXP tglkmeans_TGL_kmeans_cpp(SEXP idsSEXP, SEXP matSEXP, SEXP kSEXP, SEXP metricSEXP, SEXP max_iterSEXP, SEXP min_deltaSEXP) {
+List TGL_kmeans_cpp(const StringVector& ids, DataFrame& mat, const int& k, const String& metric, const double& max_iter, const double& min_delta, const bool& random_seed, const int& seed);
+RcppExport SEXP tglkmeans_TGL_kmeans_cpp(SEXP idsSEXP, SEXP matSEXP, SEXP kSEXP, SEXP metricSEXP, SEXP max_iterSEXP, SEXP min_deltaSEXP, SEXP random_seedSEXP, SEXP seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -17,13 +17,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const String& >::type metric(metricSEXP);
     Rcpp::traits::input_parameter< const double& >::type max_iter(max_iterSEXP);
     Rcpp::traits::input_parameter< const double& >::type min_delta(min_deltaSEXP);
-    rcpp_result_gen = Rcpp::wrap(TGL_kmeans_cpp(ids, mat, k, metric, max_iter, min_delta));
+    Rcpp::traits::input_parameter< const bool& >::type random_seed(random_seedSEXP);
+    Rcpp::traits::input_parameter< const int& >::type seed(seedSEXP);
+    rcpp_result_gen = Rcpp::wrap(TGL_kmeans_cpp(ids, mat, k, metric, max_iter, min_delta, random_seed, seed));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"tglkmeans_TGL_kmeans_cpp", (DL_FUNC) &tglkmeans_TGL_kmeans_cpp, 6},
+    {"tglkmeans_TGL_kmeans_cpp", (DL_FUNC) &tglkmeans_TGL_kmeans_cpp, 8},
     {NULL, NULL, 0}
 };
 

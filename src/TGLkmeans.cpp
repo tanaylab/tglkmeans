@@ -9,12 +9,13 @@
 #include "KMeansCenterMeanEuclid.h"
 #include "KMeansCenterMeanPearson.h"
 #include "KMeansCenterMeanSpearman.h"
+#include "Random.h"
 
 using namespace Rcpp;
 using namespace std;
 
 void vec2df(const vector<vector<float > >& vec, DataFrame& df){
-    int nc = vec.size(), nr = vec[0].size();
+    unsigned long nc = vec.size(), nr = vec[0].size();
     List list( nc );
 
     for( int j=0; j<nc; j++){
@@ -39,7 +40,11 @@ void replace_na(DataFrame& df){
 //'
 //' @param df data frame
 // [[Rcpp::export]]
-List TGL_kmeans_cpp(const StringVector& ids, DataFrame& mat, const int& k, const String& metric, const double& max_iter=40, const double& min_delta=0.0001){
+List TGL_kmeans_cpp(const StringVector& ids, DataFrame& mat, const int& k, const String& metric, const double& max_iter=40, const double& min_delta=0.0001, const bool& random_seed=true, const int& seed=-1){
+
+    if (!random_seed){
+        Random::seed(seed);
+    }
 
     replace_na(mat);
 
