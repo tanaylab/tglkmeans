@@ -31,6 +31,15 @@ test_that('quiet if verbose is turned off', {
 	expect_silent(TGL_kmeans_tidy(data %>% select(id, starts_with('V')) , 30, metric='euclid', verbose=FALSE))
 })
 
+context('Random seed')
+test_that('setting the seed returns reproducable results', {
+	nclust <- 30
+	data <- simulate_data(n=100, sd=0.3, nclust=nclust, frac_na=NULL)
+	res1 <- TGL_kmeans_tidy(data %>% select(id, starts_with('V')) , nclust, metric='euclid', verbose=F, seed=17)
+	res2 <- TGL_kmeans_tidy(data %>% select(id, starts_with('V')) , nclust, metric='euclid', verbose=F, seed=17)
+	expect_true(all(res1$centers[, -1] == res2$centers[, -1]))
+})
+
 context('Correct Classification (low dim)')
 test_that('clustering is reasonable (low dim): euclid', {
 	test_params <- expand.grid(n=c(100), sd=c(0.05, 0.1, 0.3), nclust=c(5,30,100), dims=c(2,10))  %>% filter(nclust < n)

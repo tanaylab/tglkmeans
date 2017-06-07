@@ -4,7 +4,8 @@
 \alias{TGL_kmeans_cpp}
 \title{Run kmeans}
 \usage{
-TGL_kmeans_cpp(ids, mat, k, metric, max_iter = 40, min_delta = 0.0001)
+TGL_kmeans_cpp(ids, mat, k, metric, max_iter = 40, min_delta = 0.0001,
+  random_seed = TRUE, seed = -1L)
 }
 \arguments{
 \item{df}{data frame}

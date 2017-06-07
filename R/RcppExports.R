@@ -4,7 +4,7 @@
 #' Run kmeans
 #'
 #' @param df data frame
-TGL_kmeans_cpp <- function(ids, mat, k, metric, max_iter = 40, min_delta = 0.0001) {
-    .Call('tglkmeans_TGL_kmeans_cpp', PACKAGE = 'tglkmeans', ids, mat, k, metric, max_iter, min_delta)
+TGL_kmeans_cpp <- function(ids, mat, k, metric, max_iter = 40, min_delta = 0.0001, random_seed = TRUE, seed = -1L) {
+    .Call('tglkmeans_TGL_kmeans_cpp', PACKAGE = 'tglkmeans', ids, mat, k, metric, max_iter, min_delta, random_seed, seed)
 }
 
