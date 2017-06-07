@@ -24,12 +24,12 @@ the first column can contain id for each observation (if id_column is TRUE).}
 
 \item{keep_log}{keep algorithm messages in 'log' field}
 
-\item{id_column}{\code{df} first column contains the observation id}
+\item{id_column}{\code{df}'s first column contains the observation id}
 
 \item{reorder_func}{function to reorder the clusters. operates on each center and orders by the result. e.g. \code{reorder_func == mean} would calculate the mean of each center and then would reorder the clusters accordingly. If \code{reorder_func == hclust} the centers would be ordered by hclust of the euclidian distance of the corelation matrix, i.e. \code{hclust(dist(cor(t(centers))))}
 if NULL, no reordering would be done.}
 
-\item{seed}{seed for the c++ random number generator (optional)}
+\item{seed}{seed for the c++ random number generator}
 }
 \value{
 list with the following components:
@@ -37,7 +37,7 @@ list with the following components:
   \item{cluster:}{tibble with `id` column with the observation id (`1:n` if no id column was supplied), and `clust` column with the observation assigned cluster.}
   \item{centers:}{tibble with `clust` column and the cluster centres.}
   \item{size:}{tibble with `clust` column and `n` column with the number of points in each cluster.}
-  \item{log:}{messages from the algorithm run (only if `id_column == TRUE`).}
+  \item{log:}{messages from the algorithm run (only if \code{id_column == TRUE}).}
 }
 }
 \description{
