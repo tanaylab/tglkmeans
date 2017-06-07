@@ -20,3 +20,9 @@ library(tglkmeans)
 ```
 
 #### Using the package
+Please refer to the package vignettes for usage and workflow, or look at the articles section in the site.
+
+```
+#!r
+browseVignettes('usage') 
+```

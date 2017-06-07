@@ -1,0 +1,96 @@
+---
+title: "basic usage"
+author: "Aviezer Lifshitz"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Basic usage of the package.
+
+
+## Basic usage
+
+create 5 clusters normally distribution around 1 to 5
+```{r}
+library(tglkmeans)
+data <- purrr::map_df(1:5, ~ 
+					as.data.frame(matrix(rnorm(100, mean=.x, sd = 0.3), ncol = 2)) %>%
+					mutate(true_clust = .x)) %>% 
+				tbl_df %>% 
+				mutate(id = 1:n()) %>%
+				select(id, everything(), true_clust)
+data
+```
+
+This is how our true data looks like:
+
+```{r, fig.show='hold'}
+data %>% ggplot(aes(x=V1, y=V2, color=factor(true_clust))) + geom_point() + scale_color_discrete(name='true cluster')
+```
+
+Now we can cluster it using kmeans++
+```{r}
+km <- TGL_kmeans_tidy(data %>% select(id, starts_with('V')) , k=5, metric='euclid', verbose=TRUE)
+```
+The retuned list contains 3 fields:
+```{r}
+names(km)
+```
+
+`km$centers` contains a tibble with `clust` column and the cluster centers:
+```{r}
+km$centers
+```
+clusters are numbered according to `order_func` which is hclust by default. 
+
+`km$cluster` contains tibble with `id` column with the observation id (`1:n` if no id column was supplied), and `clust` column with the observation assigned cluster:
+```{r}
+km$cluster
+```
+
+`km$size` contains tibble with `clust` column and `n` column with the number of points in each cluster:
+```{r}
+km$size
+```
+
+We can now check our clustering preformance (fraction of observations that were classified correctly):
+```{r}
+d <- tglkmeans:::match_clusters(data, km, 5)
+sum(d$true_clust == d$new_clust, na.rm=TRUE) / sum(!is.na(d$new_clust))
+```
+
+And plot the results:
+```{r, fig.show='hold'}
+d %>% ggplot(aes(x=V1, y=V2, color=factor(new_clust), shape=factor(true_clust))) + geom_point() + scale_color_discrete(name='cluster') + scale_shape_discrete(name='true cluster')
+```
+
+Let's move to higher dimensions (and higher noise):
+```{r}
+data <- purrr::map_df(1:30, ~ 
+					as.data.frame(matrix(rnorm(100*300, mean=.x, sd = 0.7), ncol = 300)) %>%
+					mutate(true_clust = .x)) %>% 
+				tbl_df %>% 
+				mutate(id = 1:n()) %>%
+				select(id, everything(), true_clust)
+km <- TGL_kmeans_tidy(data %>% select(id, starts_with('V')) , k=30, metric='euclid', verbose=FALSE)
+```
+
+```{r}
+d <- tglkmeans:::match_clusters(data, km, 30)
+sum(d$true_clust == d$new_clust, na.rm=TRUE) / sum(!is.na(d$new_clust))
+```
+Let's compare it to R vanilla kmeans:
+
+```{r}
+km_standard <- kmeans(data %>% select(starts_with('V')), 30)
+km_standard$clust <- tibble(id = 1:nrow(data), clust=km_standard$cluster)
+
+d <- tglkmeans:::match_clusters(data, km_standard, 30)
+sum(d$true_clust == d$new_clust, na.rm=TRUE) / sum(!is.na(d$new_clust))
+
+```
+
