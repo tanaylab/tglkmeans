@@ -1,8 +1,10 @@
 # tglkmeans - efficient implementation of kmeans++ algorithm
-
 https://bitbucket.org/aviezerl/tglkmeans
 
 This package provides R binding to cpp implementation of kmeans++ algorithm (https://en.wikipedia.org/wiki/K-means%2B%2B).
+
+Site for the package is at:
+https://aviezerl.bitbucket.io/tglkmeans
 
 
 ### Code
