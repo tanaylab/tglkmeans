@@ -23,11 +23,24 @@ NULL
 #' @return list with the following components:
 #' \describe{
 #'   \item{cluster:}{tibble with `id` column with the observation id (`1:n` if no id column was supplied), and `clust` column with the observation assigned cluster.}
-#'   \item{centers:}{tibble with `clust` column and the cluster centres.}
+#'   \item{centers:}{tibble with `clust` column and the cluster centers.}
 #'   \item{size:}{tibble with `clust` column and `n` column with the number of points in each cluster.}
 #'   \item{log:}{messages from the algorithm run (only if \code{id_column == TRUE}).}
 #' }
-#'
+#' 
+#' @examples
+#' 
+#' # create 5 clusters normally distribution around 1:5
+#' d <- purrr::map_df(1:5, ~ as.data.frame(matrix(rnorm(100, mean=.x, sd = 0.3), ncol = 2))) %>% mutate(id = 1:n()) %>% select(id, everything())
+#' head(d)
+#' 
+#' # cluster
+#' km <- TGL_kmeans_tidy(d, k=5, 'euclid', verbose=TRUE)
+#' km
+#' 
+#'    
+
+#' @seealso \code{\link{TGL_kmeans}}
 #' @export
 TGL_kmeans_tidy <- function(df,
                             k,
@@ -95,7 +108,7 @@ TGL_kmeans_tidy <- function(df,
 
     km$size <- km$cluster %>% count(clust) %>% ungroup
 
-    if (keep_log) {
+    if (keep_log && !verbose) {
         km$log <- log
     }
 
@@ -146,6 +159,20 @@ reorder_clusters <- function(km, func='hclust'){
 #'   \item{size:}{The number of points in each cluster.}
 #'   \item{log:}{messages from the algorithm run (only if \code{id_column == TRUE}).}
 #' }
+#' 
+#' @examples
+#' # create 5 clusters normally distribution around 1:5
+#' d <- purrr::map_df(1:5, ~ as.data.frame(matrix(rnorm(100, mean=.x, sd = 0.3), ncol = 2))) %>% mutate(id = 1:n()) %>% select(id, everything())
+#' head(d)
+#' 
+#' # cluster
+#' km <- TGL_kmeans(d, k=5, 'euclid', verbose=TRUE)
+#' names(km)
+#' km$centers
+#' head(km$cluster)
+#' km$size
+#' 
+#' @seealso \code{\link{TGL_kmeans_tidy}}
 #' @export
 TGL_kmeans <- function(df,
                        k,
