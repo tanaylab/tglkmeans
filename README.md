@@ -12,7 +12,7 @@ Source code can be found at: https://bitbucket.org/aviezerl/tglkmeans
 ### Installation 
 
 #### Installing tglkmeans package:
-Download and install *tglkemans*: 
+Download and install *tglkmeans*: 
 ```
 #!r
 devtools::install_bitbucket("aviezerl/tglkmeans", ref='default')
