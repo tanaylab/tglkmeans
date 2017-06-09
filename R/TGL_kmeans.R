@@ -1,4 +1,9 @@
 #' @import dplyr
+#' @import ggplot2
+#' @importFrom purrr set_names
+#' @importFrom stats cor dist hclust  var
+#' @importFrom utils capture.output
+
 
 #' @useDynLib tglkmeans
 #' @importFrom Rcpp sourceCpp
@@ -16,7 +21,7 @@ NULL
 #' @param verbose display algorithm messages
 #' @param keep_log keep algorithm messages in 'log' field
 #' @param id_column \code{df}'s first column contains the observation id
-#' @param reorder_func function to reorder the clusters. operates on each center and orders by the result. e.g. \code{reorder_func == mean} would calculate the mean of each center and then would reorder the clusters accordingly. If \code{reorder_func == hclust} the centers would be ordered by hclust of the euclidian distance of the corelation matrix, i.e. \code{hclust(dist(cor(t(centers))))}
+#' @param reorder_func function to reorder the clusters. operates on each center and orders by the result. e.g. \code{reorder_func = mean} would calculate the mean of each center and then would reorder the clusters accordingly. If \code{reorder_func = hclust} the centers would be ordered by hclust of the euclidian distance of the corelation matrix, i.e. \code{hclust(dist(cor(t(centers))))}
 #' if NULL, no reordering would be done.
 #' @param seed seed for the c++ random number generator
 #'
@@ -25,13 +30,17 @@ NULL
 #'   \item{cluster:}{tibble with `id` column with the observation id (`1:n` if no id column was supplied), and `clust` column with the observation assigned cluster.}
 #'   \item{centers:}{tibble with `clust` column and the cluster centers.}
 #'   \item{size:}{tibble with `clust` column and `n` column with the number of points in each cluster.}
-#'   \item{log:}{messages from the algorithm run (only if \code{id_column == TRUE}).}
+#'   \item{log:}{messages from the algorithm run (only if \code{id_column = TRUE}).}
 #' }
 #' 
 #' @examples
 #' 
+#' library(dplyr)
 #' # create 5 clusters normally distribution around 1:5
-#' d <- purrr::map_df(1:5, ~ as.data.frame(matrix(rnorm(100, mean=.x, sd = 0.3), ncol = 2))) %>% mutate(id = 1:n()) %>% select(id, everything())
+#' d <- purrr::map_df(1:5, ~ 
+#'      as.data.frame(matrix(rnorm(100, mean=.x, sd = 0.3), ncol = 2))) %>% 
+#'          mutate(id = 1:n()) %>% 
+#'          select(id, everything())
 #' head(d)
 #' 
 #' # cluster
@@ -81,7 +90,7 @@ TGL_kmeans_tidy <- function(df,
                 seed = seed
             )
     } else {
-        log <- capture.output(
+        log <- utils::capture.output(
             km <- TGL_kmeans_cpp(
                 ids = ids,
                 mat = mat,
@@ -96,8 +105,8 @@ TGL_kmeans_tidy <- function(df,
     }
 
     km$centers <- t(km$centers) %>%
-        tbl_df %>%
-        set_names(column_names) %>%
+        tbl_df() %>%
+        purrr::set_names(column_names) %>%
         mutate(clust = 1:n()) %>%
         select(clust, everything()) %>%
         tbl_df
@@ -133,7 +142,7 @@ reorder_clusters <- function(km, func='hclust'){
         new_order <- order(apply(km$centers[,-1], 1, func))
     }
 
-    clust_map <- tibble::tibble(clust = km$centers$clust[new_order]) %>% mutate(new_clust = 1:n())
+    clust_map <- tibble(clust = km$centers$clust[new_order]) %>% mutate(new_clust = 1:n())
 
     km$centers <- km$centers %>%
         left_join(clust_map, by = 'clust') %>%
@@ -161,8 +170,14 @@ reorder_clusters <- function(km, func='hclust'){
 #' }
 #' 
 #' @examples
+#' 
+#' library(dplyr)
+#' 
 #' # create 5 clusters normally distribution around 1:5
-#' d <- purrr::map_df(1:5, ~ as.data.frame(matrix(rnorm(100, mean=.x, sd = 0.3), ncol = 2))) %>% mutate(id = 1:n()) %>% select(id, everything())
+#' d <- purrr::map_df(1:5, ~ 
+#'      as.data.frame(matrix(rnorm(100, mean=.x, sd = 0.3), ncol = 2))) %>%
+#'          mutate(id = 1:n()) %>%
+#'          select(id, everything())
 #' head(d)
 #' 
 #' # cluster
