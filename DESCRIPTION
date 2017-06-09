@@ -12,8 +12,9 @@ LazyData: true
 LinkingTo: Rcpp
 Imports:
     Rcpp,
-    dplyr
+    dplyr,
+    purrr,
+    ggplot2
 RoxygenNote: 6.0.1
 Suggests:
-    testthat,
-    purrr
+    testthat
