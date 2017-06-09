@@ -15,7 +15,7 @@ Basic usage of the package.
 ## Basic usage
 ```{r}
 library(dplyr)
-library(ggplot)
+library(ggplot2)
 library(tglkmeans)
 ```
 
