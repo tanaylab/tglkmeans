@@ -12,7 +12,7 @@ TGL_kmeans(df, k, metric = "euclid", max_iter = 40, min_delta = 0.0001,
 \item{df}{data frame. Each row is a single observation and each column is a dimension.
 the first column can contain id for each observation (if id_column is TRUE).}
 
-\item{k}{nunmber of clusters}
+\item{k}{number of clusters}
 
 \item{metric}{distance metric for kmeans++ seeding. can be 'euclid', 'pearson' or 'spearman'}
 

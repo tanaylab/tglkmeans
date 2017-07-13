@@ -6,13 +6,14 @@
 \usage{
 TGL_kmeans_tidy(df, k, metric = "euclid", max_iter = 40,
   min_delta = 0.0001, verbose = FALSE, keep_log = TRUE,
-  id_column = TRUE, reorder_func = "hclust", seed = NULL)
+  id_column = TRUE, reorder_func = "hclust", add_to_data = FALSE,
+  seed = NULL)
 }
 \arguments{
 \item{df}{data frame. Each row is a single observation and each column is a dimension.
 the first column can contain id for each observation (if id_column is TRUE).}
 
-\item{k}{nunmber of clusters}
+\item{k}{number of clusters}
 
 \item{metric}{distance metric for kmeans++ seeding. can be 'euclid', 'pearson' or 'spearman'}
 
@@ -29,6 +30,8 @@ the first column can contain id for each observation (if id_column is TRUE).}
 \item{reorder_func}{function to reorder the clusters. operates on each center and orders by the result. e.g. \code{reorder_func = mean} would calculate the mean of each center and then would reorder the clusters accordingly. If \code{reorder_func = hclust} the centers would be ordered by hclust of the euclidian distance of the corelation matrix, i.e. \code{hclust(dist(cor(t(centers))))}
 if NULL, no reordering would be done.}
 
+\item{add_to_data}{return also the original data frame with an extra 'clust' column with the cluster ids}
+
 \item{seed}{seed for the c++ random number generator}
 }
 \value{
@@ -37,6 +40,7 @@ list with the following components:
   \item{cluster:}{tibble with `id` column with the observation id (`1:n` if no id column was supplied), and `clust` column with the observation assigned cluster.}
   \item{centers:}{tibble with `clust` column and the cluster centers.}
   \item{size:}{tibble with `clust` column and `n` column with the number of points in each cluster.}
+  \item{data:}{tibble with `clust` column the original data frame.}
   \item{log:}{messages from the algorithm run (only if \code{id_column = TRUE}).}
 }
 }

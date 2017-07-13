@@ -1,20 +1,8 @@
-#' @import dplyr
-#' @import ggplot2
-#' @importFrom purrr set_names
-#' @importFrom stats cor dist hclust  var
-#' @importFrom utils capture.output
-
-
-#' @useDynLib tglkmeans
-#' @importFrom Rcpp sourceCpp
-NULL
-
-
 #' TGL kmeans with 'tidy' output
 #'
 #' @param df data frame. Each row is a single observation and each column is a dimension.
 #' the first column can contain id for each observation (if id_column is TRUE).
-#' @param k nunmber of clusters
+#' @param k number of clusters
 #' @param metric distance metric for kmeans++ seeding. can be 'euclid', 'pearson' or 'spearman'
 #' @param max_iter maximal number of iterations
 #' @param min_delta minimal change in assignments (fraction out of all observations) to continue iterating
@@ -23,6 +11,7 @@ NULL
 #' @param id_column \code{df}'s first column contains the observation id
 #' @param reorder_func function to reorder the clusters. operates on each center and orders by the result. e.g. \code{reorder_func = mean} would calculate the mean of each center and then would reorder the clusters accordingly. If \code{reorder_func = hclust} the centers would be ordered by hclust of the euclidian distance of the corelation matrix, i.e. \code{hclust(dist(cor(t(centers))))}
 #' if NULL, no reordering would be done.
+#' @param add_to_data return also the original data frame with an extra 'clust' column with the cluster ids   
 #' @param seed seed for the c++ random number generator
 #'
 #' @return list with the following components:
@@ -30,6 +19,7 @@ NULL
 #'   \item{cluster:}{tibble with `id` column with the observation id (`1:n` if no id column was supplied), and `clust` column with the observation assigned cluster.}
 #'   \item{centers:}{tibble with `clust` column and the cluster centers.}
 #'   \item{size:}{tibble with `clust` column and `n` column with the number of points in each cluster.}
+#'   \item{data:}{tibble with `clust` column the original data frame.}
 #'   \item{log:}{messages from the algorithm run (only if \code{id_column = TRUE}).}
 #' }
 #' 
@@ -60,6 +50,7 @@ TGL_kmeans_tidy <- function(df,
                             keep_log = TRUE,
                             id_column = TRUE,
                             reorder_func = 'hclust',
+                            add_to_data = FALSE, 
                             seed = NULL) {
 
     if (is.null(seed)) {
@@ -70,7 +61,11 @@ TGL_kmeans_tidy <- function(df,
     }
 
     if (!id_column) {
-        df <- df %>% mutate(id = 1:n()) %>% select(id, everything())
+        df <- df %>% mutate(id = as.character(1:n())) %>% select(id, everything())
+    } else {
+        if (verbose){
+            message(sprintf('id column: %s', colnames(df)[1]))
+        }        
     }
     mat <- t(df[,-1])
 
@@ -111,14 +106,23 @@ TGL_kmeans_tidy <- function(df,
         select(clust, everything()) %>%
         tbl_df
 
-    km$cluster <- km$cluster %>% mutate(clust = clust + 1) %>% tbl_df
+    km$cluster <- km$cluster %>% mutate(clust = clust + 1) %>% tbl_df    
 
     km <- reorder_clusters(km, func = reorder_func)
 
     km$size <- km$cluster %>% count(clust) %>% ungroup
 
+    colnames(km$cluster)[1] <- colnames(df)[1]
+
     if (keep_log && !verbose) {
         km$log <- log
+    }
+
+    if (add_to_data){        
+        km$data <- df %>% left_join(km$cluster, by=colnames(df)[1]) %>% select(clust, everything()) %>% tbl_df()
+        if (!id_column){
+            km$data <- km$data %>% select(-id) 
+        }
     }
 
     return(km)
@@ -214,9 +218,14 @@ TGL_kmeans <- function(df,
 
 
     km <- list()
-
+    
     km$cluster <- res$cluster$clust
-    names(km$cluster) <- res$cluster$id
+    if (id_column){
+        names(km$cluster) <- res$cluster[[colnames(df)[1]]]
+    } else {
+        names(km$cluster) <- res$cluster$id
+    }
+    
 
     km$centers <- as.matrix(res$centers[,-1])
 
