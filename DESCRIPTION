@@ -4,7 +4,7 @@ Version: 0.0.0.9000
 Authors@R: c(person("Aviezer", "Lifshitz", email = "aviezer.lifshitz@weizmann.ac.il",
     role = c("aut", "cre")),
     person("Amos", "Tanay", role=c("aut")))
-Description: Effiecient implementation of kmeans++ algorithm.
+Description: Efficient implementation of kmeans++ algorithm.
 Depends: R (>= 3.2.4)
 License: GPL
 Encoding: UTF-8
