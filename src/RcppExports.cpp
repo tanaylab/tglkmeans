@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // TGL_kmeans_cpp
 List TGL_kmeans_cpp(const StringVector& ids, DataFrame& mat, const int& k, const String& metric, const double& max_iter, const double& min_delta, const bool& random_seed, const int& seed);
-RcppExport SEXP tglkmeans_TGL_kmeans_cpp(SEXP idsSEXP, SEXP matSEXP, SEXP kSEXP, SEXP metricSEXP, SEXP max_iterSEXP, SEXP min_deltaSEXP, SEXP random_seedSEXP, SEXP seedSEXP) {
+RcppExport SEXP _tglkmeans_TGL_kmeans_cpp(SEXP idsSEXP, SEXP matSEXP, SEXP kSEXP, SEXP metricSEXP, SEXP max_iterSEXP, SEXP min_deltaSEXP, SEXP random_seedSEXP, SEXP seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -25,7 +25,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"tglkmeans_TGL_kmeans_cpp", (DL_FUNC) &tglkmeans_TGL_kmeans_cpp, 8},
+    {"_tglkmeans_TGL_kmeans_cpp", (DL_FUNC) &_tglkmeans_TGL_kmeans_cpp, 8},
     {NULL, NULL, 0}
 };
 
