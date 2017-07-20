@@ -104,12 +104,14 @@ TGL_kmeans_tidy <- function(df,
         purrr::set_names(column_names) %>%
         mutate(clust = 1:n()) %>%
         select(clust, everything()) %>%
-        tbl_df
+        tbl_df()
 
     km$cluster <- km$cluster %>% mutate(clust = clust + 1) %>% tbl_df    
 
-    km <- reorder_clusters(km, func = reorder_func)
-
+    if (k > 1){
+        km <- reorder_clusters(km, func = reorder_func)    
+    }
+    
     km$size <- km$cluster %>% count(clust) %>% ungroup
 
     colnames(km$cluster)[1] <- colnames(df)[1]
