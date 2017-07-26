@@ -1,0 +1,31 @@
+navbar:
+  title: "tglkmeans"
+  type: inverse
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Basic usage"
+      href: articles/usage.html
+      icon: fa-road
+    - text: "Reference"
+      href: reference/index.html
+      icon: fa-th-list
+  right:
+    - icon: fa-bitbucket-square
+      href: https://bitbucket.org/aviezerl/tglkmeans
+
+
+
+reference:
+- title: TGL kmeans 
+  desc:  run kmeans++ algorithm
+  contents:
+  - TGL_kmeans
+  - TGL_kmeans_tidy
+  - bootstrap_kmeans
+- title: misc
+  desc: utility functions
+  contents: 
+  - tglkmeans.set_parallel
+  - simulate_data
+

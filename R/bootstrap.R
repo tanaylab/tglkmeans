@@ -33,24 +33,30 @@
 #'
 #'
 bootstrap_kmeans <- function(df, k, N_boot, boot_ratio=0.75, parallel=getOption('tglkmeans.parallel'), id_column=TRUE, tidy=FALSE, ...){
+	df <- tbl_df(df)
 	N <- nrow(df)
 	boot_size <- round(N * boot_ratio)
 
-	if (!id_column) {
-        df <- df %>% mutate(id = as.character(1:n())) %>% select(id, everything())
-    }
+	if (id_column) {
+		id_col <- df[[1]]
+		df <- df[, -1]
+	} else {
+		id_col <- as.character(1:nrow(df))
+	}
 
-	tot_coclust <- matrix(0, nrow=N, ncol=N, dimnames=list(df$id, df$id))
-	num_trials <- matrix(0, nrow=N, ncol=N, dimnames=list(df$id, df$id))
-
+	df <- df %>% mutate(id = 1:n()) %>% select(id, everything())
+    
+	tot_coclust <- matrix(0, nrow=N, ncol=N, dimnames=list(id_col, id_col))
+	num_trials <- matrix(0, nrow=N, ncol=N, dimnames=list(id_col, id_col))
+	
 	boot_res <- plyr::alply(1:N_boot, 1, function(i) {
 		boot_obs <- sample(1:N, boot_size)
-		km <- TGL_kmeans_tidy(df[boot_obs, -1], k=k, id_column=FALSE, ...)
+		km <- TGL_kmeans_tidy(df[boot_obs, ], k=k, id_column=TRUE, ...)
 		boot_nodes <- as.numeric(km$clust$id)
 		isclust_ci <- diag(max(km$clust$clust))[, km$clust$clust]
-		coclust_ij <- t(isclust_ci) %*% isclust_ci
+		coclust_ij <- t(isclust_ci) %*% isclust_ci		
 
-		return(list(boot_nodes=boot_nodes, isclust_ci=isclust_ci, coclust_ij=coclust_ij))
+		return(list(boot_nodes=boot_nodes, coclust_ij=coclust_ij))
 	}, .parallel = parallel)
 
 	for (i in 1:length(boot_res)){

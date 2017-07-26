@@ -58,7 +58,7 @@ list with the following components:
   \item{size:}{tibble with `clust` column and `n` column with the number of points in each cluster.}
   \item{data:}{tibble with `clust` column the original data frame.}
   \item{log:}{messages from the algorithm run (only if \code{id_column = TRUE}).}
-  \item{bootstrap:}{tibble with 'clust' column and 'robust' column with the fraction of times the members of the clusters were clustered together divided by the total times they were sampled}
+  \item{bootstrap:}{tibble with 'clust' column and 'robust' column with the number of times the members of the clusters were clustered together divided by the total times they were sampled together. (only if bootstrap = TRUE)}
 }
 }
 \description{
@@ -77,6 +77,10 @@ head(d)
 # cluster
 km <- TGL_kmeans_tidy(d, k=5, 'euclid', verbose=TRUE)
 km
+
+# bootstrapping
+km <- TGL_kmeans_tidy(d, k=5, 'euclid', N_boot=100, bootstrap=TRUE)
+km$bootstrap
 
 
 }

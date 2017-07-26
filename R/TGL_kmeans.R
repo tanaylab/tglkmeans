@@ -23,7 +23,7 @@
 #'   \item{size:}{tibble with `clust` column and `n` column with the number of points in each cluster.}
 #'   \item{data:}{tibble with `clust` column the original data frame.}
 #'   \item{log:}{messages from the algorithm run (only if \code{id_column = TRUE}).}
-#'   \item{bootstrap:}{tibble with 'clust' column and 'robust' column with the fraction of times the members of the clusters were clustered together divided by the total times they were sampled}
+#'   \item{bootstrap:}{tibble with 'clust' column and 'robust' column with the number of times the members of the clusters were clustered together divided by the total times they were sampled together. (only if bootstrap = TRUE)}
 #' }
 #'
 #' @examples
@@ -39,6 +39,10 @@
 #' # cluster
 #' km <- TGL_kmeans_tidy(d, k=5, 'euclid', verbose=TRUE)
 #' km
+#' 
+#' # bootstrapping
+#' km <- TGL_kmeans_tidy(d, k=5, 'euclid', N_boot=100, bootstrap=TRUE)
+#' km$bootstrap
 #'
 #'
 
@@ -137,13 +141,14 @@ TGL_kmeans_tidy <- function(df,
     if (bootstrap){
         message('bootstrapping')
         bt <- bootstrap_kmeans(df=df, k=k, id_column=id_column, tidy=FALSE, metric=metric, max_iter=max_iter, min_delta=min_delta, seed=seed, ...)
-
-        km$bootstrap <- km$clust %>%
+        
+        km$bootstrap <- km$clust %>% 
             group_by(clust) %>% 
             do({
-                ccf <- bt$coclust_frac[.$id, .$id]
-                tibble(robust=mean(ccf[lower.tri(ccf)], na.rm=TRUE))
-            })        
+                tibble(robust=
+                    sum(bt$coclust[.$id, .$id], na.rm=TRUE) / 
+                    sum(bt$num_trials[.$id, .$id], na.rm=TRUE))
+            })
     }
 
     return(km)
@@ -186,12 +191,14 @@ reorder_clusters <- function(km, func='hclust'){
 #' kmeans++ with return value similar to R kmeans
 #'
 #' @inheritParams TGL_kmeans_tidy
+#' @inheritDotParams bootstrap_kmeans
 #' @return list with the following components:
 #' \describe{
 #'   \item{cluster:}{A vector of integers (from ‘1:k’) indicating the cluster to which each point is allocated.}
 #'   \item{centers:}{A matrix of cluster centres.}
 #'   \item{size:}{The number of points in each cluster.}
 #'   \item{log:}{messages from the algorithm run (only if \code{id_column == TRUE}).}
+#'   \item{bootstrap:}{number of times the members of the clusters were clustered together divided by the total times they were sampled together (only if bootstrap = TRUE).}
 #' }
 #'
 #' @examples
@@ -211,6 +218,10 @@ reorder_clusters <- function(km, func='hclust'){
 #' km$centers
 #' head(km$cluster)
 #' km$size
+#' 
+#' # bootstrapping
+#' km <- TGL_kmeans(d, k=5, 'euclid', N_boot=100, bootstrap=TRUE)
+#' km$bootstrap
 #'
 #' @seealso \code{\link{TGL_kmeans_tidy}}
 #' @export
@@ -261,7 +272,7 @@ TGL_kmeans <- function(df,
     }
 
     if (bootstrap){
-        km$bootstrap <- res$bootstrap
+        km$bootstrap <- res$bootstrap$robust
     }
 
     return(km)
