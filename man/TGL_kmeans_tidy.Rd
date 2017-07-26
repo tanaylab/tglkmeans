@@ -7,7 +7,7 @@
 TGL_kmeans_tidy(df, k, metric = "euclid", max_iter = 40,
   min_delta = 0.0001, verbose = FALSE, keep_log = TRUE,
   id_column = TRUE, reorder_func = "hclust", add_to_data = FALSE,
-  seed = NULL)
+  seed = NULL, bootstrap = FALSE, ...)
 }
 \arguments{
 \item{df}{data frame. Each row is a single observation and each column is a dimension.
@@ -33,6 +33,22 @@ if NULL, no reordering would be done.}
 \item{add_to_data}{return also the original data frame with an extra 'clust' column with the cluster ids}
 
 \item{seed}{seed for the c++ random number generator}
+
+\item{bootstrap}{bootstrap to estimate robustness of the clusters}
+
+\item{...}{}
+
+\item{...}{Arguments passed on to \code{bootstrap_kmeans}
+\describe{
+  \item{df}{data frame. Each row is a single observation and each column is a dimension.
+the first column can contain id for each observation (if id_column is TRUE).}
+  \item{k}{number of clusters}
+  \item{N_boot}{number of bootstrapping iterations}
+  \item{boot_ratio}{percent of observations to sample on each iteration}
+  \item{parallel}{run parallely (using doMC backend)}
+  \item{id_column}{\code{df}'s first column contains the observation id}
+  \item{tidy}{return 'tidy' output}
+}}
 }
 \value{
 list with the following components:
@@ -42,6 +58,7 @@ list with the following components:
   \item{size:}{tibble with `clust` column and `n` column with the number of points in each cluster.}
   \item{data:}{tibble with `clust` column the original data frame.}
   \item{log:}{messages from the algorithm run (only if \code{id_column = TRUE}).}
+  \item{bootstrap:}{tibble with 'clust' column and 'robust' column with the fraction of times the members of the clusters were clustered together divided by the total times they were sampled}
 }
 }
 \description{
@@ -51,9 +68,9 @@ TGL kmeans with 'tidy' output
 
 library(dplyr)
 # create 5 clusters normally distribution around 1:5
-d <- purrr::map_df(1:5, ~ 
-     as.data.frame(matrix(rnorm(100, mean=.x, sd = 0.3), ncol = 2))) \%>\% 
-         mutate(id = 1:n()) \%>\% 
+d <- purrr::map_df(1:5, ~
+     as.data.frame(matrix(rnorm(100, mean=.x, sd = 0.3), ncol = 2))) \%>\%
+         mutate(id = 1:n()) \%>\%
          select(id, everything())
 head(d)
 
@@ -61,7 +78,7 @@ head(d)
 km <- TGL_kmeans_tidy(d, k=5, 'euclid', verbose=TRUE)
 km
 
-   
+
 }
 \seealso{
 \code{\link{TGL_kmeans}}
