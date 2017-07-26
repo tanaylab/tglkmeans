@@ -48,7 +48,7 @@ bootstrap_kmeans <- function(df, k, N_boot, boot_ratio=0.75, parallel=getOption(
     
 	tot_coclust <- matrix(0, nrow=N, ncol=N, dimnames=list(id_col, id_col))
 	num_trials <- matrix(0, nrow=N, ncol=N, dimnames=list(id_col, id_col))
-	
+
 	boot_res <- plyr::alply(1:N_boot, 1, function(i) {
 		boot_obs <- sample(1:N, boot_size)
 		km <- TGL_kmeans_tidy(df[boot_obs, ], k=k, id_column=TRUE, ...)
@@ -59,13 +59,8 @@ bootstrap_kmeans <- function(df, k, N_boot, boot_ratio=0.75, parallel=getOption(
 		return(list(boot_nodes=boot_nodes, coclust_ij=coclust_ij))
 	}, .parallel = parallel)
 
-	for (i in 1:length(boot_res)){
-		boot_nodes <- boot_res[[i]]$boot_nodes
-		coclust_ij <- boot_res[[i]]$coclust_ij
-
-		tot_coclust[boot_nodes, boot_nodes] <- tot_coclust[boot_nodes, boot_nodes] + coclust_ij
-		num_trials[boot_nodes, boot_nodes] <- num_trials[boot_nodes, boot_nodes] + 1
-	}
+	reduce_coclust(map(boot_res, 'boot_nodes'), map(boot_res, 'coclust_ij'), tot_coclust)
+	reduce_num_trials(map(boot_res, 'boot_nodes'), num_trials)
 
 	if (!tidy){
 		return(list(coclust = tot_coclust, num_trials=num_trials, coclust_frac = tot_coclust / num_trials))

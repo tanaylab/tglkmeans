@@ -5,6 +5,29 @@
 
 using namespace Rcpp;
 
+// reduce_coclust
+void reduce_coclust(const List& boot_nodes_l, const List& cc_ij_mat_l, NumericMatrix& cc_mat);
+RcppExport SEXP _tglkmeans_reduce_coclust(SEXP boot_nodes_lSEXP, SEXP cc_ij_mat_lSEXP, SEXP cc_matSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const List& >::type boot_nodes_l(boot_nodes_lSEXP);
+    Rcpp::traits::input_parameter< const List& >::type cc_ij_mat_l(cc_ij_mat_lSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix& >::type cc_mat(cc_matSEXP);
+    reduce_coclust(boot_nodes_l, cc_ij_mat_l, cc_mat);
+    return R_NilValue;
+END_RCPP
+}
+// reduce_num_trials
+void reduce_num_trials(const List& boot_nodes_l, NumericMatrix& cc_mat);
+RcppExport SEXP _tglkmeans_reduce_num_trials(SEXP boot_nodes_lSEXP, SEXP cc_matSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const List& >::type boot_nodes_l(boot_nodes_lSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix& >::type cc_mat(cc_matSEXP);
+    reduce_num_trials(boot_nodes_l, cc_mat);
+    return R_NilValue;
+END_RCPP
+}
 // TGL_kmeans_cpp
 List TGL_kmeans_cpp(const StringVector& ids, DataFrame& mat, const int& k, const String& metric, const double& max_iter, const double& min_delta, const bool& random_seed, const int& seed);
 RcppExport SEXP _tglkmeans_TGL_kmeans_cpp(SEXP idsSEXP, SEXP matSEXP, SEXP kSEXP, SEXP metricSEXP, SEXP max_iterSEXP, SEXP min_deltaSEXP, SEXP random_seedSEXP, SEXP seedSEXP) {
@@ -25,6 +48,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_tglkmeans_reduce_coclust", (DL_FUNC) &_tglkmeans_reduce_coclust, 3},
+    {"_tglkmeans_reduce_num_trials", (DL_FUNC) &_tglkmeans_reduce_num_trials, 2},
     {"_tglkmeans_TGL_kmeans_cpp", (DL_FUNC) &_tglkmeans_TGL_kmeans_cpp, 8},
     {NULL, NULL, 0}
 };
