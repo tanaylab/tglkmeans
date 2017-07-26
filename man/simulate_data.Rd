@@ -25,6 +25,6 @@ simulated data
 Simulate normal data for kmeans tests
 }
 \examples{
-simluate_data()
+simulate_data()
 
 }

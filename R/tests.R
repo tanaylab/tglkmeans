@@ -11,7 +11,7 @@
 #' @export
 #'
 #' @examples
-#' simluate_data()
+#' simulate_data()
 #'
 simulate_data <- function(n=100, sd=0.3, nclust=30, dims=2, frac_na=NULL){
 	data <- purrr::map_df(1:nclust, ~
