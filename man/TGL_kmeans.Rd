@@ -6,7 +6,7 @@
 \usage{
 TGL_kmeans(df, k, metric = "euclid", max_iter = 40, min_delta = 0.0001,
   verbose = FALSE, keep_log = TRUE, id_column = TRUE,
-  reorder_func = "hclust", seed = NULL)
+  reorder_func = "hclust", seed = NULL, bootstrap = FALSE, ...)
 }
 \arguments{
 \item{df}{data frame. Each row is a single observation and each column is a dimension.
@@ -30,6 +30,10 @@ the first column can contain id for each observation (if id_column is TRUE).}
 if NULL, no reordering would be done.}
 
 \item{seed}{seed for the c++ random number generator}
+
+\item{bootstrap}{bootstrap to estimate robustness of the clusters}
+
+\item{...}{}
 }
 \value{
 list with the following components:
@@ -48,7 +52,7 @@ kmeans++ with return value similar to R kmeans
 library(dplyr)
 
 # create 5 clusters normally distribution around 1:5
-d <- purrr::map_df(1:5, ~ 
+d <- purrr::map_df(1:5, ~
      as.data.frame(matrix(rnorm(100, mean=.x, sd = 0.3), ncol = 2))) \%>\%
          mutate(id = 1:n()) \%>\%
          select(id, everything())

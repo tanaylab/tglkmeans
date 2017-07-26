@@ -2,18 +2,22 @@
 #' Simulate normal data for kmeans tests
 #'
 #' @param n number of observations per cluster
-#' @param sd sd 
-#' @param nclust number of clusters  
+#' @param sd sd
+#' @param nclust number of clusters
 #' @param dims number of dimensions
 #' @param frac_na fraction of NA in the first dimension
 #'
 #' @return simulated data
+#' @export
 #'
-simulate_data <- function(n=100, sd=0.3, nclust=30, dims=2, frac_na=NULL){	
-	data <- purrr::map_df(1:nclust, ~ 
+#' @examples
+#' simluate_data()
+#'
+simulate_data <- function(n=100, sd=0.3, nclust=30, dims=2, frac_na=NULL){
+	data <- purrr::map_df(1:nclust, ~
 					as.data.frame(matrix(rnorm(n*dims, mean=.x, sd = sd), ncol = dims)) %>%
-					mutate(true_clust = .x)) %>% 
-				tbl_df() %>% 
+					mutate(true_clust = .x)) %>%
+				tbl_df() %>%
 				mutate(id = 1:n()) %>%
 				select(id, everything(), true_clust)
 	if (!is.null(frac_na)){
@@ -29,10 +33,10 @@ match_clusters <- function(data, res, nclust){
 	return(d)
 }
 
-test_clustering <- function(n, sd, nclust, dims=2, method='euclid', frac_na=NULL){	
-	data <- simulate_data(n=n, sd=sd, nclust=nclust, dims=dims)	
+test_clustering <- function(n, sd, nclust, dims=2, method='euclid', frac_na=NULL){
+	data <- simulate_data(n=n, sd=sd, nclust=nclust, dims=dims)
 	res <- TGL_kmeans_tidy(data %>% select(id, starts_with('V')) , nclust, method, verbose=FALSE)
 	mres <- match_clusters(data, res, nclust)
-	frac_success <- sum(mres$true_clust == mres$new_clust, na.rm=TRUE) / sum(!is.na(mres$new_clust))		
-	return(frac_success)	
+	frac_success <- sum(mres$true_clust == mres$new_clust, na.rm=TRUE) / sum(!is.na(mres$new_clust))
+	return(frac_success)
 }

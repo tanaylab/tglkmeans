@@ -11,8 +11,10 @@
 #' @param id_column \code{df}'s first column contains the observation id
 #' @param reorder_func function to reorder the clusters. operates on each center and orders by the result. e.g. \code{reorder_func = mean} would calculate the mean of each center and then would reorder the clusters accordingly. If \code{reorder_func = hclust} the centers would be ordered by hclust of the euclidian distance of the corelation matrix, i.e. \code{hclust(dist(cor(t(centers))))}
 #' if NULL, no reordering would be done.
-#' @param add_to_data return also the original data frame with an extra 'clust' column with the cluster ids   
+#' @param add_to_data return also the original data frame with an extra 'clust' column with the cluster ids
 #' @param seed seed for the c++ random number generator
+#' @param bootstrap bootstrap to estimate robustness of the clusters
+#' @param ...
 #'
 #' @return list with the following components:
 #' \describe{
@@ -21,25 +23,28 @@
 #'   \item{size:}{tibble with `clust` column and `n` column with the number of points in each cluster.}
 #'   \item{data:}{tibble with `clust` column the original data frame.}
 #'   \item{log:}{messages from the algorithm run (only if \code{id_column = TRUE}).}
+#'   \item{bootstrap:}{tibble with 'clust' column and 'robust' column with the fraction of times the members of the clusters were clustered together divided by the total times they were sampled}
 #' }
-#' 
+#'
 #' @examples
-#' 
+#'
 #' library(dplyr)
 #' # create 5 clusters normally distribution around 1:5
-#' d <- purrr::map_df(1:5, ~ 
-#'      as.data.frame(matrix(rnorm(100, mean=.x, sd = 0.3), ncol = 2))) %>% 
-#'          mutate(id = 1:n()) %>% 
+#' d <- purrr::map_df(1:5, ~
+#'      as.data.frame(matrix(rnorm(100, mean=.x, sd = 0.3), ncol = 2))) %>%
+#'          mutate(id = 1:n()) %>%
 #'          select(id, everything())
 #' head(d)
-#' 
+#'
 #' # cluster
 #' km <- TGL_kmeans_tidy(d, k=5, 'euclid', verbose=TRUE)
 #' km
-#' 
-#'    
+#'
+#'
 
 #' @seealso \code{\link{TGL_kmeans}}
+#'
+#' @inheritDotParams bootstrap_kmeans
 #' @export
 TGL_kmeans_tidy <- function(df,
                             k,
@@ -50,8 +55,10 @@ TGL_kmeans_tidy <- function(df,
                             keep_log = TRUE,
                             id_column = TRUE,
                             reorder_func = 'hclust',
-                            add_to_data = FALSE, 
-                            seed = NULL) {
+                            add_to_data = FALSE,
+                            seed = NULL,
+                            bootstrap = FALSE,
+                            ...) {
 
     if (is.null(seed)) {
         random_seed <- TRUE
@@ -65,7 +72,7 @@ TGL_kmeans_tidy <- function(df,
     } else {
         if (verbose){
             message(sprintf('id column: %s', colnames(df)[1]))
-        }        
+        }
     }
     mat <- t(df[,-1])
 
@@ -106,12 +113,12 @@ TGL_kmeans_tidy <- function(df,
         select(clust, everything()) %>%
         tbl_df()
 
-    km$cluster <- km$cluster %>% mutate(clust = clust + 1) %>% tbl_df    
+    km$cluster <- km$cluster %>% mutate(clust = clust + 1) %>% tbl_df
 
     if (k > 1){
-        km <- reorder_clusters(km, func = reorder_func)    
+        km <- reorder_clusters(km, func = reorder_func)
     }
-    
+
     km$size <- km$cluster %>% count(clust) %>% ungroup
 
     colnames(km$cluster)[1] <- colnames(df)[1]
@@ -120,11 +127,23 @@ TGL_kmeans_tidy <- function(df,
         km$log <- log
     }
 
-    if (add_to_data){        
+    if (add_to_data){
         km$data <- df %>% left_join(km$cluster, by=colnames(df)[1]) %>% select(clust, everything()) %>% tbl_df()
         if (!id_column){
-            km$data <- km$data %>% select(-id) 
+            km$data <- km$data %>% select(-id)
         }
+    }
+
+    if (bootstrap){
+        message('bootstrapping')
+        bt <- bootstrap_kmeans(df=df, k=k, id_column=id_column, tidy=FALSE, metric=metric, max_iter=max_iter, min_delta=min_delta, seed=seed, ...)
+
+        km$bootstrap <- km$clust %>%
+            group_by(clust) %>% 
+            do({
+                ccf <- bt$coclust_frac[.$id, .$id]
+                tibble(robust=mean(ccf[lower.tri(ccf)], na.rm=TRUE))
+            })        
     }
 
     return(km)
@@ -174,25 +193,25 @@ reorder_clusters <- function(km, func='hclust'){
 #'   \item{size:}{The number of points in each cluster.}
 #'   \item{log:}{messages from the algorithm run (only if \code{id_column == TRUE}).}
 #' }
-#' 
+#'
 #' @examples
-#' 
+#'
 #' library(dplyr)
-#' 
+#'
 #' # create 5 clusters normally distribution around 1:5
-#' d <- purrr::map_df(1:5, ~ 
+#' d <- purrr::map_df(1:5, ~
 #'      as.data.frame(matrix(rnorm(100, mean=.x, sd = 0.3), ncol = 2))) %>%
 #'          mutate(id = 1:n()) %>%
 #'          select(id, everything())
 #' head(d)
-#' 
+#'
 #' # cluster
 #' km <- TGL_kmeans(d, k=5, 'euclid', verbose=TRUE)
 #' names(km)
 #' km$centers
 #' head(km$cluster)
 #' km$size
-#' 
+#'
 #' @seealso \code{\link{TGL_kmeans_tidy}}
 #' @export
 TGL_kmeans <- function(df,
@@ -204,7 +223,9 @@ TGL_kmeans <- function(df,
                        keep_log = TRUE,
                        id_column = TRUE,
                        reorder_func = 'hclust',
-                       seed = NULL) {
+                       seed = NULL,
+                       bootstrap = FALSE, 
+                       ...) {
 
     res <- TGL_kmeans_tidy(
         df = df,
@@ -216,18 +237,20 @@ TGL_kmeans <- function(df,
         keep_log = keep_log,
         id_column = id_column,
         reorder_func = reorder_func,
-        seed = seed)
+        seed = seed,
+        bootstrap=bootstrap, 
+        ...)
 
 
     km <- list()
-    
+
     km$cluster <- res$cluster$clust
     if (id_column){
         names(km$cluster) <- res$cluster[[colnames(df)[1]]]
     } else {
         names(km$cluster) <- res$cluster$id
     }
-    
+
 
     km$centers <- as.matrix(res$centers[,-1])
 
@@ -235,6 +258,10 @@ TGL_kmeans <- function(df,
 
     if (keep_log){
         km$log <- res$log
+    }
+
+    if (bootstrap){
+        km$bootstrap <- res$bootstrap
     }
 
     return(km)
