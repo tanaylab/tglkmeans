@@ -140,7 +140,7 @@ TGL_kmeans_tidy <- function(df,
 
     if (bootstrap){
         message('bootstrapping')
-        bt <- bootstrap_kmeans(df=df, k=k, id_column=id_column, tidy=FALSE, metric=metric, max_iter=max_iter, min_delta=min_delta, seed=seed, ...)
+        bt <- bootstrap_kmeans(df=df, k=k, id_column=id_column, metric=metric, max_iter=max_iter, min_delta=min_delta, seed=seed, ...)
         
         km$bootstrap <- km$clust %>% 
             group_by(clust) %>% 
