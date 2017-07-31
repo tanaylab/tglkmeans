@@ -5,8 +5,7 @@
 \title{Bootstrapping}
 \usage{
 bootstrap_kmeans(df, k, N_boot, boot_ratio = 0.75,
-  parallel = getOption("tglkmeans.parallel"), id_column = TRUE,
-  tidy = FALSE, ...)
+  parallel = getOption("tglkmeans.parallel"), id_column = TRUE, ...)
 }
 \arguments{
 \item{df}{data frame. Each row is a single observation and each column is a dimension.
@@ -22,18 +21,15 @@ the first column can contain id for each observation (if id_column is TRUE).}
 
 \item{id_column}{\code{df}'s first column contains the observation id}
 
-\item{tidy}{return 'tidy' output}
-
 \item{...}{additional parameters to TGL_kmeans}
 }
 \value{
-for non 'tidy' output, list with the following components:
+list with the following components:
 \describe{
   \item{coclust:}{NxN matrix (where N is the number of observations) with the number of times observation i and j occured in the same cluster.}
   \item{num_trials:}{NxN matrix with the number of times observation i and j where sampled together.}
   \item{coclust_frac:}{fraction of times observation i and j where clustered together out of the times they were sampled together (coclust matrix divided by num_trails matrix).}
 }.
-for 'tidy' output: tibble with coclust, num_trials and coclust_frac for each 'i' and 'j' pair.
 }
 \description{
 Bootstrapping
