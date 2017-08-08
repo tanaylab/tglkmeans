@@ -5,12 +5,15 @@
 \title{Plot co-clustering matrix}
 \usage{
 plot_coclust_mat(bt, col = colorRampPalette(rev(RColorBrewer::brewer.pal(11,
-  "RdBu")))(1000))
+  "RdBu")))(1000), ...)
 }
 \arguments{
 \item{bt}{output of \code{bootclust}}
 
 \item{col}{color pallete}
+}
+\value{
+None
 }
 \description{
 Plot co-clustering matrix

@@ -15,6 +15,22 @@ cutree_bootclust(bt, k, min_coclust = 0.5, tidy = FALSE)
 
 \item{tidy}{tidy output}
 }
+\value{
+if \code{tidy == TRUE}: \code{bt} with the following aditional fields:
+\describe{
+  \item{clust:}{tibble with `id` column with the observation id (`1:n` if no id column was supplied), and `clust` column with the observation assigned cluster.}
+  \item{centers:}{tibble with `clust` column and the cluster centers.}
+  \item{size:}{tibble with `clust` column and `n` column with the number of points in each cluster.}
+  \item{score:}{}
+}
+if \code{tidy == FALSE}: \code{bt} with the following aditional fields:
+\describe{
+  \item{cluster:}{A vector of integers (from ‘1:k’) indicating the cluster to which each point is allocated.}
+  \item{centers:}{A matrix of cluster centres.}
+  \item{size:}{The number of points in each cluster.}
+  \item{score:}{}
+}
+}
 \description{
 Cutree of bootstrap clustering
 }
