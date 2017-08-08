@@ -39,13 +39,12 @@
 #' # cluster
 #' km <- TGL_kmeans_tidy(d, k=5, 'euclid', verbose=TRUE)
 #' km
-#' 
+#'
 #' # bootstrapping
 #' km <- TGL_kmeans_tidy(d, k=5, 'euclid', N_boot=100, bootstrap=TRUE)
 #' km$bootstrap
 #'
 #'
-
 #' @seealso \code{\link{TGL_kmeans}}
 #'
 #' @inheritDotParams bootstrap_kmeans
@@ -141,12 +140,12 @@ TGL_kmeans_tidy <- function(df,
     if (bootstrap){
         message('bootstrapping')
         bt <- bootstrap_kmeans(df=df, k=k, id_column=id_column, metric=metric, max_iter=max_iter, min_delta=min_delta, seed=seed, ...)
-        
-        km$bootstrap <- km$clust %>% 
-            group_by(clust) %>% 
+
+        km$bootstrap <- km$clust %>%
+            group_by(clust) %>%
             do({
                 tibble(robust=
-                    sum(bt$coclust[.$id, .$id], na.rm=TRUE) / 
+                    sum(bt$coclust[.$id, .$id], na.rm=TRUE) /
                     sum(bt$num_trials[.$id, .$id], na.rm=TRUE))
             })
     }
@@ -218,7 +217,7 @@ reorder_clusters <- function(km, func='hclust'){
 #' km$centers
 #' head(km$cluster)
 #' km$size
-#' 
+#'
 #' # bootstrapping
 #' km <- TGL_kmeans(d, k=5, 'euclid', N_boot=100, bootstrap=TRUE)
 #' km$bootstrap
@@ -235,7 +234,7 @@ TGL_kmeans <- function(df,
                        id_column = TRUE,
                        reorder_func = 'hclust',
                        seed = NULL,
-                       bootstrap = FALSE, 
+                       bootstrap = FALSE,
                        ...) {
 
     res <- TGL_kmeans_tidy(
@@ -249,7 +248,7 @@ TGL_kmeans <- function(df,
         id_column = id_column,
         reorder_func = reorder_func,
         seed = seed,
-        bootstrap=bootstrap, 
+        bootstrap=bootstrap,
         ...)
 
 

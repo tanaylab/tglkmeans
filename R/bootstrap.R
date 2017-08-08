@@ -15,7 +15,6 @@
 #'   \item{num_trials:}{NxN matrix with the number of times observation i and j where sampled together.}
 #'   \item{coclust_frac:}{fraction of times observation i and j where clustered together out of the times they were sampled together (coclust matrix divided by num_trails matrix).}
 #' }.
-
 #'
 #'
 #' @export
@@ -71,7 +70,7 @@ bootstrap_kmeans <- function(df, k, N_boot, boot_ratio=0.75, parallel=getOption(
 #' @param N_boot number of bootstraps.
 #' @param boot_ratio fraction of observations to sample in each bootstrap.
 #' @param k_boot k to use in \code{bootstrap_func}(\code{k} parameter).
-#' @param bootstrap_func function to use bootstrapping. Should take \code{df} as the first parameter, have the following parameters: \code{k}, \code{boot_ratio}, \code{N_boot}, and return a list with \code{coclust}, \code{num_trials} and \code{coclust_frac}.
+#' @param bootstrap_func function to use bootstrapping. Should take \code{df} as the first parameter, has the following parameters: \code{k}, \code{boot_ratio}, \code{N_boot}, and return a list with \code{coclust}, \code{num_trials} and \code{coclust_frac}.
 #' @param max_k maximal k to test. if NULL, would be chosen as \code{floor(nrow(df) / 40)}
 #' @param heatmap_plot_fn filename for coclust heatmap.
 #' @param width width for heatmap plot.
@@ -153,6 +152,17 @@ bootclust <- function(df, N_boot, boot_ratio=0.75, k_boot=NULL, bootstrap_func='
 
 }
 
+#' Plot co-clustering score for different choices of k
+#'
+#' @param coclust_score \code{bt$coclust_score}) where \code{bt} was returned from \code{bootclust}
+#' @param ks k values to plot
+#' @param fig_fn filename of the output figure. if NULL figure would be plotted to the screen
+#' @param ... additional paramters to \code{ggplot2::ggsave}
+#'
+#' @return ggplot object with the densities of k
+#' @export
+#'
+#' @examples
 plot_coclust_score <- function(coclust_score, ks = c(2,4,5,6,10,15), fig_fn=NULL, ...){
     ggp <- coclust_score %>%
         filter(k %in% ks) %>%
@@ -174,11 +184,27 @@ plot_coclust_score <- function(coclust_score, ks = c(2,4,5,6,10,15), fig_fn=NULL
 #' @param bt output of \code{bootclust}
 #' @param col color pallete
 #'
-#' @return
+#' @return None
 #' @export
-plot_coclust_mat <- function(bt, col= colorRampPalette(rev(RColorBrewer::brewer.pal(11,"RdBu")))(1000)){
-    ord <- bt$clust %>% arrange(clust) %>% group_by(clust) %>% mutate(index = index[hclust(dist(bt$coclust_frac[index, index]), 'ward.D2')$order]) %>% pull(index)
-    pheatmap::pheatmap(bt$coclust_frac[ord, ord], cluster_rows=FALSE, cluster_cols=FALSE, show_rownames=FALSE, show_colnames=FALSE, col=col, annotation_row=data.frame(cluster = bt$clust$clust), annotation_col=data.frame(cluster = bt$clust$clust))
+plot_coclust_mat <- function(bt,
+                             col = colorRampPalette(rev(RColorBrewer::brewer.pal(11,"RdBu")))(1000),
+                             ...){
+    ord <- bt$clust %>%
+        arrange(clust) %>%
+        group_by(clust) %>%
+        mutate(index = index[hclust(dist(bt$coclust_frac[index, index]), 'ward.D2')$order]) %>%
+        pull(index)
+    pheatmap::pheatmap(
+        bt$coclust_frac[ord, ord],
+        cluster_rows = FALSE,
+        cluster_cols = FALSE,
+        show_rownames = FALSE,
+        show_colnames = FALSE,
+        col = col,
+        annotation_row = data.frame(cluster = bt$clust$clust),
+        annotation_col = data.frame(cluster = bt$clust$clust),
+        ...
+    )
 }
 
 #' Cutree of bootstrap clustering
@@ -188,7 +214,20 @@ plot_coclust_mat <- function(bt, col= colorRampPalette(rev(RColorBrewer::brewer.
 #' @param min_coclust minimal co-clust score for observation in a cluster
 #' @param tidy  tidy output
 #'
-#' @return
+#' @return if \code{tidy == TRUE}: \code{bt} with the following aditional fields:
+#' \describe{
+#'   \item{clust:}{tibble with `id` column with the observation id (`1:n` if no id column was supplied), and `clust` column with the observation assigned cluster.}
+#'   \item{centers:}{tibble with `clust` column and the cluster centers.}
+#'   \item{size:}{tibble with `clust` column and `n` column with the number of points in each cluster.}
+#'   \item{score:}{}
+#' }
+#' if \code{tidy == FALSE}: \code{bt} with the following aditional fields:
+#' \describe{
+#'   \item{cluster:}{A vector of integers (from ‘1:k’) indicating the cluster to which each point is allocated.}
+#'   \item{centers:}{A matrix of cluster centres.}
+#'   \item{size:}{The number of points in each cluster.}
+#'   \item{score:}{}
+#' }
 #' @export
 #'
 cutree_bootclust <- function(bt, k, min_coclust = 0.5, tidy=FALSE){

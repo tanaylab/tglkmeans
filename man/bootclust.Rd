@@ -18,7 +18,7 @@ bootclust(df, N_boot, boot_ratio = 0.75, k_boot = NULL,
 
 \item{k_boot}{k to use in \code{bootstrap_func}(\code{k} parameter).}
 
-\item{bootstrap_func}{function to use bootstrapping. Should take \code{df} as the first parameter, have the following parameters: \code{k}, \code{boot_ratio}, \code{N_boot}, and return a list with \code{coclust}, \code{num_trials} and \code{coclust_frac}.}
+\item{bootstrap_func}{function to use bootstrapping. Should take \code{df} as the first parameter, has the following parameters: \code{k}, \code{boot_ratio}, \code{N_boot}, and return a list with \code{coclust}, \code{num_trials} and \code{coclust_frac}.}
 
 \item{max_k}{maximal k to test. if NULL, would be chosen as \code{floor(nrow(df) / 40)}}
 

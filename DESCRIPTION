@@ -20,7 +20,8 @@ Imports:
     dplyr (>= 0.5.0),
     purrr (>= 0.2.0),
     ggplot2 (>= 2.2.0),
-    pheatmap
+    ggjoy (>= 0.1),
+    pheatmap (>= 1.0.9)
 RoxygenNote: 6.0.1
 Suggests: knitr,
     rmarkdown,
