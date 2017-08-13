@@ -5,9 +5,7 @@
 \title{Bootstrap clustering}
 \usage{
 bootclust(df, N_boot, boot_ratio = 0.75, k_boot = NULL,
-  bootstrap_func = "bootstrap_kmeans", max_k = NULL,
-  heatmap_plot_fn = NULL, width = 700, height = 700, device = "png",
-  ...)
+  bootstrap_func = "bootstrap_kmeans", max_k = NULL, ...)
 }
 \arguments{
 \item{df}{data frame. Each row is a single observation and each column is a dimension. Input to \code{bootstrap_func} (first paramter).}
@@ -22,6 +20,10 @@ bootclust(df, N_boot, boot_ratio = 0.75, k_boot = NULL,
 
 \item{max_k}{maximal k to test. if NULL, would be chosen as \code{floor(nrow(df) / 40)}}
 
+\item{...}{other paramters to \code{bootstrap_func}.}
+
+\item{plot_coclust_heatmap}{plot coclust heatmap.}
+
 \item{heatmap_plot_fn}{filename for coclust heatmap.}
 
 \item{width}{width for heatmap plot.}
@@ -29,8 +31,6 @@ bootclust(df, N_boot, boot_ratio = 0.75, k_boot = NULL,
 \item{height}{height for heatmap plot.}
 
 \item{device}{device for heatmap plot (default \code{png}),}
-
-\item{...}{other paramters to \code{bootstrap_func}.}
 }
 \value{
 list with the following components:
@@ -46,4 +46,18 @@ list with the following components:
 }
 \description{
 Bootstrap clustering
+}
+\examples{
+data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
+bt <- bootclust(data \%>\% select(id, starts_with('V')), k=5, N_boot=100, boot_ratio=0.75)
+
+bt$mat
+bt$coclust[1:5, 1:5]
+bt$num_trials[1:5, 1:5]
+bt$coclust_frac[1:5, 1:5]
+bt$cm[1:5, 1:5]
+bt$hc
+bt$coclust_score
+
+
 }

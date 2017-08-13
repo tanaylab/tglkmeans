@@ -63,11 +63,8 @@ kmeans++ with return value similar to R kmeans
 
 library(dplyr)
 
-# create 5 clusters normally distribution around 1:5
-d <- purrr::map_df(1:5, ~
-     as.data.frame(matrix(rnorm(100, mean=.x, sd = 0.3), ncol = 2))) \%>\%
-         mutate(id = 1:n()) \%>\%
-         select(id, everything())
+# create 5 clusters normally distributed around 1:5
+d <- simulate_data(n=100, sd=0.3, nclust=5, dims=2, add_true_clust=FALSE)
 head(d)
 
 # cluster

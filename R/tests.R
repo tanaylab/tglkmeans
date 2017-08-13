@@ -1,19 +1,25 @@
 
 #' Simulate normal data for kmeans tests
+#' 
+#' Creates \code{nclust} clusters normally distributed around \code{1:nclust}
 #'
 #' @param n number of observations per cluster
 #' @param sd sd
 #' @param nclust number of clusters
 #' @param dims number of dimensions
 #' @param frac_na fraction of NA in the first dimension
+#' @param add_true_clust add a column with the true cluster ids
 #'
 #' @return simulated data
 #' @export
 #'
 #' @examples
-#' simulate_data()
+#' simulate_data(n=100, sd=0.3, nclust=5, dims=2)
+#' 
+#' # add 20% missing data
+#' simulate_data(n=100, sd=0.3, nclust=5, dims=2, frac_na=0.2)
 #'
-simulate_data <- function(n=100, sd=0.3, nclust=30, dims=2, frac_na=NULL){
+simulate_data <- function(n=100, sd=0.3, nclust=30, dims=2, frac_na=NULL, add_true_clust=TRUE){
 	data <- purrr::map_df(1:nclust, ~
 					as.data.frame(matrix(rnorm(n*dims, mean=.x, sd = sd), ncol = dims)) %>%
 					mutate(true_clust = .x)) %>%
@@ -22,6 +28,10 @@ simulate_data <- function(n=100, sd=0.3, nclust=30, dims=2, frac_na=NULL){
 				select(id, everything(), true_clust)
 	if (!is.null(frac_na)){
 		data$V1[sample(1:nrow(data), round(nrow(data)*frac_na))] <- NA
+	}
+
+	if (!add_true_clust){
+		data <- data %>% select(-true_clust)
 	}
 	return(data)
 }

@@ -72,6 +72,7 @@ bootstrap_kmeans <- function(df, k, N_boot, boot_ratio=0.75, parallel=getOption(
 #' @param k_boot k to use in \code{bootstrap_func}(\code{k} parameter).
 #' @param bootstrap_func function to use bootstrapping. Should take \code{df} as the first parameter, has the following parameters: \code{k}, \code{boot_ratio}, \code{N_boot}, and return a list with \code{coclust}, \code{num_trials} and \code{coclust_frac}.
 #' @param max_k maximal k to test. if NULL, would be chosen as \code{floor(nrow(df) / 40)}
+#' @param plot_coclust_heatmap plot coclust heatmap.
 #' @param heatmap_plot_fn filename for coclust heatmap.
 #' @param width width for heatmap plot.
 #' @param height height for heatmap plot.
@@ -89,7 +90,21 @@ bootstrap_kmeans <- function(df, k, N_boot, boot_ratio=0.75, parallel=getOption(
 #'   \item{coclust_score:}{tibble with score for each cluster in each k from 1 to \code{max_k}.}
 #' }
 #' @export
-bootclust <- function(df, N_boot, boot_ratio=0.75, k_boot=NULL, bootstrap_func='bootstrap_kmeans', max_k = NULL, heatmap_plot_fn=NULL, width=700, height=700, device='png', ...){
+#' 
+#' @examples
+#' data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
+#' bt <- bootclust(data %>% select(id, starts_with('V')), k=5, N_boot=100, boot_ratio=0.75)
+#' 
+#' bt$mat
+#' bt$coclust[1:5, 1:5]
+#' bt$num_trials[1:5, 1:5]
+#' bt$coclust_frac[1:5, 1:5]
+#' bt$cm[1:5, 1:5]
+#' bt$hc
+#' bt$coclust_score
+#' 
+#' 
+bootclust <- function(df, N_boot, boot_ratio=0.75, k_boot=NULL, bootstrap_func='bootstrap_kmeans', max_k = NULL, ...){
 
     k_boot <- k_boot %||% floor(nrow(df) * boot_ratio / 130)
     max_k <- max_k %||% floor(nrow(df) / 40)
@@ -102,7 +117,10 @@ bootclust <- function(df, N_boot, boot_ratio=0.75, k_boot=NULL, bootstrap_func='
     num_trials <- bt$num_trials
 
     message('clustering bootstrapping results')
-    cm <- cor(coclust_frac, use='pairwise.complete.obs', method='spearman')
+    cm <- tgs_cor(coclust_frac, pairwise.complete.obs=TRUE, spearman=TRUE)
+    colnames(cm) <- colnames(coclust_frac)
+    rownames(cm) <- rownames(coclust_frac)
+    
     hc <- hclust(dist(cm), 'ward.D2')
 
     coclust_tidy <- reshape2::melt(coclust, varnames=c('i', 'j'), value.name='coclust') %>% as_tibble()
@@ -121,25 +139,8 @@ bootclust <- function(df, N_boot, boot_ratio=0.75, k_boot=NULL, bootstrap_func='
             ungroup()
     }
 
-    message('calculating score for each k')
+    message('calculating score for each k')    
     coclust_score <- plyr::adply(cutree(hc, 2:max_k), 2, score_clust, .parallel=getOption('tglkmeans.parallel'), .id='k') %>% tbl_df()
-
-    shades <- colorRampPalette(rev(RColorBrewer::brewer.pal(11,"RdBu")))(1000)
-
-    if (!is.null(heatmap_plot_fn)){
-        do.call(device, list(heatmap_plot_fn, width=width, height=height))
-    }
-
-    pheatmap::pheatmap(coclust_frac,
-                       col=shades,
-                       cluster_rows=hc,
-                       cluster_cols=hc,
-                       show_rownames=FALSE,
-                       show_colnames=FALSE)
-
-    if (!is.null(heatmap_plot_fn)){
-        dev.off()
-    }
 
     res <- list(mat = df,
                 coclust=coclust,
@@ -152,9 +153,37 @@ bootclust <- function(df, N_boot, boot_ratio=0.75, k_boot=NULL, bootstrap_func='
 
 }
 
+#' Plot co-clustering matrix
+#' 
+#' Plots a heatmap of coclust_frac: \code{coclust / num_trials}
+#'
+#' @param bt output of \code{bootclust}
+#' @param col color pallete
+#'
+#' @return None
+#' @export
+#' 
+#' @examples
+#' data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
+#' bt <- bootclust(data %>% select(id, starts_with('V')), k=5, N_boot=100, boot_ratio=0.75)
+#' plot_coclust_mat(bt)
+plot_coclust_mat <- function(bt, 
+                             col = colorRampPalette(rev(RColorBrewer::brewer.pal(11,"RdBu")))(1000),                             
+                             ...){   
+    pheatmap::pheatmap(
+        bt$coclust_frac,
+        cluster_rows = bt$hc,
+        cluster_cols = bt$hc,
+        show_rownames = FALSE,
+        show_colnames = FALSE,
+        col = col,
+        ...
+    )
+}
+
 #' Plot co-clustering score for different choices of k
 #'
-#' @param coclust_score \code{bt$coclust_score}) where \code{bt} was returned from \code{bootclust}
+#' @param bt output of \code{bootclust}
 #' @param ks k values to plot
 #' @param fig_fn filename of the output figure. if NULL figure would be plotted to the screen
 #' @param ... additional paramters to \code{ggplot2::ggsave}
@@ -163,8 +192,11 @@ bootclust <- function(df, N_boot, boot_ratio=0.75, k_boot=NULL, bootstrap_func='
 #' @export
 #'
 #' @examples
-plot_coclust_score <- function(coclust_score, ks = c(2,4,5,6,10,15), fig_fn=NULL, ...){
-    ggp <- coclust_score %>%
+#' data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
+#' bt <- bootclust(data %>% select(id, starts_with('V')), k=5, N_boot=100, boot_ratio=0.75)
+#' plot_coclust_score(bt, ks=2:5)
+plot_coclust_score <- function(bt, ks = c(2,4,5,6,10,15), fig_fn=NULL, ...){
+    ggp <- bt$coclust_score %>%
         filter(k %in% ks) %>%
         group_by(k, clust) %>%
         filter(n() >= 2) %>%
@@ -179,14 +211,19 @@ plot_coclust_score <- function(coclust_score, ks = c(2,4,5,6,10,15), fig_fn=NULL
     ggp
 }
 
-#' Plot co-clustering matrix
+#' Plot co-clustering matrix after cutree_bootclust
 #'
-#' @param bt output of \code{bootclust}
+#' @param bt output of \code{cutree_bootclust}
 #' @param col color pallete
 #'
 #' @return None
 #' @export
-plot_coclust_mat <- function(bt,
+#' @examples
+#' data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
+#' bt <- bootclust(data %>% select(id, starts_with('V')), k=5, N_boot=100, boot_ratio=0.75)
+#' bt <- cutree_bootclust(bt, min_coclust=0.7, k=5)
+#' plot_coclust_cutree_mat(bt)
+plot_coclust_cutree_mat <- function(bt,
                              col = colorRampPalette(rev(RColorBrewer::brewer.pal(11,"RdBu")))(1000),
                              ...){
     ord <- bt$clust %>%
@@ -206,6 +243,8 @@ plot_coclust_mat <- function(bt,
         ...
     )
 }
+
+
 
 #' Cutree of bootstrap clustering
 #'
@@ -229,6 +268,29 @@ plot_coclust_mat <- function(bt,
 #'   \item{score:}{}
 #' }
 #' @export
+#' 
+#' @examples
+#' data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
+#' bt <- bootclust(data %>% select(id, starts_with('V')), k=5, N_boot=100, boot_ratio=0.75)
+#' names(bt)
+#' 
+#' # tidy output
+#' bt_tidy <- cutree_bootclust(bt, k=5, min_coclust = 0.6, tidy=TRUE)
+#' names(bt_tidy)
+#' 
+#' bt_tidy$clust
+#' bt_tidy$centers
+#' bt_tidy$size
+#' bt_tidy$score
+#' 
+#' # non tidy output
+#' bt <- cutree_bootclust(bt, k=5, min_coclust = 0.6, tidy=FALSE)
+#' 
+#' bt$cluster[1:5]
+#' bt$centers[1:5, ]
+#' bt$size
+#' bt$score
+#' 
 #'
 cutree_bootclust <- function(bt, k, min_coclust = 0.5, tidy=FALSE){
     bt$clust <- cutree(bt$hc, k)
@@ -264,8 +326,8 @@ cutree_bootclust <- function(bt, k, min_coclust = 0.5, tidy=FALSE){
 
     if (!tidy){
         bt$cluster <- bt$clust %>% pull(clust)
-        bt$centers <- bt$centers %>% select(-clust)
-        bt$size <- tapply(bt$clust, bt$clust, length)
+        bt$centers <- bt$centers %>% select(-clust, -id) %>% as.matrix()        
+        bt$size <- tapply(bt$clust$clust, bt$clust$clust, length)
         bt$score <- bt$score %>% pull(score)
     }
 
@@ -274,4 +336,29 @@ cutree_bootclust <- function(bt, k, min_coclust = 0.5, tidy=FALSE){
 
 `%||%` <- function(lhs, rhs) {
     if (!is.null(lhs)) { lhs } else { rhs }
+}
+
+
+temp_func <- function(min_coclust = 0){    
+    set.seed=19
+    data <- simulate_data(n=50, sd=0.6, nclust=5, dims=100, add_true_clust=TRUE);  
+
+    km <- TGL_kmeans_tidy(data %>% select(id, starts_with('V')), k=5, 'euclid'); 
+
+    d <- tglkmeans:::match_clusters(data, km, 5); 
+
+    frac_correct <- sum(d$true_clust == d$new_clust, na.rm=TRUE) / sum(!is.na(d$new_clust)); 
+
+    # p_km <- d %>% mutate(correct = new_clust == true_clust) %>% ggplot(aes(x=V1, y=V2, color=correct, shape=factor(true_clust))) + geom_point() + scale_color_manual(values=c('red', 'gray'), labels=c('incorrect', 'correct'), name='') + scale_shape_discrete(name='true cluster') +  geom_point(data=km$centers, size=7, color='black', shape='X') + ggtitle(paste0('% of correct clustering: ',  scales::percent(frac_correct) ))
+
+    bt <- bootclust(data %>% select(id, starts_with('V')), k=5, N_boot=100, boot_ratio=0.75) %>% cutree_bootclust(k=5, min_coclust = min_coclust, tidy=TRUE)
+    d_bt <- tglkmeans:::match_clusters(data, bt %>% modify_at('clust', function(x) x %>% rename(id = index)))
+    d_bt <- d_bt[!(d_bt$id %in% bt$excluded), ]
+
+    frac_correct_bt <- sum(d_bt$true_clust == d_bt$new_clust, na.rm=TRUE) / sum(!is.na(d_bt$new_clust)); 
+
+    # p_bt <- d_bt %>% mutate(correct = new_clust == true_clust) %>% ggplot(aes(x=V1, y=V2, color=correct, shape=factor(true_clust))) + geom_point() + scale_color_manual(values=c('red', 'gray'), labels=c('incorrect', 'correct'), name='') + scale_shape_discrete(name='true cluster') +  geom_point(data=bt$centers, size=7, color='black', shape='X') + ggtitle(paste0('% of correct clustering (bootstrap): ',  scales::percent(frac_correct_bt) ))
+
+    #print(cowplot::plot_grid(p_km, p_bt, nrow=2))    
+    return(data.frame(bootstrap = frac_correct_bt, kmeans = frac_correct))    
 }
