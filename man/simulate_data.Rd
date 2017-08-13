@@ -5,7 +5,7 @@
 \title{Simulate normal data for kmeans tests}
 \usage{
 simulate_data(n = 100, sd = 0.3, nclust = 30, dims = 2,
-  frac_na = NULL)
+  frac_na = NULL, add_true_clust = TRUE)
 }
 \arguments{
 \item{n}{number of observations per cluster}
@@ -17,14 +17,19 @@ simulate_data(n = 100, sd = 0.3, nclust = 30, dims = 2,
 \item{dims}{number of dimensions}
 
 \item{frac_na}{fraction of NA in the first dimension}
+
+\item{add_true_clust}{add a column with the true cluster ids}
 }
 \value{
 simulated data
 }
 \description{
-Simulate normal data for kmeans tests
+Creates \code{nclust} clusters normally distributed around \code{1:nclust}
 }
 \examples{
-simulate_data()
+simulate_data(n=100, sd=0.3, nclust=5, dims=2)
+
+# add 20\% missing data
+simulate_data(n=100, sd=0.3, nclust=5, dims=2, frac_na=0.2)
 
 }

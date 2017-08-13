@@ -4,11 +4,10 @@
 \alias{plot_coclust_score}
 \title{Plot co-clustering score for different choices of k}
 \usage{
-plot_coclust_score(coclust_score, ks = c(2, 4, 5, 6, 10, 15), fig_fn = NULL,
-  ...)
+plot_coclust_score(bt, ks = c(2, 4, 5, 6, 10, 15), fig_fn = NULL, ...)
 }
 \arguments{
-\item{coclust_score}{\code{bt$coclust_score}) where \code{bt} was returned from \code{bootclust}}
+\item{bt}{output of \code{bootclust}}
 
 \item{ks}{k values to plot}
 
@@ -21,4 +20,9 @@ ggplot object with the densities of k
 }
 \description{
 Plot co-clustering score for different choices of k
+}
+\examples{
+data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
+bt <- bootclust(data \%>\% select(id, starts_with('V')), k=5, N_boot=100, boot_ratio=0.75)
+plot_coclust_score(bt, ks=2:5)
 }
