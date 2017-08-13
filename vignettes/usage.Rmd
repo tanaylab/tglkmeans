@@ -21,12 +21,7 @@ library(tglkmeans)
 
 First, let's create 5 clusters normally distributed around 1 to 5, with sd of 0.3:
 ```{r}
-data <- purrr::map_df(1:5, ~ 
-					as.data.frame(matrix(rnorm(100, mean=.x, sd = 0.3), ncol = 2)) %>%
-					mutate(true_clust = .x)) %>% 
-				tbl_df %>% 
-				mutate(id = 1:n()) %>%
-				select(id, everything(), true_clust)
+data <- simulate_data(n=100, sd=0.3, nclust=5, dims=2)
 data
 ```
 
@@ -77,8 +72,10 @@ And plot the results:
 d %>% ggplot(aes(x=V1, y=V2, color=factor(new_clust), shape=factor(true_clust))) + 
     geom_point() + 
     scale_color_discrete(name='cluster') + 
-    scale_shape_discrete(name='true cluster')
+    scale_shape_discrete(name='true cluster') + 
+    geom_point(data=km$centers, size=7, color='black', shape='X')
 ```
+
 ## Custom cluster ordering
 By default, the clusters where ordered using the following function: `hclust(dist(cor(t(centers))))` - hclust of the euclidian distance of the correlation matrix of the centers.
 
@@ -112,18 +109,14 @@ and plotting the results (without the NA's) we get:
 d %>% ggplot(aes(x=V1, y=V2, color=factor(new_clust), shape=factor(true_clust))) + 
     geom_point() + 
     scale_color_discrete(name='cluster') + 
-    scale_shape_discrete(name='true cluster')
+    scale_shape_discrete(name='true cluster') + 
+    geom_point(data=km$centers, size=7, color='black', shape='X')
 ```
 
 ## High dimensions
 Let's move to higher dimensions (and higher noise):
 ```{r}
-data <- purrr::map_df(1:30, ~ 
-			    as.data.frame(matrix(rnorm(100*300, mean=.x, sd = 0.7), ncol = 300)) %>%
-				mutate(true_clust = .x)) %>% 
-				tbl_df() %>% 
-				mutate(id = 1:n()) %>%
-				select(id, everything(), true_clust)
+data <- simulate_data(n=100, sd=0.3, nclust=30, dims=300)
 km <- TGL_kmeans_tidy(data %>% select(id, starts_with('V')), 
     k=30, 
     metric='euclid', 
