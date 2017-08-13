@@ -38,6 +38,8 @@ Cutree of bootstrap clustering
 data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
 bt <- bootclust(data \%>\% select(id, starts_with('V')), k=5, N_boot=100, boot_ratio=0.75)
 names(bt)
+
+# tidy output
 bt_tidy <- cutree_bootclust(bt, k=5, min_coclust = 0.6, tidy=TRUE)
 names(bt_tidy)
 
@@ -46,6 +48,7 @@ bt_tidy$centers
 bt_tidy$size
 bt_tidy$score
 
+# non tidy output
 bt <- cutree_bootclust(bt, k=5, min_coclust = 0.6, tidy=FALSE)
 
 bt$cluster[1:5]
