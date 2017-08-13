@@ -117,7 +117,7 @@ bootclust <- function(df, N_boot, boot_ratio=0.75, k_boot=NULL, bootstrap_func='
     num_trials <- bt$num_trials
 
     message('clustering bootstrapping results')
-    cm <- tgs_cor(coclust_frac, pairwise.complete.obs=TRUE, spearman=TRUE)
+    cm <- tgstat::tgs_cor(coclust_frac, pairwise.complete.obs=TRUE, spearman=TRUE)
     colnames(cm) <- colnames(coclust_frac)
     rownames(cm) <- rownames(coclust_frac)
     
@@ -338,27 +338,3 @@ cutree_bootclust <- function(bt, k, min_coclust = 0.5, tidy=FALSE){
     if (!is.null(lhs)) { lhs } else { rhs }
 }
 
-
-temp_func <- function(min_coclust = 0){    
-    set.seed=19
-    data <- simulate_data(n=50, sd=0.6, nclust=5, dims=100, add_true_clust=TRUE);  
-
-    km <- TGL_kmeans_tidy(data %>% select(id, starts_with('V')), k=5, 'euclid'); 
-
-    d <- tglkmeans:::match_clusters(data, km, 5); 
-
-    frac_correct <- sum(d$true_clust == d$new_clust, na.rm=TRUE) / sum(!is.na(d$new_clust)); 
-
-    # p_km <- d %>% mutate(correct = new_clust == true_clust) %>% ggplot(aes(x=V1, y=V2, color=correct, shape=factor(true_clust))) + geom_point() + scale_color_manual(values=c('red', 'gray'), labels=c('incorrect', 'correct'), name='') + scale_shape_discrete(name='true cluster') +  geom_point(data=km$centers, size=7, color='black', shape='X') + ggtitle(paste0('% of correct clustering: ',  scales::percent(frac_correct) ))
-
-    bt <- bootclust(data %>% select(id, starts_with('V')), k=5, N_boot=100, boot_ratio=0.75) %>% cutree_bootclust(k=5, min_coclust = min_coclust, tidy=TRUE)
-    d_bt <- tglkmeans:::match_clusters(data, bt %>% modify_at('clust', function(x) x %>% rename(id = index)))
-    d_bt <- d_bt[!(d_bt$id %in% bt$excluded), ]
-
-    frac_correct_bt <- sum(d_bt$true_clust == d_bt$new_clust, na.rm=TRUE) / sum(!is.na(d_bt$new_clust)); 
-
-    # p_bt <- d_bt %>% mutate(correct = new_clust == true_clust) %>% ggplot(aes(x=V1, y=V2, color=correct, shape=factor(true_clust))) + geom_point() + scale_color_manual(values=c('red', 'gray'), labels=c('incorrect', 'correct'), name='') + scale_shape_discrete(name='true cluster') +  geom_point(data=bt$centers, size=7, color='black', shape='X') + ggtitle(paste0('% of correct clustering (bootstrap): ',  scales::percent(frac_correct_bt) ))
-
-    #print(cowplot::plot_grid(p_km, p_bt, nrow=2))    
-    return(data.frame(bootstrap = frac_correct_bt, kmeans = frac_correct))    
-}
