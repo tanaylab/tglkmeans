@@ -131,7 +131,7 @@ bootclust <- function(df, N_boot, boot_ratio=0.75, k_boot=NULL, bootstrap_func='
   
     if (add_scores){
         message('calculating score for each k')    
-        res <- add_coclust_scores(res, ks=ks, parallel=parallel)            
+        res <- add_coclust_score(res, ks=ks, parallel=parallel)            
     } 
 
     return(res)
@@ -150,7 +150,7 @@ bootclust <- function(df, N_boot, boot_ratio=0.75, k_boot=NULL, bootstrap_func='
 #' @examples
 #' data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
 #' bt <- bootclust(data %>% select(id, starts_with('V')), k_boot=5, N_boot=100, boot_ratio=0.75)
-#' bt <- add_coclust_scores(bt, ks=2:5)
+#' bt <- add_coclust_score(bt, ks=c(2,3,5))
 #' plot_coclust_scores(bt)
 #' 
 add_coclust_score <- function(bt, ks, parallel=getOption('tglkmeans.parallel')){
@@ -179,7 +179,7 @@ add_coclust_score <- function(bt, ks, parallel=getOption('tglkmeans.parallel')){
 #' @examples
 #' data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
 #' bt <- bootclust(data %>% select(id, starts_with('V')), k_boot=5, N_boot=100, boot_ratio=0.75)
-#' plot_coclust_score(bt)
+#' plot_coclust_mat(bt)
 plot_coclust_mat <- function(bt, 
                              col = colorRampPalette(rev(RColorBrewer::brewer.pal(11,"RdBu")))(1000),                             
                              ...){   
