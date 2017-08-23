@@ -22,7 +22,7 @@ Imports:
     purrr (>= 0.2.0),
     ggplot2 (>= 2.2.0),
     ggjoy (>= 0.1),
-    pheatmap (>= 1.0.9),
+    pheatmap (>= 1.0.8),
     tgstat (>= 1.0.0)
 Remotes: bitbucket::tanaylab/tgstat@default
 RoxygenNote: 6.0.1

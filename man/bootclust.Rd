@@ -46,7 +46,7 @@ Bootstrap clustering
 }
 \examples{
 data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
-bt <- bootclust(data \%>\% select(id, starts_with('V')), k=5, N_boot=100, boot_ratio=0.75)
+bt <- bootclust(data \%>\% select(id, starts_with('V')), k_boot=5, N_boot=100, boot_ratio=0.75)
 
 bt$mat
 bt$coclust[1:5, 1:5]
