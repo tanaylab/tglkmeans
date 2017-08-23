@@ -91,7 +91,7 @@ bootstrap_kmeans <- function(df, k, N_boot, boot_ratio=0.75, parallel=getOption(
 #' 
 #' @examples
 #' data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
-#' bt <- bootclust(data %>% select(id, starts_with('V')), k=5, N_boot=100, boot_ratio=0.75)
+#' bt <- bootclust(data %>% select(id, starts_with('V')), k_boot=5, N_boot=100, boot_ratio=0.75)
 #' 
 #' bt$mat
 #' bt$coclust[1:5, 1:5]
@@ -149,7 +149,7 @@ bootclust <- function(df, N_boot, boot_ratio=0.75, k_boot=NULL, bootstrap_func='
 #' 
 #' @examples
 #' data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
-#' bt <- bootclust(data %>% select(id, starts_with('V')), k=5, N_boot=100, boot_ratio=0.75)
+#' bt <- bootclust(data %>% select(id, starts_with('V')), k_boot=5, N_boot=100, boot_ratio=0.75)
 #' bt <- add_coclust_scores(bt, ks=2:5)
 #' plot_coclust_scores(bt)
 #' 
@@ -178,7 +178,7 @@ add_coclust_score <- function(bt, ks, parallel=getOption('tglkmeans.parallel')){
 #' 
 #' @examples
 #' data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
-#' bt <- bootclust(data %>% select(id, starts_with('V')), k=5, N_boot=100, boot_ratio=0.75)
+#' bt <- bootclust(data %>% select(id, starts_with('V')), k_boot=5, N_boot=100, boot_ratio=0.75)
 #' plot_coclust_score(bt)
 plot_coclust_mat <- function(bt, 
                              col = colorRampPalette(rev(RColorBrewer::brewer.pal(11,"RdBu")))(1000),                             
@@ -206,7 +206,7 @@ plot_coclust_mat <- function(bt,
 #'
 #' @examples
 #' data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
-#' bt <- bootclust(data %>% select(id, starts_with('V')), k=5, N_boot=100, boot_ratio=0.75)
+#' bt <- bootclust(data %>% select(id, starts_with('V')), k_boot=5, N_boot=100, boot_ratio=0.75)
 #' plot_coclust_score(bt, ks=2:5)
 plot_coclust_score <- function(bt, ks = NULL, fig_fn=NULL, ...){
     d <- bt$coclust_score
@@ -238,7 +238,7 @@ plot_coclust_score <- function(bt, ks = NULL, fig_fn=NULL, ...){
 #' @export
 #' @examples
 #' data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
-#' bt <- bootclust(data %>% select(id, starts_with('V')), k=5, N_boot=100, boot_ratio=0.75)
+#' bt <- bootclust(data %>% select(id, starts_with('V')), k_boot=5, N_boot=100, boot_ratio=0.75)
 #' bt <- cutree_bootclust(bt, min_coclust=0.7, k=5)
 #' plot_coclust_cutree_mat(bt)
 plot_coclust_cutree_mat <- function(bt,
@@ -289,11 +289,11 @@ plot_coclust_cutree_mat <- function(bt,
 #' 
 #' @examples
 #' data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
-#' bt <- bootclust(data %>% select(id, starts_with('V')), k=5, N_boot=100, boot_ratio=0.75)
+#' bt <- bootclust(data %>% select(id, starts_with('V')), k_boot=5, N_boot=100, boot_ratio=0.75)
 #' names(bt)
 #' 
 #' # tidy output
-#' bt_tidy <- cutree_bootclust(bt, k=5, min_coclust = 0.6, tidy=TRUE)
+#' bt_tidy <- cutree_bootclust(bt, k_boot=5, min_coclust = 0.6, tidy=TRUE)
 #' names(bt_tidy)
 #' 
 #' bt_tidy$clust
@@ -302,7 +302,7 @@ plot_coclust_cutree_mat <- function(bt,
 #' bt_tidy$score
 #' 
 #' # non tidy output
-#' bt <- cutree_bootclust(bt, k=5, min_coclust = 0.6, tidy=FALSE)
+#' bt <- cutree_bootclust(bt, k_boot=5, min_coclust = 0.6, tidy=FALSE)
 #' 
 #' bt$cluster[1:5]
 #' bt$centers[1:5, ]
