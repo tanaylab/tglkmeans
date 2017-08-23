@@ -18,6 +18,7 @@ Imports:
     plyr (>= 1.8.4),
     reshape2 (>= 1.4.2),
     dplyr (>= 0.5.0),
+    forcats (>= 0.2.0),
     purrr (>= 0.2.0),
     ggplot2 (>= 2.2.0),
     ggjoy (>= 0.1),

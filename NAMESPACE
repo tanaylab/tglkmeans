@@ -2,6 +2,7 @@
 
 export(TGL_kmeans)
 export(TGL_kmeans_tidy)
+export(add_coclust_score)
 export(bootclust)
 export(bootstrap_kmeans)
 export(cutree_bootclust)

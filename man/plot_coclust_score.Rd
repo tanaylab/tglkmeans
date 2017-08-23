@@ -4,7 +4,7 @@
 \alias{plot_coclust_score}
 \title{Plot co-clustering score for different choices of k}
 \usage{
-plot_coclust_score(bt, ks = c(2, 4, 5, 6, 10, 15), fig_fn = NULL, ...)
+plot_coclust_score(bt, ks = NULL, fig_fn = NULL, ...)
 }
 \arguments{
 \item{bt}{output of \code{bootclust}}
