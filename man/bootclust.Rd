@@ -5,7 +5,8 @@
 \title{Bootstrap clustering}
 \usage{
 bootclust(df, N_boot, boot_ratio = 0.75, k_boot = NULL,
-  bootstrap_func = "bootstrap_kmeans", max_k = NULL, ...)
+  bootstrap_func = "bootstrap_kmeans", add_scores = TRUE, ks = NULL,
+  max_k = NULL, parallel = getOption("tglkmeans.parallel"), ...)
 }
 \arguments{
 \item{df}{data frame. Each row is a single observation and each column is a dimension. Input to \code{bootstrap_func} (first paramter).}
@@ -18,19 +19,15 @@ bootclust(df, N_boot, boot_ratio = 0.75, k_boot = NULL,
 
 \item{bootstrap_func}{function to use bootstrapping. Should take \code{df} as the first parameter, has the following parameters: \code{k}, \code{boot_ratio}, \code{N_boot}, and return a list with \code{coclust}, \code{num_trials} and \code{coclust_frac}.}
 
-\item{max_k}{maximal k to test. if NULL, would be chosen as \code{floor(nrow(df) / 40)}}
+\item{add_scores}{calculate densities of scores for different choices of k.}
+
+\item{ks}{values of k to calculate scores}
+
+\item{max_k}{maximal k to test if no \code{ks} was given. if NULL, would be chosen as \code{floor(nrow(df) / 40)}}
+
+\item{parallel}{calcualte scores parallely}
 
 \item{...}{other paramters to \code{bootstrap_func}.}
-
-\item{plot_coclust_heatmap}{plot coclust heatmap.}
-
-\item{heatmap_plot_fn}{filename for coclust heatmap.}
-
-\item{width}{width for heatmap plot.}
-
-\item{height}{height for heatmap plot.}
-
-\item{device}{device for heatmap plot (default \code{png}),}
 }
 \value{
 list with the following components:
@@ -41,7 +38,7 @@ list with the following components:
   \item{coclust_frac:}{NxN matrix with \code{coclust} / \code{num_trials}.}
   \item{cm:}{NxN correlation matrix.}
   \item{hc:}{hierachical clustering of \code{coclust_frac} matrix.}
-  \item{coclust_score:}{tibble with score for each cluster in each k from 1 to \code{max_k}.}
+  \item{coclust_score:}{(if \code{add_scores == TRUE}) tibble with score for each cluster in for each value of \code{ks}.}
 }
 }
 \description{

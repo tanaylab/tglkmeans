@@ -17,3 +17,9 @@ tglkmeans.set_parallel <- function(thread_num) {
         options(tglkmeans.parallel.thread_num = thread_num)
     }
 }
+
+
+
+`%||%` <- function(lhs, rhs) {
+    if (!is.null(lhs)) { lhs } else { rhs }
+}
