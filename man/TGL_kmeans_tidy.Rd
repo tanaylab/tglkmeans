@@ -47,6 +47,7 @@ the first column can contain id for each observation (if id_column is TRUE).}
   \item{boot_ratio}{percent of observations to sample on each iteration}
   \item{parallel}{run parallely (using doMC backend)}
   \item{id_column}{\code{df}'s first column contains the observation id}
+  \item{seed}{seed for the c++ random number generator}
 }}
 }
 \value{

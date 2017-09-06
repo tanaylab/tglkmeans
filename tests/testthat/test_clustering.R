@@ -33,7 +33,7 @@ test_that('quiet if verbose is turned off', {
 })
 
 context('Random seed')
-test_that('setting the seed returns reproducable results', {
+test_that('setting the seed returns reproducible results', {
 	nclust <- 30
 	data <- simulate_data(n=100, sd=0.3, nclust=nclust, frac_na=NULL)
 	res1 <- TGL_kmeans_tidy(data %>% select(id, starts_with('V')) , nclust, metric='euclid', verbose=F, seed=17)

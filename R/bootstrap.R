@@ -19,6 +19,8 @@
 #'
 #' @export
 #'
+#' @inheritParams TGL_kmeans
+#' 
 #' @examples
 #' d <- simulate_data(nclust=6)
 #' bootstrap <- bootstrap_kmeans(d, k=6, N_boot=100)
@@ -30,7 +32,7 @@
 #' bootstrap_kmeans(d, k=6, N_boot=100, tidy=TRUE)
 #'
 #'
-bootstrap_kmeans <- function(df, k, N_boot, boot_ratio=0.75, parallel=getOption('tglkmeans.parallel'), id_column=TRUE, ...){
+bootstrap_kmeans <- function(df, k, N_boot, boot_ratio=0.75, parallel=getOption('tglkmeans.parallel'), id_column=TRUE, seed=NULL, ...){
     df <- tbl_df(df)
     N <- nrow(df)
     boot_size <- round(N * boot_ratio)
@@ -47,16 +49,19 @@ bootstrap_kmeans <- function(df, k, N_boot, boot_ratio=0.75, parallel=getOption(
     tot_coclust <- matrix(0, nrow=N, ncol=N, dimnames=list(id_col, id_col))
     num_trials <- matrix(0, nrow=N, ncol=N, dimnames=list(id_col, id_col))
 
-    boot_res <- plyr::alply(1:N_boot, 1, function(i) {
-        boot_obs <- sample(1:N, boot_size)
-        km <- TGL_kmeans_tidy(df[boot_obs, ], k=k, id_column=TRUE, ...)
+    # sample observations in advance for reproducibility when parallelizing
+    inds <- purrr::map(1:N_boot, ~ sample(1:N, boot_size))
+
+    boot_res <- plyr::alply(1:N_boot, 1, function(i) {    
+        boot_obs <- inds[[i]]
+        km <- TGL_kmeans_tidy(df[boot_obs, ], k=k, id_column=TRUE, seed=seed, ...)
         boot_nodes <- as.numeric(km$clust$id)
         isclust_ci <- diag(max(km$clust$clust))[, km$clust$clust]
         coclust_ij <- t(isclust_ci) %*% isclust_ci
 
         return(list(boot_nodes=boot_nodes, coclust_ij=coclust_ij))
     }, .parallel = parallel)
-
+    
     reduce_coclust(map(boot_res, 'boot_nodes'), map(boot_res, 'coclust_ij'), tot_coclust)
     reduce_num_trials(map(boot_res, 'boot_nodes'), num_trials)
 
@@ -75,7 +80,6 @@ bootstrap_kmeans <- function(df, k, N_boot, boot_ratio=0.75, parallel=getOption(
 #' @param ks values of k to calculate scores
 #' @param max_k maximal k to test if no \code{ks} was given. if NULL, would be chosen as \code{floor(nrow(df) / 40)}
 #' @param parallel calcualte scores parallely
-#' @param ... other paramters to \code{bootstrap_func}.
 #'
 #' @return list with the following components:
 #' \describe{
@@ -153,45 +157,18 @@ bootclust <- function(df, N_boot, boot_ratio=0.75, k_boot=NULL, bootstrap_func='
 #' bt <- add_coclust_score(bt, ks=c(2,3,5))
 #' plot_coclust_scores(bt)
 #' 
-add_coclust_score <- function(bt, ks, parallel=getOption('tglkmeans.parallel')){
+add_coclust_score <- function(bt, ks=c(2,5,10), parallel=getOption('tglkmeans.parallel')){
     score_clust <- function(clusters){        
         map_df(unique(clusters), ~ {
-            inds <- which(clusters == .x)            
+            inds <- which(clusters == .x)                        
             score <- rowSums(bt$coclust_frac[inds, inds], na.rm=T) / rowSums(bt$coclust_frac[inds, ], na.rm=T)
             tibble(i = names(score), clust = .x, score=score)
-        })        
+        })   
+
     }
 
     bt$coclust_score <- plyr::adply(cutree(bt$hc, ks), 2, score_clust, .parallel=parallel, .id='k') %>% tbl_df()
     return(bt)
-}
-
-#' Plot co-clustering matrix
-#' 
-#' Plots a heatmap of coclust_frac: \code{coclust / num_trials}
-#'
-#' @param bt output of \code{bootclust}
-#' @param col color pallete
-#'
-#' @return None
-#' @export
-#' 
-#' @examples
-#' data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
-#' bt <- bootclust(data %>% select(id, starts_with('V')), k_boot=5, N_boot=100, boot_ratio=0.75)
-#' plot_coclust_mat(bt)
-plot_coclust_mat <- function(bt, 
-                             col = colorRampPalette(rev(RColorBrewer::brewer.pal(11,"RdBu")))(1000),                             
-                             ...){   
-    pheatmap::pheatmap(
-        bt$coclust_frac,
-        cluster_rows = bt$hc,
-        cluster_cols = bt$hc,
-        show_rownames = FALSE,
-        show_colnames = FALSE,
-        col = col,
-        ...
-    )
 }
 
 #' Plot co-clustering score for different choices of k
@@ -227,6 +204,36 @@ plot_coclust_score <- function(bt, ks = NULL, fig_fn=NULL, ...){
     }
     ggp
 }
+
+#' Plot co-clustering matrix
+#' 
+#' Plots a heatmap of coclust_frac: \code{coclust / num_trials}
+#'
+#' @param bt output of \code{bootclust}
+#' @param col color pallete
+#'
+#' @return None
+#' @export
+#' 
+#' @examples
+#' data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
+#' bt <- bootclust(data %>% select(id, starts_with('V')), k_boot=5, N_boot=100, boot_ratio=0.75)
+#' plot_coclust_mat(bt)
+plot_coclust_mat <- function(bt, 
+                             col = colorRampPalette(rev(RColorBrewer::brewer.pal(11,"RdBu")))(1000),                             
+                             ...){   
+    pheatmap::pheatmap(
+        bt$coclust_frac,
+        cluster_rows = bt$hc,
+        cluster_cols = bt$hc,
+        show_rownames = FALSE,
+        show_colnames = FALSE,
+        col = col,
+        ...
+    )
+}
+
+
 
 #' Plot co-clustering matrix after cutree_bootclust
 #'
