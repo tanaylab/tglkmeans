@@ -4,7 +4,8 @@
 \alias{add_coclust_score}
 \title{Calculate co-clustering scores for values of k}
 \usage{
-add_coclust_score(bt, ks, parallel = getOption("tglkmeans.parallel"))
+add_coclust_score(bt, ks = c(2, 5, 10),
+  parallel = getOption("tglkmeans.parallel"))
 }
 \arguments{
 \item{bt}{output of \code{bootclust}}

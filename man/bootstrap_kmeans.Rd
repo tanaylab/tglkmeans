@@ -5,7 +5,8 @@
 \title{Bootstrapping}
 \usage{
 bootstrap_kmeans(df, k, N_boot, boot_ratio = 0.75,
-  parallel = getOption("tglkmeans.parallel"), id_column = TRUE, ...)
+  parallel = getOption("tglkmeans.parallel"), id_column = TRUE,
+  seed = NULL, ...)
 }
 \arguments{
 \item{df}{data frame. Each row is a single observation and each column is a dimension.
@@ -20,6 +21,8 @@ the first column can contain id for each observation (if id_column is TRUE).}
 \item{parallel}{run parallely (using doMC backend)}
 
 \item{id_column}{\code{df}'s first column contains the observation id}
+
+\item{seed}{seed for the c++ random number generator}
 
 \item{...}{additional parameters to TGL_kmeans}
 }
