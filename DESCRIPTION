@@ -1,6 +1,6 @@
 Package: tglkmeans
 Title: Kmeans++ implementation
-Version: 0.0.0.9000
+Version: 0.1.9000
 Authors@R: c(person("Aviezer", "Lifshitz", email = "aviezer.lifshitz@weizmann.ac.il",
     role = c("aut", "cre")),
     person("Amos", "Tanay", role=c("aut")))
@@ -21,7 +21,7 @@ Imports:
     forcats (>= 0.2.0),
     purrr (>= 0.2.0),
     ggplot2 (>= 2.2.0),
-    ggjoy (>= 0.1),
+    ggridges (>= 0.4),
     pheatmap (>= 1.0.8),
     tgstat (>= 1.0.0)
 Remotes: bitbucket::tanaylab/tgstat@default

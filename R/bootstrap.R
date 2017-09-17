@@ -62,8 +62,8 @@ bootstrap_kmeans <- function(df, k, N_boot, boot_ratio=0.75, parallel=getOption(
         return(list(boot_nodes=boot_nodes, coclust_ij=coclust_ij))
     }, .parallel = parallel)
     
-    reduce_coclust(map(boot_res, 'boot_nodes'), map(boot_res, 'coclust_ij'), tot_coclust)
-    reduce_num_trials(map(boot_res, 'boot_nodes'), num_trials)
+    reduce_coclust(purrr::map(boot_res, 'boot_nodes'), purrr::map(boot_res, 'coclust_ij'), tot_coclust)
+    reduce_num_trials(purrr::map(boot_res, 'boot_nodes'), num_trials)
 
     return(list(coclust = tot_coclust, num_trials=num_trials, coclust_frac = tot_coclust / num_trials))
 }
@@ -159,7 +159,7 @@ bootclust <- function(df, N_boot, boot_ratio=0.75, k_boot=NULL, bootstrap_func='
 #' 
 add_coclust_score <- function(bt, ks=c(2,5,10), parallel=getOption('tglkmeans.parallel')){
     score_clust <- function(clusters){        
-        map_df(unique(clusters), ~ {
+        purrr::map_dfr(unique(clusters), ~ {
             inds <- which(clusters == .x)                        
             score <- rowSums(bt$coclust_frac[inds, inds], na.rm=T) / rowSums(bt$coclust_frac[inds, ], na.rm=T)
             tibble(i = names(score), clust = .x, score=score)
@@ -195,7 +195,7 @@ plot_coclust_score <- function(bt, ks = NULL, fig_fn=NULL, ...){
         group_by(k, clust) %>%
         filter(n() >= 2) %>%
         ggplot(aes(y=factor(clust), x=score)) +
-            ggjoy::geom_joy() +
+            ggridges::geom_density_ridges() +
             ylab('Cluster') +
             facet_wrap(~k) +
             theme_minimal()
@@ -320,7 +320,7 @@ plot_coclust_cutree_mat <- function(bt,
 cutree_bootclust <- function(bt, k, min_coclust = 0.5, tidy=FALSE){
     bt$clust <- cutree(bt$hc, k)
 
-    clust_inds <- map(unique(bt$clust), ~ {
+    clust_inds <- purrr::map(unique(bt$clust), ~ {
         inds <- which(bt$clust == .x)        
         score <- rowSums(bt$coclust_frac[inds, inds], na.rm=T) / rowSums(bt$coclust_frac[inds, ], na.rm=T)
         good_inds <- tibble(index = inds[which(score >= min_coclust)]) %>% mutate(clust = .x)
@@ -329,8 +329,8 @@ cutree_bootclust <- function(bt, k, min_coclust = 0.5, tidy=FALSE){
     })
 
     if (min_coclust > 0){
-        excluded <- map_df(clust_inds, 'bad_inds') %>% select(clust, index)
-        new_clust <- map_df(clust_inds, 'good_inds') %>% select(clust, index)
+        excluded <- purrr::map_dfr(clust_inds, 'bad_inds') %>% select(clust, index)
+        new_clust <- purrr::map_dfr(clust_inds, 'good_inds') %>% select(clust, index)
         bt$excluded <- excluded$index
         new_clust <- bind_rows(new_clust, excluded %>% mutate(clust = max(new_clust$clust) + 1))
         new_clust <- new_clust %>%
@@ -346,7 +346,7 @@ cutree_bootclust <- function(bt, k, min_coclust = 0.5, tidy=FALSE){
 
     bt$size <- bt$clust %>% count(clust) %>% ungroup()
 
-    bt$score <- clust_inds %>% map_df('score') %>% arrange(id)
+    bt$score <- clust_inds %>% purrr::map_dfr('score') %>% arrange(id)
 
     if (!tidy){
         bt$cluster <- bt$clust %>% pull(clust)
