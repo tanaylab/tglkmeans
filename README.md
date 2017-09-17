@@ -1,9 +1,10 @@
+
 tglkmeans - efficient implementation of kmeans++ algorithm
 ==========================================================
 
 <https://bitbucket.org/tanaylab/tglkmeans>
 
-This package provides R binding to cpp implementation of kmeans++ algorithm (<https://en.wikipedia.org/wiki/K-means%2B%2B>).
+This package provides R binding to a cpp implementation of kmeans++ algorithm (<https://en.wikipedia.org/wiki/K-means%2B%2B>).
 
 Site for the package is at: <https://tanaylab.bitbucket.io/tglkmeans>
 
@@ -24,7 +25,7 @@ library(tglkmeans)
 
 #### Using the package
 
-Please refer to the package vignettes for usage and workflow, or look at the articles section in the site.
+Please refer to the package vignettes for usage and workflow, or look at the [usage](https://tanaylab.bitbucket.io/tglkmeans/articles/usage.html) section in the site.
 
 ``` r
 browseVignettes('usage') 
