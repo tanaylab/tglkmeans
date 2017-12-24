@@ -350,7 +350,7 @@ cutree_bootclust <- function(bt, k, min_coclust = 0.5, tidy=FALSE){
 
     if (!tidy){
         bt$cluster <- bt$clust %>% pull(clust)
-        bt$centers <- bt$centers %>% select(-clust, -id) %>% as.matrix()        
+        bt$centers <- bt$centers %>% select(-one_of(c('clust', 'id'))) %>% as.matrix()        
         bt$size <- tapply(bt$clust$clust, bt$clust$clust, length)
         bt$score <- bt$score %>% pull(score)
     }
