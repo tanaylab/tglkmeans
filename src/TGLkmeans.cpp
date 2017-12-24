@@ -76,7 +76,7 @@ List TGL_kmeans_cpp(const StringVector& ids, DataFrame& mat, const int& k, const
     vec2df(centers_float, centers_df);
 
     vector<int> assignments = kmeans.report_assignment_to_vector();
-    DataFrame clust_df = DataFrame::create( Named("id") = ids, _["clust"] = NumericVector::import(assignments.begin(), assignments.end()));
+    DataFrame clust_df = DataFrame::create( Named("id") = ids, _["clust"] = NumericVector::import(assignments.begin(), assignments.end()), _["stringsAsFactors"] = false);
 
     List res = List::create(Named("centers") = centers_df, _["cluster"] = clust_df);
 
