@@ -1,6 +1,16 @@
 library(dplyr)
 library(tglkmeans)
 
+
+context('Missing data')
+test_that('Stop when there are rows which contain only missing data', {
+	data <- simulate_data(n=100, sd=0.3, nclust=30, frac_na=NULL)	
+	data[3, -1] <- NA
+	data[4, -1] <- NA
+	expect_error(TGL_kmeans_tidy(data %>% select(id, starts_with('V')) , 30, metric='euclid', verbose=FALSE, seed=17), 'The following rows contain only missing values: 3,4')
+})
+
+
 context('Correct output')
 test_that('all ids and clusters are present', {
 	nclust <- 30
@@ -24,7 +34,6 @@ test_that('all ids and clusters are present', {
 	expect_equal(nrow(data), sum(res$size$n))
 
 })
-
 
 context('Verbosity')
 test_that('quiet if verbose is turned off', {

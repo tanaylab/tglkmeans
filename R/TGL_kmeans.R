@@ -76,6 +76,13 @@ TGL_kmeans_tidy <- function(df,
     }
     mat <- t(df[,-1])
 
+    # Thorw an error if there are rows that do not contain any value
+    n_not_missing <- colSums(!is.na(mat))    
+    if (any(n_not_missing == 0)){
+        all_nas <- which(n_not_missing == 0)
+        stop(sprintf('The following rows contain only missing values: %s', paste(all_nas, collapse = ',')))
+    }
+
     df <- as.data.frame(df)
     ids <- as.character(df[, 1])
 
