@@ -1,6 +1,6 @@
 Package: tglkmeans
 Title: Kmeans++ implementation
-Version: 0.1.9000
+Version: 0.1.1
 Authors@R: c(person("Aviezer", "Lifshitz", email = "aviezer.lifshitz@weizmann.ac.il",
     role = c("aut", "cre")),
     person("Amos", "Tanay", role=c("aut")))
