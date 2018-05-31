@@ -11,7 +11,8 @@
 #' @param id_column \code{df}'s first column contains the observation id
 #' @param reorder_func function to reorder the clusters. operates on each center and orders by the result. e.g. \code{reorder_func = mean} would calculate the mean of each center and then would reorder the clusters accordingly. If \code{reorder_func = hclust} the centers would be ordered by hclust of the euclidian distance of the corelation matrix, i.e. \code{hclust(dist(cor(t(centers))))}
 #' if NULL, no reordering would be done.
-#' @param add_to_data return also the original data frame with an extra 'clust' column with the cluster ids
+#' @param add_to_data return also the original data frame with an extra 'clust' column with the cluster ids ('id' is the first column)
+#' @param hclust_intra_clusters run hierarchical clustering within each cluster and return an ordering of the observations. 
 #' @param seed seed for the c++ random number generator
 #' @param bootstrap bootstrap to estimate robustness of the clusters
 #' @param ...
@@ -24,6 +25,7 @@
 #'   \item{data:}{tibble with `clust` column the original data frame.}
 #'   \item{log:}{messages from the algorithm run (only if \code{id_column = TRUE}).}
 #'   \item{bootstrap:}{tibble with 'clust' column and 'robust' column with the number of times the members of the clusters were clustered together divided by the total times they were sampled together. (only if bootstrap = TRUE)}
+#'   \item{order:}{tibble with 'id' column, 'clust' column, 'order' column with a new ordering if the observations and 'intra_clust_order' column with the order within each cluster. (only if hclust_intra_clusters = TRUE)}
 #' }
 #'
 #' @examples
@@ -56,6 +58,7 @@ TGL_kmeans_tidy <- function(df,
                             id_column = TRUE,
                             reorder_func = 'hclust',
                             add_to_data = FALSE,
+                            hclust_intra_clusters = FALSE,
                             seed = NULL,
                             bootstrap = FALSE,
                             ...) {
@@ -72,6 +75,7 @@ TGL_kmeans_tidy <- function(df,
     if (!id_column) {
         df <- df %>% mutate(id = as.character(1:n())) %>% select(id, everything())
     } else {
+        df$id <- as.character(df$id)
         if (verbose){
             message(sprintf('id column: %s', colnames(df)[1]))
         }
@@ -135,11 +139,16 @@ TGL_kmeans_tidy <- function(df,
         km$log <- log
     }
 
-    if (add_to_data){
+    if (add_to_data){        
         km$data <- df %>% left_join(km$cluster, by=colnames(df)[1]) %>% select(clust, everything()) %>% tbl_df()
         if (!id_column){
             km$data <- km$data %>% select(-id)
         }
+    }
+
+    if (hclust_intra_clusters){
+        message('running hclust within each cluster')
+        km$order <- hclust_every_cluster(km, df)
     }
 
     if (bootstrap){
@@ -203,6 +212,7 @@ reorder_clusters <- function(km, func='hclust'){
 #'   \item{size:}{The number of points in each cluster.}
 #'   \item{log:}{messages from the algorithm run (only if \code{id_column == TRUE}).}
 #'   \item{bootstrap:}{number of times the members of the clusters were clustered together divided by the total times they were sampled together (only if bootstrap = TRUE).}
+#'   \item{order:}{A vector of integers with the new ordering if the observations. (only if hclust_intra_clusters = TRUE)}
 #' }
 #'
 #' @examples
@@ -235,6 +245,7 @@ TGL_kmeans <- function(df,
                        keep_log = TRUE,
                        id_column = TRUE,
                        reorder_func = 'hclust',
+                       hclust_intra_clusters = FALSE,
                        seed = NULL,
                        bootstrap = FALSE,
                        ...) {
@@ -251,6 +262,7 @@ TGL_kmeans <- function(df,
         reorder_func = reorder_func,
         seed = seed,
         bootstrap=bootstrap,
+        hclust_intra_clusters = hclust_intra_clusters,
         ...)
 
 
@@ -274,6 +286,10 @@ TGL_kmeans <- function(df,
 
     if (bootstrap){
         km$bootstrap <- res$bootstrap$robust
+    }
+
+    if (hclust_intra_clusters){        
+        km$order <- res$order$order
     }
 
     return(km)

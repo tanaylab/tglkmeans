@@ -33,6 +33,30 @@ test_that('Do not fail when input is matrix', {
 	expect_equal(nrow(data), sum(res$size$n))
 })
 
+context('Correct output')
+test_that('hclust intra cluster works', {
+	nclust <- 30
+	ndims <- 5
+	data <- simulate_data(n=200, sd=0.3, dims=5, nclust=nclust, frac_na=0.05)
+	res <- TGL_kmeans_tidy(data %>% select(id, starts_with('V')) , nclust, metric='euclid', verbose=F, hclust_intra_clusters=TRUE)
+
+	expect_equal(nrow(data), nrow(res$clust))
+	expect_true(all(data$id %in% res$cluster$id))
+	expect_true(all(data$id %in% res$order$id))
+
+	expect_equal(nclust, nrow(res$centers))
+	expect_equal(ndims, ncol(res$centers) - 1)
+	expect_equal(nclust, length(unique(res$clust$clust)))
+	expect_equal(nclust, length(unique(res$size$clust)))
+
+	expect_true(all(res$center$clust %in% res$cluster$clust))
+	expect_true(all(res$cluster$clust %in% res$center$clust))
+	expect_true(all(res$size$clust %in% res$center$clust))
+	expect_true(all(res$scenter$clust %in% res$size$clust))
+
+	expect_equal(nrow(data), sum(res$size$n))
+
+})
 
 context('Correct output')
 test_that('all ids and clusters are present', {
