@@ -5,9 +5,9 @@
 \title{TGL kmeans with 'tidy' output}
 \usage{
 TGL_kmeans_tidy(df, k, metric = "euclid", max_iter = 40,
-  min_delta = 0.0001, verbose = FALSE, keep_log = TRUE,
-  id_column = TRUE, reorder_func = "hclust", add_to_data = FALSE,
-  seed = NULL, bootstrap = FALSE, ...)
+  min_delta = 1e-04, verbose = FALSE, keep_log = TRUE, id_column = TRUE,
+  reorder_func = "hclust", add_to_data = FALSE, seed = NULL,
+  bootstrap = FALSE, ...)
 }
 \arguments{
 \item{df}{data frame. Each row is a single observation and each column is a dimension.
