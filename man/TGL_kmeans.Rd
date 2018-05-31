@@ -4,7 +4,7 @@
 \alias{TGL_kmeans}
 \title{kmeans++ with return value similar to R kmeans}
 \usage{
-TGL_kmeans(df, k, metric = "euclid", max_iter = 40, min_delta = 0.0001,
+TGL_kmeans(df, k, metric = "euclid", max_iter = 40, min_delta = 1e-04,
   verbose = FALSE, keep_log = TRUE, id_column = TRUE,
   reorder_func = "hclust", seed = NULL, bootstrap = FALSE, ...)
 }

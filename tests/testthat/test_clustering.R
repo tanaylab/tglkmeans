@@ -10,6 +10,29 @@ test_that('Stop when there are rows which contain only missing data', {
 	expect_error(TGL_kmeans_tidy(data %>% select(id, starts_with('V')) , 30, metric='euclid', verbose=FALSE, seed=17), 'The following rows contain only missing values: 3,4')
 })
 
+context('Matrix input')
+test_that('Do not fail when input is matrix', {
+	nclust <- 30
+	ndims <- 5
+	data <- simulate_data(n=200, sd=0.3, dims=5, nclust=nclust, frac_na=0.05)
+	mat <- data %>% select(starts_with('V')) %>% as.matrix()
+	res <- TGL_kmeans_tidy(mat, 30, id_column = FALSE, metric='euclid', verbose=FALSE, seed=17)	
+	expect_equal(nrow(data), nrow(res$clust))
+	expect_true(all(data$id %in% res$cluster$id))
+
+	expect_equal(nclust, nrow(res$centers))
+	expect_equal(ndims, ncol(res$centers) - 1)
+	expect_equal(nclust, length(unique(res$clust$clust)))
+	expect_equal(nclust, length(unique(res$size$clust)))
+
+	expect_true(all(res$center$clust %in% res$cluster$clust))
+	expect_true(all(res$cluster$clust %in% res$center$clust))
+	expect_true(all(res$size$clust %in% res$center$clust))
+	expect_true(all(res$scenter$clust %in% res$size$clust))
+
+	expect_equal(nrow(data), sum(res$size$n))
+})
+
 
 context('Correct output')
 test_that('all ids and clusters are present', {

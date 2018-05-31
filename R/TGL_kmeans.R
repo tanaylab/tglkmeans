@@ -67,6 +67,8 @@ TGL_kmeans_tidy <- function(df,
         random_seed <- FALSE
     }
 
+    df <- as.data.frame(df)
+
     if (!id_column) {
         df <- df %>% mutate(id = as.character(1:n())) %>% select(id, everything())
     } else {
@@ -82,8 +84,7 @@ TGL_kmeans_tidy <- function(df,
         all_nas <- which(n_not_missing == 0)
         stop(sprintf('The following rows contain only missing values: %s', paste(all_nas, collapse = ',')))
     }
-
-    df <- as.data.frame(df)
+   
     ids <- as.character(df[, 1])
 
     column_names <- as.character(colnames(df)[-1])
