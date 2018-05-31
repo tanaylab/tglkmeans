@@ -6,7 +6,8 @@
 \usage{
 TGL_kmeans(df, k, metric = "euclid", max_iter = 40, min_delta = 1e-04,
   verbose = FALSE, keep_log = TRUE, id_column = TRUE,
-  reorder_func = "hclust", seed = NULL, bootstrap = FALSE, ...)
+  reorder_func = "hclust", hclust_intra_clusters = FALSE, seed = NULL,
+  bootstrap = FALSE, ...)
 }
 \arguments{
 \item{df}{data frame. Each row is a single observation and each column is a dimension.
@@ -28,6 +29,8 @@ the first column can contain id for each observation (if id_column is TRUE).}
 
 \item{reorder_func}{function to reorder the clusters. operates on each center and orders by the result. e.g. \code{reorder_func = mean} would calculate the mean of each center and then would reorder the clusters accordingly. If \code{reorder_func = hclust} the centers would be ordered by hclust of the euclidian distance of the corelation matrix, i.e. \code{hclust(dist(cor(t(centers))))}
 if NULL, no reordering would be done.}
+
+\item{hclust_intra_clusters}{run hierarchical clustering within each cluster and return an ordering of the observations.}
 
 \item{seed}{seed for the c++ random number generator}
 
@@ -55,6 +58,7 @@ list with the following components:
   \item{size:}{The number of points in each cluster.}
   \item{log:}{messages from the algorithm run (only if \code{id_column == TRUE}).}
   \item{bootstrap:}{number of times the members of the clusters were clustered together divided by the total times they were sampled together (only if bootstrap = TRUE).}
+  \item{order:}{A vector of integers with the new ordering if the observations. (only if hclust_intra_clusters = TRUE)}
 }
 }
 \description{

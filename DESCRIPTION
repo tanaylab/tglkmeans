@@ -1,6 +1,6 @@
 Package: tglkmeans
 Title: Kmeans++ implementation
-Version: 0.1.2
+Version: 0.1.3
 Authors@R: c(person("Aviezer", "Lifshitz", email = "aviezer.lifshitz@weizmann.ac.il",
     role = c("aut", "cre")),
     person("Amos", "Tanay", role=c("aut")))
@@ -15,7 +15,6 @@ Imports: Rcpp (>= 0.12.11), parallel (>= 3.3.2), doMC (>= 1.3.4), plyr
         (>= 1.8.4), reshape2 (>= 1.4.2), dplyr (>= 0.5.0), forcats (>=
         0.2.0), purrr (>= 0.2.0), ggplot2 (>= 2.2.0), ggridges (>=
         0.4), pheatmap (>= 1.0.8), tgstat (>= 1.0.0)
-Remotes: bitbucket::tanaylab/tgstat@default
 RoxygenNote: 6.0.1
 Suggests: knitr, rmarkdown, testthat
 VignetteBuilder: rmarkdown, knitr
