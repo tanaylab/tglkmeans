@@ -36,6 +36,17 @@ void replace_na(DataFrame& df){
     }
 }
 
+void real_max_to_na(DataFrame& df){
+    for(int i=0; i < df.ncol(); ++i){
+        NumericVector col = df[i];
+        for (int j=0; j < col.length(); ++j){
+            if (col[j] == REAL_MAX){
+                col[j] = NumericVector::get_na();
+            }
+        }
+    }
+}
+
 // [[Rcpp::export]]
 List TGL_kmeans_cpp(const StringVector& ids, DataFrame& mat, const int& k, const String& metric, const double& max_iter=40, const double& min_delta=0.0001, const bool& random_seed=true, const int& seed=-1){
 
@@ -74,6 +85,8 @@ List TGL_kmeans_cpp(const StringVector& ids, DataFrame& mat, const int& k, const
     kmeans.report_centers_to_vector(centers_float);
     DataFrame centers_df;
     vec2df(centers_float, centers_df);
+
+    real_max_to_na(centers_df);
 
     vector<int> assignments = kmeans.report_assignment_to_vector();
     DataFrame clust_df = DataFrame::create( Named("id") = ids, _["clust"] = NumericVector::import(assignments.begin(), assignments.end()), _["stringsAsFactors"] = false);

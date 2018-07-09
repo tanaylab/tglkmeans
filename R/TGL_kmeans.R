@@ -126,7 +126,7 @@ TGL_kmeans_tidy <- function(df,
         tbl_df()
 
     km$cluster <- km$cluster %>% mutate(clust = clust + 1) %>% tbl_df
-
+    
     if (k > 1){
         km <- reorder_clusters(km, func = reorder_func)
     }
@@ -174,11 +174,11 @@ reorder_clusters <- function(km, func='hclust'){
 
     if (identical(func, 'hclust') ||
         identical(func, hclust)) {
-        if (min(apply(km$centers[, -1], 1, var)) == 0) {
+        if (min(apply(km$centers[, -1], 1, var, na.rm=TRUE), na.rm=TRUE) == 0) {
             warning("standard deviation of kmeans center is 0")
         } else {
             centers_hc <-
-                km$centers[, -1] %>% t() %>% cor() %>% dist() %>% hclust('ward.D2')
+                km$centers[, -1] %>% t() %>% cor(use='pairwise.complete.obs') %>% dist() %>% hclust('ward.D2')
             new_order <- centers_hc$order
         }
     } else {
