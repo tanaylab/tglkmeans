@@ -16,7 +16,6 @@ float KMeansCenterMeanEuclid::dist(const vector<float> &x) {
             dist2 += (*c_i - *x_i) * (*c_i - *x_i);
             n++;
         }
-//		Rcpp::Rcout << "dist " << *c_i << " " << *x_i << " tot2 " << dist2 << " n " << n << endl;
         x_i++;
     }
     return (n > 0 ? sqrt(dist2) / n : REAL_MAX);
