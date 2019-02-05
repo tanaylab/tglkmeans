@@ -4,7 +4,8 @@
 \alias{plot_coclust_mat}
 \title{Plot co-clustering matrix}
 \usage{
-plot_coclust_mat(bt, col = colorRampPalette(rev(RColorBrewer::brewer.pal(11,
+plot_coclust_mat(bt,
+  col = colorRampPalette(rev(RColorBrewer::brewer.pal(11,
   "RdBu")))(1000), ...)
 }
 \arguments{

@@ -5,8 +5,8 @@
 \title{Plot co-clustering matrix after cutree_bootclust}
 \usage{
 plot_coclust_cutree_mat(bt,
-  col = colorRampPalette(rev(RColorBrewer::brewer.pal(11, "RdBu")))(1000),
-  ...)
+  col = colorRampPalette(rev(RColorBrewer::brewer.pal(11,
+  "RdBu")))(1000), ...)
 }
 \arguments{
 \item{bt}{output of \code{cutree_bootclust}}

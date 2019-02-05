@@ -117,15 +117,15 @@ TGL_kmeans_tidy <- function(df,
             )
         )
     }
-
+    
     km$centers <- t(km$centers) %>%
-        tbl_df() %>%
+        as_tibble() %>%
         purrr::set_names(column_names) %>%
         mutate(clust = 1:n()) %>%
         select(clust, everything()) %>%
-        tbl_df()
+        as_tibble()
 
-    km$cluster <- km$cluster %>% mutate(clust = clust + 1) %>% tbl_df
+    km$cluster <- km$cluster %>% mutate(clust = clust + 1) %>% as_tibble()
     
     if (k > 1){
         km <- reorder_clusters(km, func = reorder_func)
@@ -140,7 +140,7 @@ TGL_kmeans_tidy <- function(df,
     }
 
     if (add_to_data){        
-        km$data <- df %>% left_join(km$cluster, by=colnames(df)[1]) %>% select(clust, everything()) %>% tbl_df()
+        km$data <- df %>% left_join(km$cluster, by=colnames(df)[1]) %>% select(clust, everything()) %>% as_tibble()
         if (!id_column){
             km$data <- km$data %>% select(-id)
         }

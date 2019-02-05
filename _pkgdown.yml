@@ -1,18 +1,28 @@
 navbar:
-  title: "tglkmeans"
   type: inverse
-  left:
-    - text: "Home"
+  structure:
+    left:
+    - home    
+    - reference        
+    - usage
+    right:       
+      - icon: fa-bitbucket-square
+        href: https://bitbucket.org/tanaylab/tglkmeans
+  components:
+    home:
+      icon: fa-home fa-lg
       href: index.html
-    - text: "Basic usage"
-      href: articles/usage.html
-      icon: fa-road
-    - text: "Reference"
-      href: reference/index.html
+    reference:
       icon: fa-th-list
-  right:
-    - icon: fa-bitbucket-square
-      href: https://bitbucket.org/aviezerl/tglkmeans
+      text: Reference
+      href: reference/index.html
+    usage:
+      icon: fa-road
+      text: Usage
+      href: articles/usage.html
+    links:
+      - text: Browse source code at
+        href: https://bitbucket.org/tanaylab/tglkmeans
 
 
 

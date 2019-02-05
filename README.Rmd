@@ -25,11 +25,8 @@ Source code can be found at: https://bitbucket.org/tanaylab/tglkmeans
 
 ### Installation 
 
-#### Installing tglkmeans package:
-Download and install *tglkmeans*: 
 ```{r, eval=FALSE}
-devtools::install_bitbucket("tanaylab/tglkmeans", ref='default')
-library(tglkmeans)
+install.packages('tglkmeans', repos=c(getOption('repos'), 'https://tanaylab.bitbucket.io/repo'))
 ```
 
 #### Using the package

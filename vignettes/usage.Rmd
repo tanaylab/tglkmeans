@@ -35,12 +35,13 @@ data %>% ggplot(aes(x=V1, y=V2, color=factor(true_clust))) +
 
 Now we can cluster it using kmeans++:
 ```{r}
-km <- TGL_kmeans_tidy(data %>% select(id, starts_with('V')) ,
+data_for_clust <- data %>% select(id, starts_with('V'))
+km <- TGL_kmeans_tidy(data_for_clust,
 		      k=5, 
 		      metric='euclid', 
 		      verbose=TRUE)
 ```
-The retuned list contains 3 fields:
+The returned list contains 3 fields:
 ```{r}
 names(km)
 ```
@@ -61,7 +62,7 @@ km$cluster
 km$size
 ```
 
-We can now check our clustering preformance (fraction of observations that were classified correctly):
+We can now check our clustering performance - fraction of observations that were classified correctly (Note that `match_clusters` function is internal to the package and is used only in this vignette):
 ```{r}
 d <- tglkmeans:::match_clusters(data, km, 5)
 sum(d$true_clust == d$new_clust, na.rm=TRUE) / sum(!is.na(d$new_clust))
