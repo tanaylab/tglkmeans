@@ -6,7 +6,6 @@
 #'
 #' @examples
 #' tglkmeans.set_parallel(8)
-#'
 #' @export
 tglkmeans.set_parallel <- function(thread_num) {
     if (1 == thread_num) {
@@ -21,5 +20,9 @@ tglkmeans.set_parallel <- function(thread_num) {
 
 
 `%||%` <- function(lhs, rhs) {
-    if (!is.null(lhs)) { lhs } else { rhs }
+    if (!is.null(lhs)) {
+        lhs
+    } else {
+        rhs
+    }
 }
