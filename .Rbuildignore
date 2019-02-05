@@ -3,3 +3,4 @@
 ^README\.Rmd$
 ^README-.*\.png$
 ^bitbucket-pipelines\.yml$
+^\.publish_html/*$

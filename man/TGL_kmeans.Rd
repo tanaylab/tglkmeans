@@ -4,10 +4,10 @@
 \alias{TGL_kmeans}
 \title{kmeans++ with return value similar to R kmeans}
 \usage{
-TGL_kmeans(df, k, metric = "euclid", max_iter = 40, min_delta = 1e-04,
-  verbose = FALSE, keep_log = TRUE, id_column = TRUE,
-  reorder_func = "hclust", hclust_intra_clusters = FALSE, seed = NULL,
-  bootstrap = FALSE, ...)
+TGL_kmeans(df, k, metric = "euclid", max_iter = 40,
+  min_delta = 0.0001, verbose = FALSE, keep_log = TRUE,
+  id_column = TRUE, reorder_func = "hclust",
+  hclust_intra_clusters = FALSE, seed = NULL, bootstrap = FALSE, ...)
 }
 \arguments{
 \item{df}{data frame. Each row is a single observation and each column is a dimension.
