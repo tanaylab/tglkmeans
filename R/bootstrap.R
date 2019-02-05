@@ -20,20 +20,18 @@
 #' @export
 #'
 #' @inheritParams TGL_kmeans
-#' 
+#'
 #' @examples
-#' d <- simulate_data(nclust=6)
-#' bootstrap <- bootstrap_kmeans(d, k=6, N_boot=100)
+#' d <- simulate_data(nclust = 6)
+#' bootstrap <- bootstrap_kmeans(d, k = 6, N_boot = 100)
 #' names(bootstrap)
 #' bootstrap$coclust[1:5, 1:5]
 #' bootstrap$num_trials[1:5, 1:5]
 #' bootstrap$coclust_frac[1:5, 1:5]
-#'
-#' bootstrap_kmeans(d, k=6, N_boot=100, tidy=TRUE)
-#'
-#'
-bootstrap_kmeans <- function(df, k, N_boot, boot_ratio=0.75, parallel=getOption('tglkmeans.parallel'), id_column=TRUE, seed=NULL, ...){
-    df <- tbl_df(df)
+#' 
+#' bootstrap_kmeans(d, k = 6, N_boot = 100, tidy = TRUE)
+bootstrap_kmeans <- function(df, k, N_boot, boot_ratio = 0.75, parallel = getOption("tglkmeans.parallel"), id_column = TRUE, seed = NULL, ...) {
+    df <- as_tibble(df)
     N <- nrow(df)
     boot_size <- round(N * boot_ratio)
 
@@ -46,26 +44,26 @@ bootstrap_kmeans <- function(df, k, N_boot, boot_ratio=0.75, parallel=getOption(
 
     df <- df %>% mutate(id = 1:n()) %>% select(id, everything())
 
-    tot_coclust <- matrix(0, nrow=N, ncol=N, dimnames=list(id_col, id_col))
-    num_trials <- matrix(0, nrow=N, ncol=N, dimnames=list(id_col, id_col))
+    tot_coclust <- matrix(0, nrow = N, ncol = N, dimnames = list(id_col, id_col))
+    num_trials <- matrix(0, nrow = N, ncol = N, dimnames = list(id_col, id_col))
 
     # sample observations in advance for reproducibility when parallelizing
     inds <- purrr::map(1:N_boot, ~ sample(1:N, boot_size))
 
-    boot_res <- plyr::alply(1:N_boot, 1, function(i) {    
+    boot_res <- plyr::alply(1:N_boot, 1, function(i) {
         boot_obs <- inds[[i]]
-        km <- TGL_kmeans_tidy(df[boot_obs, ], k=k, id_column=TRUE, seed=seed, ...)
+        km <- TGL_kmeans_tidy(df[boot_obs, ], k = k, id_column = TRUE, seed = seed, ...)
         boot_nodes <- as.numeric(km$clust$id)
         isclust_ci <- diag(max(km$clust$clust))[, km$clust$clust]
         coclust_ij <- t(isclust_ci) %*% isclust_ci
 
-        return(list(boot_nodes=boot_nodes, coclust_ij=coclust_ij))
+        return(list(boot_nodes = boot_nodes, coclust_ij = coclust_ij))
     }, .parallel = parallel)
-    
-    reduce_coclust(purrr::map(boot_res, 'boot_nodes'), purrr::map(boot_res, 'coclust_ij'), tot_coclust)
-    reduce_num_trials(purrr::map(boot_res, 'boot_nodes'), num_trials)
 
-    return(list(coclust = tot_coclust, num_trials=num_trials, coclust_frac = tot_coclust / num_trials))
+    reduce_coclust(purrr::map(boot_res, "boot_nodes"), purrr::map(boot_res, "coclust_ij"), tot_coclust)
+    reduce_num_trials(purrr::map(boot_res, "boot_nodes"), num_trials)
+
+    return(list(coclust = tot_coclust, num_trials = num_trials, coclust_frac = tot_coclust / num_trials))
 }
 
 
@@ -92,10 +90,10 @@ bootstrap_kmeans <- function(df, k, N_boot, boot_ratio=0.75, parallel=getOption(
 #'   \item{coclust_score:}{(if \code{add_scores == TRUE}) tibble with score for each cluster in for each value of \code{ks}.}
 #' }
 #' @export
-#' 
+#'
 #' @examples
-#' data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
-#' bt <- bootclust(data %>% select(id, starts_with('V')), k_boot=5, N_boot=100, boot_ratio=0.75)
+#' data <- simulate_data(n = 200, sd = 0.6, nclust = 5, dims = 2, add_true_clust = TRUE)
+#' bt <- bootclust(data %>% select(id, starts_with("V")), k_boot = 5, N_boot = 100, boot_ratio = 0.75)
 #' 
 #' bt$mat
 #' bt$coclust[1:5, 1:5]
@@ -104,42 +102,40 @@ bootstrap_kmeans <- function(df, k, N_boot, boot_ratio=0.75, parallel=getOption(
 #' bt$cm[1:5, 1:5]
 #' bt$hc
 #' bt$coclust_score
-#' 
-#' 
-bootclust <- function(df, N_boot, boot_ratio=0.75, k_boot=NULL, bootstrap_func='bootstrap_kmeans', add_scores=TRUE, ks = NULL, max_k = NULL, parallel=getOption('tglkmeans.parallel'), ...){
-
+bootclust <- function(df, N_boot, boot_ratio = 0.75, k_boot = NULL, bootstrap_func = "bootstrap_kmeans", add_scores = TRUE, ks = NULL, max_k = NULL, parallel = getOption("tglkmeans.parallel"), ...) {
     k_boot <- k_boot %||% floor(nrow(df) * boot_ratio / 130)
     max_k <- max_k %||% floor(nrow(df) / 40)
     ks <- ks %||% 2:max_k
-    
-    message('bootstrapping')
-    bt <- do.call(bootstrap_func, list(df, boot_ratio=boot_ratio, N_boot=N_boot, k = k_boot, ...))
+
+    message("bootstrapping")
+    bt <- do.call(bootstrap_func, list(df, boot_ratio = boot_ratio, N_boot = N_boot, k = k_boot, ...))
 
     coclust_frac <- bt$coclust_frac
     coclust <- bt$coclust
     num_trials <- bt$num_trials
-    
-    message('clustering bootstrapping results')
-    cm <- tgstat::tgs_cor(coclust_frac, pairwise.complete.obs=TRUE, spearman=TRUE)
+
+    message("clustering bootstrapping results")
+    cm <- tgstat::tgs_cor(coclust_frac, pairwise.complete.obs = TRUE, spearman = TRUE)
     colnames(cm) <- colnames(coclust_frac)
     rownames(cm) <- rownames(coclust_frac)
-    
-    hc <- hclust(tgstat::tgs_dist(cm), 'ward.D2')
 
-    res <- list(mat = df,
-                coclust=coclust,
-                num_trials=num_trials,
-                coclust_frac=coclust_frac,
-                cm=cm,
-                hc=hc)
-  
-    if (add_scores){
-        message('calculating score for each k')    
-        res <- add_coclust_score(res, ks=ks, parallel=parallel)            
-    } 
+    hc <- hclust(tgstat::tgs_dist(cm), "ward.D2")
+
+    res <- list(
+        mat = df,
+        coclust = coclust,
+        num_trials = num_trials,
+        coclust_frac = coclust_frac,
+        cm = cm,
+        hc = hc
+    )
+
+    if (add_scores) {
+        message("calculating score for each k")
+        res <- add_coclust_score(res, ks = ks, parallel = parallel)
+    }
 
     return(res)
-
 }
 
 #' Calculate co-clustering scores for values of k
@@ -150,24 +146,22 @@ bootclust <- function(df, N_boot, boot_ratio=0.75, k_boot=NULL, bootstrap_func='
 #'
 #' @return \code{bt} with additional coclust_score field that contains a tibble with score for each cluster in for each value of \code{ks}
 #' @export
-#' 
+#'
 #' @examples
-#' data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
-#' bt <- bootclust(data %>% select(id, starts_with('V')), k_boot=5, N_boot=100, boot_ratio=0.75)
-#' bt <- add_coclust_score(bt, ks=c(2,3,5))
+#' data <- simulate_data(n = 200, sd = 0.6, nclust = 5, dims = 2, add_true_clust = TRUE)
+#' bt <- bootclust(data %>% select(id, starts_with("V")), k_boot = 5, N_boot = 100, boot_ratio = 0.75)
+#' bt <- add_coclust_score(bt, ks = c(2, 3, 5))
 #' plot_coclust_scores(bt)
-#' 
-add_coclust_score <- function(bt, ks=c(2,5,10), parallel=getOption('tglkmeans.parallel')){
-    score_clust <- function(clusters){        
+add_coclust_score <- function(bt, ks = c(2, 5, 10), parallel = getOption("tglkmeans.parallel")) {
+    score_clust <- function(clusters) {
         purrr::map_dfr(unique(clusters), ~ {
-            inds <- which(clusters == .x)                        
-            score <- rowSums(bt$coclust_frac[inds, inds], na.rm=T) / rowSums(bt$coclust_frac[inds, ], na.rm=T)
-            tibble(i = names(score), clust = .x, score=score)
-        })   
-
+            inds <- which(clusters == .x)
+            score <- rowSums(bt$coclust_frac[inds, inds], na.rm = T) / rowSums(bt$coclust_frac[inds, ], na.rm = T)
+            tibble(i = names(score), clust = .x, score = score)
+        })
     }
 
-    bt$coclust_score <- plyr::adply(cutree(bt$hc, ks), 2, score_clust, .parallel=parallel, .id='k') %>% tbl_df()
+    bt$coclust_score <- plyr::adply(cutree(bt$hc, ks), 2, score_clust, .parallel = parallel, .id = "k") %>% as_tibble()
     return(bt)
 }
 
@@ -182,31 +176,31 @@ add_coclust_score <- function(bt, ks=c(2,5,10), parallel=getOption('tglkmeans.pa
 #' @export
 #'
 #' @examples
-#' data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
-#' bt <- bootclust(data %>% select(id, starts_with('V')), k_boot=5, N_boot=100, boot_ratio=0.75)
-#' plot_coclust_score(bt, ks=2:5)
-plot_coclust_score <- function(bt, ks = NULL, fig_fn=NULL, ...){
+#' data <- simulate_data(n = 200, sd = 0.6, nclust = 5, dims = 2, add_true_clust = TRUE)
+#' bt <- bootclust(data %>% select(id, starts_with("V")), k_boot = 5, N_boot = 100, boot_ratio = 0.75)
+#' plot_coclust_score(bt, ks = 2:5)
+plot_coclust_score <- function(bt, ks = NULL, fig_fn = NULL, ...) {
     d <- bt$coclust_score
-    if (!is.null(ks)){
-        d <-  bt$coclust_score %>%
-            filter(k %in% ks) 
+    if (!is.null(ks)) {
+        d <- bt$coclust_score %>%
+            filter(k %in% ks)
     }
     ggp <- d %>%
         group_by(k, clust) %>%
         filter(n() >= 2) %>%
-        ggplot(aes(y=factor(clust), x=score)) +
-            ggridges::geom_density_ridges() +
-            ylab('Cluster') +
-            facet_wrap(~k) +
-            theme_minimal()
-    if (!is.null(fig_fn)){
+        ggplot(aes(y = factor(clust), x = score)) +
+        ggridges::geom_density_ridges() +
+        ylab("Cluster") +
+        facet_wrap(~k) +
+        theme_minimal()
+    if (!is.null(fig_fn)) {
         ggsave(fig_fn, ...)
     }
     ggp
 }
 
 #' Plot co-clustering matrix
-#' 
+#'
 #' Plots a heatmap of coclust_frac: \code{coclust / num_trials}
 #'
 #' @param bt output of \code{bootclust}
@@ -214,14 +208,14 @@ plot_coclust_score <- function(bt, ks = NULL, fig_fn=NULL, ...){
 #'
 #' @return None
 #' @export
-#' 
+#'
 #' @examples
-#' data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
-#' bt <- bootclust(data %>% select(id, starts_with('V')), k_boot=5, N_boot=100, boot_ratio=0.75)
+#' data <- simulate_data(n = 200, sd = 0.6, nclust = 5, dims = 2, add_true_clust = TRUE)
+#' bt <- bootclust(data %>% select(id, starts_with("V")), k_boot = 5, N_boot = 100, boot_ratio = 0.75)
 #' plot_coclust_mat(bt)
-plot_coclust_mat <- function(bt, 
-                             col = colorRampPalette(rev(RColorBrewer::brewer.pal(11,"RdBu")))(1000),                             
-                             ...){   
+plot_coclust_mat <- function(bt,
+                             col = colorRampPalette(rev(RColorBrewer::brewer.pal(11, "RdBu")))(1000),
+                             ...) {
     pheatmap::pheatmap(
         bt$coclust_frac,
         cluster_rows = bt$hc,
@@ -241,20 +235,20 @@ plot_coclust_mat <- function(bt,
 #' @param col color pallete
 #'
 #' @return None
-#' 
+#'
 #' @export
 #' @examples
-#' data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
-#' bt <- bootclust(data %>% select(id, starts_with('V')), k_boot=5, N_boot=100, boot_ratio=0.75)
-#' bt <- cutree_bootclust(bt, min_coclust=0.7, k=5)
+#' data <- simulate_data(n = 200, sd = 0.6, nclust = 5, dims = 2, add_true_clust = TRUE)
+#' bt <- bootclust(data %>% select(id, starts_with("V")), k_boot = 5, N_boot = 100, boot_ratio = 0.75)
+#' bt <- cutree_bootclust(bt, min_coclust = 0.7, k = 5)
 #' plot_coclust_cutree_mat(bt)
 plot_coclust_cutree_mat <- function(bt,
-                             col = colorRampPalette(rev(RColorBrewer::brewer.pal(11,"RdBu")))(1000),
-                             ...){
+                                    col = colorRampPalette(rev(RColorBrewer::brewer.pal(11, "RdBu")))(1000),
+                                    ...) {
     ord <- bt$clust %>%
         arrange(clust) %>%
         group_by(clust) %>%
-        mutate(index = index[hclust(tgstat::tgs_dist(bt$coclust_frac[index, index]), 'ward.D2')$order]) %>%
+        mutate(index = index[hclust(tgstat::tgs_dist(bt$coclust_frac[index, index]), "ward.D2")$order]) %>%
         pull(index)
     pheatmap::pheatmap(
         bt$coclust_frac[ord, ord],
@@ -293,14 +287,14 @@ plot_coclust_cutree_mat <- function(bt,
 #'   \item{score:}{}
 #' }
 #' @export
-#' 
+#'
 #' @examples
-#' data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
-#' bt <- bootclust(data %>% select(id, starts_with('V')), k_boot=5, N_boot=100, boot_ratio=0.75)
+#' data <- simulate_data(n = 200, sd = 0.6, nclust = 5, dims = 2, add_true_clust = TRUE)
+#' bt <- bootclust(data %>% select(id, starts_with("V")), k_boot = 5, N_boot = 100, boot_ratio = 0.75)
 #' names(bt)
 #' 
 #' # tidy output
-#' bt_tidy <- cutree_bootclust(bt, k_boot=5, min_coclust = 0.6, tidy=TRUE)
+#' bt_tidy <- cutree_bootclust(bt, k_boot = 5, min_coclust = 0.6, tidy = TRUE)
 #' names(bt_tidy)
 #' 
 #' bt_tidy$clust
@@ -309,52 +303,51 @@ plot_coclust_cutree_mat <- function(bt,
 #' bt_tidy$score
 #' 
 #' # non tidy output
-#' bt <- cutree_bootclust(bt, k_boot=5, min_coclust = 0.6, tidy=FALSE)
+#' bt <- cutree_bootclust(bt, k_boot = 5, min_coclust = 0.6, tidy = FALSE)
 #' 
 #' bt$cluster[1:5]
 #' bt$centers[1:5, ]
 #' bt$size
 #' bt$score
-#' 
-#'
-cutree_bootclust <- function(bt, k, min_coclust = 0.5, tidy=FALSE){
+cutree_bootclust <- function(bt, k, min_coclust = 0.5, tidy = FALSE) {
     bt$clust <- cutree(bt$hc, k)
 
     clust_inds <- purrr::map(unique(bt$clust), ~ {
-        inds <- which(bt$clust == .x)        
-        score <- rowSums(bt$coclust_frac[inds, inds], na.rm=T) / rowSums(bt$coclust_frac[inds, ], na.rm=T)
+        inds <- which(bt$clust == .x)
+        score <- rowSums(bt$coclust_frac[inds, inds], na.rm = T) / rowSums(bt$coclust_frac[inds, ], na.rm = T)
         good_inds <- tibble(index = inds[which(score >= min_coclust)]) %>% mutate(clust = .x)
         bad_inds <- tibble(index = inds[which(score < min_coclust)]) %>% mutate(clust = .x)
-        list(good_inds=good_inds, bad_inds=bad_inds, score=tibble(id=inds, score=score))
+        list(good_inds = good_inds, bad_inds = bad_inds, score = tibble(id = inds, score = score))
     })
 
-    if (min_coclust > 0){
-        excluded <- purrr::map_dfr(clust_inds, 'bad_inds') %>% select(clust, index)
-        new_clust <- purrr::map_dfr(clust_inds, 'good_inds') %>% select(clust, index)
+    if (min_coclust > 0) {
+        excluded <- purrr::map_dfr(clust_inds, "bad_inds") %>% select(clust, index)
+        new_clust <- purrr::map_dfr(clust_inds, "good_inds") %>% select(clust, index)
         bt$excluded <- excluded$index
         new_clust <- bind_rows(new_clust, excluded %>% mutate(clust = max(new_clust$clust) + 1))
         new_clust <- new_clust %>%
-            mutate(clust = factor(clust),
-                   clust = forcats::lvls_revalue(clust, as.character(1:length(unique(clust)))))
+            mutate(
+                clust = factor(clust),
+                clust = forcats::lvls_revalue(clust, as.character(1:length(unique(clust))))
+            )
     } else {
-        new_clust <- tibble(clust = bt$clust, index=1:length(bt$clust))
+        new_clust <- tibble(clust = bt$clust, index = 1:length(bt$clust))
     }
 
     bt$clust <- new_clust %>% arrange(index)
 
-    bt$centers <- bt$mat %>% mutate(clust = bt$clust$clust) %>% group_by(clust) %>% summarise_all(mean, na.rm=TRUE)
+    bt$centers <- bt$mat %>% mutate(clust = bt$clust$clust) %>% group_by(clust) %>% summarise_all(mean, na.rm = TRUE)
 
     bt$size <- bt$clust %>% count(clust) %>% ungroup()
 
-    bt$score <- clust_inds %>% purrr::map_dfr('score') %>% arrange(id)
+    bt$score <- clust_inds %>% purrr::map_dfr("score") %>% arrange(id)
 
-    if (!tidy){
+    if (!tidy) {
         bt$cluster <- bt$clust %>% pull(clust)
-        bt$centers <- bt$centers %>% select(-one_of(c('clust', 'id'))) %>% as.matrix()        
+        bt$centers <- bt$centers %>% select(-one_of(c("clust", "id"))) %>% as.matrix()
         bt$size <- tapply(bt$clust$clust, bt$clust$clust, length)
         bt$score <- bt$score %>% pull(score)
     }
 
     return(bt)
 }
-
