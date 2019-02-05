@@ -5,7 +5,7 @@
 \title{kmeans++ with return value similar to R kmeans}
 \usage{
 TGL_kmeans(df, k, metric = "euclid", max_iter = 40,
-  min_delta = 0.0001, verbose = FALSE, keep_log = TRUE,
+  min_delta = 1e-04, verbose = FALSE, keep_log = TRUE,
   id_column = TRUE, reorder_func = "hclust",
   hclust_intra_clusters = FALSE, seed = NULL, bootstrap = FALSE, ...)
 }
@@ -69,20 +69,19 @@ kmeans++ with return value similar to R kmeans
 library(dplyr)
 
 # create 5 clusters normally distributed around 1:5
-d <- simulate_data(n=100, sd=0.3, nclust=5, dims=2, add_true_clust=FALSE)
+d <- simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2, add_true_clust = FALSE)
 head(d)
 
 # cluster
-km <- TGL_kmeans(d, k=5, 'euclid', verbose=TRUE)
+km <- TGL_kmeans(d, k = 5, "euclid", verbose = TRUE)
 names(km)
 km$centers
 head(km$cluster)
 km$size
 
 # bootstrapping
-km <- TGL_kmeans(d, k=5, 'euclid', N_boot=100, bootstrap=TRUE)
+km <- TGL_kmeans(d, k = 5, "euclid", N_boot = 100, bootstrap = TRUE)
 km$bootstrap
-
 }
 \seealso{
 \code{\link{TGL_kmeans_tidy}}

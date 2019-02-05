@@ -27,9 +27,8 @@ simulated data
 Creates \code{nclust} clusters normally distributed around \code{1:nclust}
 }
 \examples{
-simulate_data(n=100, sd=0.3, nclust=5, dims=2)
+simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2)
 
 # add 20\% missing data
-simulate_data(n=100, sd=0.3, nclust=5, dims=2, frac_na=0.2)
-
+simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2, frac_na = 0.2)
 }

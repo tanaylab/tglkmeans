@@ -21,9 +21,8 @@ add_coclust_score(bt, ks = c(2, 5, 10),
 Calculate co-clustering scores for values of k
 }
 \examples{
-data <- simulate_data(n=200, sd=0.6, nclust=5, dims=2, add_true_clust=TRUE)
-bt <- bootclust(data \%>\% select(id, starts_with('V')), k_boot=5, N_boot=100, boot_ratio=0.75)
-bt <- add_coclust_score(bt, ks=c(2,3,5))
+data <- simulate_data(n = 200, sd = 0.6, nclust = 5, dims = 2, add_true_clust = TRUE)
+bt <- bootclust(data \%>\% select(id, starts_with("V")), k_boot = 5, N_boot = 100, boot_ratio = 0.75)
+bt <- add_coclust_score(bt, ks = c(2, 3, 5))
 plot_coclust_scores(bt)
-
 }
