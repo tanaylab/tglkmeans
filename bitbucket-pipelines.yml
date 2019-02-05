@@ -8,5 +8,5 @@ pipelines:
           - Rscript -e 'devtools::install_bitbucket("tanaylab/tgstat@default")'
           - Rscript -e 'devtools::install_deps(".", dependencies=TRUE, upgrade=FALSE)'
           - Rscript -e 'devtools::build()'
-          - Rscript -e 'devtools::install(upgrade_dependencies = FALSE, build_vignettes = TRUE)'
+          - Rscript -e 'devtools::install(upgrade_dependencies = FALSE, build_vignettes = FALSE)'
           - Rscript -e 'devtools::check()'
