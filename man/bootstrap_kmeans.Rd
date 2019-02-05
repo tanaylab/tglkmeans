@@ -38,14 +38,12 @@ list with the following components:
 Bootstrapping
 }
 \examples{
-d <- simulate_data(nclust=6)
-bootstrap <- bootstrap_kmeans(d, k=6, N_boot=100)
+d <- simulate_data(nclust = 6)
+bootstrap <- bootstrap_kmeans(d, k = 6, N_boot = 100)
 names(bootstrap)
 bootstrap$coclust[1:5, 1:5]
 bootstrap$num_trials[1:5, 1:5]
 bootstrap$coclust_frac[1:5, 1:5]
 
-bootstrap_kmeans(d, k=6, N_boot=100, tidy=TRUE)
-
-
+bootstrap_kmeans(d, k = 6, N_boot = 100, tidy = TRUE)
 }

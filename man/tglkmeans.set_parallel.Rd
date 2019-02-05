@@ -17,5 +17,4 @@ Set parallel threads
 }
 \examples{
 tglkmeans.set_parallel(8)
-
 }
