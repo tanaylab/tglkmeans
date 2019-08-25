@@ -20,6 +20,7 @@ library(tglkmeans)
 ```
 
 First, let's create 5 clusters normally distributed around 1 to 5, with sd of 0.3:
+
 ```{r}
 data <- simulate_data(n=100, sd=0.3, nclust=5, dims=2)
 data
@@ -34,6 +35,7 @@ data %>% ggplot(aes(x=V1, y=V2, color=factor(true_clust))) +
 ```
 
 Now we can cluster it using kmeans++:
+
 ```{r}
 data_for_clust <- data %>% select(id, starts_with('V'))
 km <- TGL_kmeans_tidy(data_for_clust,
@@ -42,33 +44,39 @@ km <- TGL_kmeans_tidy(data_for_clust,
 		      verbose=TRUE)
 ```
 The returned list contains 3 fields:
+
 ```{r}
 names(km)
 ```
 
 `km$centers` contains a tibble with `clust` column and the cluster centers:
+
 ```{r}
 km$centers
 ```
 clusters are numbered according to `order_func` (see 'Custom cluster ordering' section).
 
 `km$cluster` contains tibble with `id` column with the observation id (`1:n` if no id column was supplied), and `clust` column with the observation assigned cluster:
+
 ```{r}
 km$cluster
 ```
 
 `km$size` contains tibble with `clust` column and `n` column with the number of points in each cluster:
+
 ```{r}
 km$size
 ```
 
 We can now check our clustering performance - fraction of observations that were classified correctly (Note that `match_clusters` function is internal to the package and is used only in this vignette):
+
 ```{r}
 d <- tglkmeans:::match_clusters(data, km, 5)
 sum(d$true_clust == d$new_clust, na.rm=TRUE) / sum(!is.na(d$new_clust))
 ```
 
 And plot the results:
+
 ```{r, fig.show='hold'}
 d %>% ggplot(aes(x=V1, y=V2, color=factor(new_clust), shape=factor(true_clust))) + 
     geom_point() + 
@@ -81,6 +89,7 @@ d %>% ggplot(aes(x=V1, y=V2, color=factor(new_clust), shape=factor(true_clust)))
 By default, the clusters where ordered using the following function: `hclust(dist(cor(t(centers))))` - hclust of the euclidian distance of the correlation matrix of the centers.
 
 We can supply our own function to order the clusters using `reorder_func` argument. The function would be applied to each center and he clusters would be ordered by the result.
+
 ```{r}
 km <- TGL_kmeans_tidy(data %>% select(id, starts_with('V')), 
 		      k=5, 
@@ -92,6 +101,7 @@ km$centers
 
 ## Missing data
 tglkmeans can deal with missing data, as long as at least one dimension is not missing. for example:
+
 ```{r}
 data$V1[sample(1:nrow(data), round(nrow(data)*0.2))] <- NA
 data
@@ -106,6 +116,7 @@ d <- tglkmeans:::match_clusters(data, km, 5)
 sum(d$true_clust == d$new_clust, na.rm=TRUE) / sum(!is.na(d$new_clust))
 ```
 and plotting the results (without the NA's) we get:
+
 ```{r, fig.show='hold'}
 d %>% ggplot(aes(x=V1, y=V2, color=factor(new_clust), shape=factor(true_clust))) + 
     geom_point() + 
@@ -116,6 +127,7 @@ d %>% ggplot(aes(x=V1, y=V2, color=factor(new_clust), shape=factor(true_clust)))
 
 ## High dimensions
 Let's move to higher dimensions (and higher noise):
+
 ```{r}
 data <- simulate_data(n=100, sd=0.3, nclust=30, dims=300)
 km <- TGL_kmeans_tidy(data %>% select(id, starts_with('V')), 
@@ -143,6 +155,7 @@ We can see that kmeans++ clusters siginifcantly better than R vannila kmeans.
 
 ## Random seed
 we can set the seed for the c++ random number generator, for reproducable results:
+
 ```{r}
 km1 <- TGL_kmeans_tidy(data %>% select(id, starts_with('V')), 
 		       k=30, 
