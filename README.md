@@ -1,9 +1,3 @@
----
-output: github_document
----
-
-
-
 # tglkmeans - efficient implementation of kmeans++ algorithm
 https://bitbucket.org/tanaylab/tglkmeans
 
