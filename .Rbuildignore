@@ -5,3 +5,5 @@
 ^bitbucket-pipelines\.yml$
 ^\.publish_html/*$
 ^\.travis\.yml$
+^codecov\.yml$
+^docs$

@@ -29,7 +29,11 @@ Imports:
     tgstat (>= 1.0.0),
     magrittr
 RoxygenNote: 6.1.1
-Suggests: knitr, rmarkdown, testthat
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat,
+    covr
 VignetteBuilder: rmarkdown, knitr
 NeedsCompilation: yes
 Packaged: 2018-02-25 13:32:32 UTC; aviezerl
