@@ -10,6 +10,11 @@ knitr::opts_chunk$set(
 )
 ```
 
+<!-- badges: start -->
+  [![Travis build status](https://travis-ci.org/tanaylab/tglkmeans.svg?branch=master)](https://travis-ci.org/tanaylab/tglkmeans)
+<!-- badges: end -->
+
+
 # tglkmeans - efficient implementation of kmeans++ algorithm
 
 This package provides R binding to a cpp implementation of kmeans++ algorithm (https://en.wikipedia.org/wiki/K-means%2B%2B).
@@ -35,3 +40,4 @@ Please refer to the package vignettes for usage and workflow, or look at the [us
 ```{r, eval=FALSE}
 browseVignettes('usage') 
 ```
+

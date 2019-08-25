@@ -4,3 +4,4 @@
 ^README-.*\.png$
 ^bitbucket-pipelines\.yml$
 ^\.publish_html/*$
+^\.travis\.yml$
