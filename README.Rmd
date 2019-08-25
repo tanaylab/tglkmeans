@@ -11,12 +11,11 @@ knitr::opts_chunk$set(
 ```
 
 # tglkmeans - efficient implementation of kmeans++ algorithm
-https://bitbucket.org/tanaylab/tglkmeans
 
 This package provides R binding to a cpp implementation of kmeans++ algorithm (https://en.wikipedia.org/wiki/K-means%2B%2B).
 
 Site for the package is at:
-https://tanaylab.bitbucket.io/tglkmeans
+https://tanaylab.github.io/tglkmeans
 
 
 ### Code
