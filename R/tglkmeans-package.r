@@ -8,6 +8,7 @@
 #' @importFrom grDevices colorRampPalette dev.off
 #' @importFrom stats cutree
 #' @importFrom tgstat tgs_cor
+#' @importFrom tgstat tgs_dist
 #'
 #' @useDynLib tglkmeans
 #' @importFrom Rcpp sourceCpp
