@@ -77,7 +77,7 @@ bootstrap_kmeans <- function(df, k, N_boot, boot_ratio = 0.75, parallel = getOpt
 #' @param add_scores calculate densities of scores for different choices of k.
 #' @param ks values of k to calculate scores
 #' @param max_k maximal k to test if no \code{ks} was given. if NULL, would be chosen as \code{floor(nrow(df) / 40)}
-#' @param parallel calcualte scores parallely
+#' @param parallel calculate scores parallely
 #'
 #' @return list with the following components:
 #' \describe{
