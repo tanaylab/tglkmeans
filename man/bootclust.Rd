@@ -25,7 +25,7 @@ bootclust(df, N_boot, boot_ratio = 0.75, k_boot = NULL,
 
 \item{max_k}{maximal k to test if no \code{ks} was given. if NULL, would be chosen as \code{floor(nrow(df) / 40)}}
 
-\item{parallel}{calcualte scores parallely}
+\item{parallel}{calculate scores parallely}
 }
 \value{
 list with the following components:

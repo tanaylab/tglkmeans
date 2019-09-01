@@ -5,7 +5,7 @@
 \title{TGL kmeans with 'tidy' output}
 \usage{
 TGL_kmeans_tidy(df, k, metric = "euclid", max_iter = 40,
-  min_delta = 1e-04, verbose = FALSE, keep_log = TRUE,
+  min_delta = 0.0001, verbose = FALSE, keep_log = TRUE,
   id_column = TRUE, reorder_func = "hclust", add_to_data = FALSE,
   hclust_intra_clusters = FALSE, seed = NULL, bootstrap = FALSE, ...)
 }
@@ -79,7 +79,7 @@ km <- TGL_kmeans_tidy(d, k = 5, "euclid", verbose = TRUE)
 km
 
 # bootstrapping
-km <- TGL_kmeans_tidy(d, k = 5, "euclid", N_boot = 100, bootstrap = TRUE)
+km <- TGL_kmeans_tidy(d, k = 5, "euclid", N_boot = 100, bootstrap = TRUE, parallel = FALSE)
 km$bootstrap
 }
 \seealso{

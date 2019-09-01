@@ -40,7 +40,7 @@
 #' km
 #' 
 #' # bootstrapping
-#' km <- TGL_kmeans_tidy(d, k = 5, "euclid", N_boot = 100, bootstrap = TRUE)
+#' km <- TGL_kmeans_tidy(d, k = 5, "euclid", N_boot = 100, bootstrap = TRUE, parallel = FALSE)
 #' km$bootstrap
 #' @seealso \code{\link{TGL_kmeans}}
 #'
@@ -114,9 +114,9 @@ TGL_kmeans_tidy <- function(df,
             )
         )
     }
-
+    
     km$centers <- t(km$centers) %>%
-        as_tibble() %>%
+        as_tibble(.name_repair = "minimal") %>%
         purrr::set_names(column_names) %>%
         mutate(clust = 1:n()) %>%
         select(clust, everything()) %>%
@@ -145,7 +145,7 @@ TGL_kmeans_tidy <- function(df,
 
     if (hclust_intra_clusters) {
         message("running hclust within each cluster")
-        km$order <- hclust_every_cluster(km, df)
+        km$order <- hclust_every_cluster(km, df, ...)
     }
 
     if (bootstrap) {
