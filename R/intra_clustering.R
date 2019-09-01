@@ -1,4 +1,4 @@
-hclust_every_cluster <- function(km, df) {
+hclust_every_cluster <- function(km, df, parallel = TRUE) {
     if (!rlang::has_name(km, "data")) {
         km$data <- df %>% left_join(km$cluster, by = colnames(df)[1]) %>% select(clust, everything()) %>% as_tibble()
     }
@@ -11,7 +11,7 @@ hclust_every_cluster <- function(km, df) {
             tgs_dist() %>%
             hclust(method = "ward.D2")
         return(tibble(clust = x$clust[1], id = ids, intra_clust_order = hc$order))
-    }, .parallel = TRUE) %>% purrr::map_df(~.x)
+    }, .parallel = parallel) %>% purrr::map_df(~.x)
 
     res <- km$data %>%
         select(id, clust) %>%
