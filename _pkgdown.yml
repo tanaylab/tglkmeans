@@ -5,9 +5,7 @@ navbar:
     - home    
     - reference        
     - usage
-    right:       
-      - icon: fa-bitbucket-square
-        href: https://bitbucket.org/tanaylab/tglkmeans
+
   components:
     home:
       icon: fa-home fa-lg
@@ -20,9 +18,6 @@ navbar:
       icon: fa-road
       text: Usage
       href: articles/usage.html
-    links:
-      - text: Browse source code at
-        href: https://bitbucket.org/tanaylab/tglkmeans
 
 
 

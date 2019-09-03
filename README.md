@@ -7,12 +7,12 @@ This package provides R binding to a cpp implementation of kmeans++ algorithm (<
 ### Installation
 
 ``` r
-install.packages('tglkmeans', repos=c(getOption('repos'), 'https://tanaylab.bitbucket.io/repo'))
+install.packages('tglkmeans', repos=c(getOption('repos'), 'https://tanaylab.github.io/repo'))
 ```
 
 #### Using the package
 
-Please refer to the package vignettes for usage and workflow, or look at the [usage](https://tanaylab.bitbucket.io/tglkmeans/articles/usage.html) section in the site.
+Please refer to the package vignettes for usage and workflow, or look at the [usage](https://tanaylab.github.io/tglkmeans/articles/usage.html) section in the site.
 
 ``` r
 browseVignettes('usage') 
