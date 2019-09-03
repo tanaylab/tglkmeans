@@ -14,8 +14,7 @@
 #' @param add_to_data return also the original data frame with an extra 'clust' column with the cluster ids ('id' is the first column)
 #' @param hclust_intra_clusters run hierarchical clustering within each cluster and return an ordering of the observations.
 #' @param seed seed for the c++ random number generator
-#' @param bootstrap bootstrap to estimate robustness of the clusters
-#' @param ...
+#' @param parallel cluster every cluster parallely (if hclust_intra_clusters is true)
 #'
 #' @return list with the following components:
 #' \describe{
@@ -24,7 +23,6 @@
 #'   \item{size:}{tibble with `clust` column and `n` column with the number of points in each cluster.}
 #'   \item{data:}{tibble with `clust` column the original data frame.}
 #'   \item{log:}{messages from the algorithm run (only if \code{id_column = TRUE}).}
-#'   \item{bootstrap:}{tibble with 'clust' column and 'robust' column with the number of times the members of the clusters were clustered together divided by the total times they were sampled together. (only if bootstrap = TRUE)}
 #'   \item{order:}{tibble with 'id' column, 'clust' column, 'order' column with a new ordering if the observations and 'intra_clust_order' column with the order within each cluster. (only if hclust_intra_clusters = TRUE)}
 #' }
 #'
@@ -38,13 +36,8 @@
 #' # cluster
 #' km <- TGL_kmeans_tidy(d, k = 5, "euclid", verbose = TRUE)
 #' km
-#' 
-#' # bootstrapping
-#' km <- TGL_kmeans_tidy(d, k = 5, "euclid", N_boot = 100, bootstrap = TRUE, parallel = FALSE)
-#' km$bootstrap
 #' @seealso \code{\link{TGL_kmeans}}
 #'
-#' @inheritDotParams bootstrap_kmeans
 #' @export
 TGL_kmeans_tidy <- function(df,
                             k,
@@ -58,8 +51,7 @@ TGL_kmeans_tidy <- function(df,
                             add_to_data = FALSE,
                             hclust_intra_clusters = FALSE,
                             seed = NULL,
-                            bootstrap = FALSE,
-                            ...) {
+                            parallel = getOption("tglkmeans.parallel")) {
     if (is.null(seed)) {
         random_seed <- TRUE
         seed <- -1
@@ -145,24 +137,9 @@ TGL_kmeans_tidy <- function(df,
 
     if (hclust_intra_clusters) {
         message("running hclust within each cluster")
-        km$order <- hclust_every_cluster(km, df, ...)
+        km$order <- hclust_every_cluster(km, df, parallel = parallel)
     }
-
-    if (bootstrap) {
-        message("bootstrapping")
-        bt <- bootstrap_kmeans(df = df, k = k, id_column = id_column, metric = metric, max_iter = max_iter, min_delta = min_delta, seed = seed, ...)
-
-        km$bootstrap <- km$clust %>%
-            group_by(clust) %>%
-            do({
-                tibble(
-                    robust =
-                        sum(bt$coclust[.$id, .$id], na.rm = TRUE) /
-                            sum(bt$num_trials[.$id, .$id], na.rm = TRUE)
-                )
-            })
-    }
-
+    
     return(km)
 }
 
@@ -207,14 +184,12 @@ reorder_clusters <- function(km, func = "hclust") {
 #' kmeans++ with return value similar to R kmeans
 #'
 #' @inheritParams TGL_kmeans_tidy
-#' @inheritDotParams bootstrap_kmeans
 #' @return list with the following components:
 #' \describe{
 #'   \item{cluster:}{A vector of integers (from ‘1:k’) indicating the cluster to which each point is allocated.}
 #'   \item{centers:}{A matrix of cluster centres.}
 #'   \item{size:}{The number of points in each cluster.}
 #'   \item{log:}{messages from the algorithm run (only if \code{id_column == TRUE}).}
-#'   \item{bootstrap:}{number of times the members of the clusters were clustered together divided by the total times they were sampled together (only if bootstrap = TRUE).}
 #'   \item{order:}{A vector of integers with the new ordering if the observations. (only if hclust_intra_clusters = TRUE)}
 #' }
 #'
@@ -233,9 +208,6 @@ reorder_clusters <- function(km, func = "hclust") {
 #' head(km$cluster)
 #' km$size
 #' 
-#' # bootstrapping
-#' km <- TGL_kmeans(d, k = 5, "euclid", N_boot = 100, bootstrap = TRUE)
-#' km$bootstrap
 #' @seealso \code{\link{TGL_kmeans_tidy}}
 #' @export
 TGL_kmeans <- function(df,
@@ -249,8 +221,7 @@ TGL_kmeans <- function(df,
                        reorder_func = "hclust",
                        hclust_intra_clusters = FALSE,
                        seed = NULL,
-                       bootstrap = FALSE,
-                       ...) {
+                       parallel = getOption("tglkmeans.parallel")) {
     res <- TGL_kmeans_tidy(
         df = df,
         k = k,
@@ -262,9 +233,8 @@ TGL_kmeans <- function(df,
         id_column = id_column,
         reorder_func = reorder_func,
         seed = seed,
-        bootstrap = bootstrap,
         hclust_intra_clusters = hclust_intra_clusters,
-        ...
+        parallel = parallel
     )
 
 
@@ -284,10 +254,6 @@ TGL_kmeans <- function(df,
 
     if (keep_log) {
         km$log <- res$log
-    }
-
-    if (bootstrap) {
-        km$bootstrap <- res$bootstrap$robust
     }
 
     if (hclust_intra_clusters) {

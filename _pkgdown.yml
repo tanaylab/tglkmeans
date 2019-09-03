@@ -27,15 +27,6 @@ reference:
   contents:
   - TGL_kmeans
   - TGL_kmeans_tidy
-  - bootstrap_kmeans
-- title: Bootstrapping
-  desc: Bootstrap clustering
-  contents:
-  - bootclust
-  - plot_coclust_mat
-  - plot_coclust_score
-  - cutree_bootclust
-  - plot_coclust_cutree_mat
 - title: misc
   desc: utility functions
   contents: 

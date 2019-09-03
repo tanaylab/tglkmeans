@@ -5,9 +5,10 @@
 \title{TGL kmeans with 'tidy' output}
 \usage{
 TGL_kmeans_tidy(df, k, metric = "euclid", max_iter = 40,
-  min_delta = 0.0001, verbose = FALSE, keep_log = TRUE,
+  min_delta = 1e-04, verbose = FALSE, keep_log = TRUE,
   id_column = TRUE, reorder_func = "hclust", add_to_data = FALSE,
-  hclust_intra_clusters = FALSE, seed = NULL, bootstrap = FALSE, ...)
+  hclust_intra_clusters = FALSE, seed = NULL,
+  parallel = getOption("tglkmeans.parallel"))
 }
 \arguments{
 \item{df}{data frame. Each row is a single observation and each column is a dimension.
@@ -36,21 +37,7 @@ if NULL, no reordering would be done.}
 
 \item{seed}{seed for the c++ random number generator}
 
-\item{bootstrap}{bootstrap to estimate robustness of the clusters}
-
-\item{...}{}
-
-\item{...}{Arguments passed on to \code{bootstrap_kmeans}
-\describe{
-  \item{df}{data frame. Each row is a single observation and each column is a dimension.
-the first column can contain id for each observation (if id_column is TRUE).}
-  \item{k}{number of clusters}
-  \item{N_boot}{number of bootstrapping iterations}
-  \item{boot_ratio}{percent of observations to sample on each iteration}
-  \item{parallel}{run parallely (using doMC backend)}
-  \item{id_column}{\code{df}'s first column contains the observation id}
-  \item{seed}{seed for the c++ random number generator}
-}}
+\item{parallel}{cluster every cluster parallely (if hclust_intra_clusters is true)}
 }
 \value{
 list with the following components:
@@ -60,7 +47,6 @@ list with the following components:
   \item{size:}{tibble with `clust` column and `n` column with the number of points in each cluster.}
   \item{data:}{tibble with `clust` column the original data frame.}
   \item{log:}{messages from the algorithm run (only if \code{id_column = TRUE}).}
-  \item{bootstrap:}{tibble with 'clust' column and 'robust' column with the number of times the members of the clusters were clustered together divided by the total times they were sampled together. (only if bootstrap = TRUE)}
   \item{order:}{tibble with 'id' column, 'clust' column, 'order' column with a new ordering if the observations and 'intra_clust_order' column with the order within each cluster. (only if hclust_intra_clusters = TRUE)}
 }
 }
@@ -77,10 +63,6 @@ head(d)
 # cluster
 km <- TGL_kmeans_tidy(d, k = 5, "euclid", verbose = TRUE)
 km
-
-# bootstrapping
-km <- TGL_kmeans_tidy(d, k = 5, "euclid", N_boot = 100, bootstrap = TRUE, parallel = FALSE)
-km$bootstrap
 }
 \seealso{
 \code{\link{TGL_kmeans}}

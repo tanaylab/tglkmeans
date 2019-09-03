@@ -1,42 +1,51 @@
 Package: tglkmeans
 Title: Kmeans++ implementation
 Version: 0.2.4
-Authors@R: c(person("Aviezer", "Lifshitz", email = "aviezer.lifshitz@weizmann.ac.il",
-    role = c("aut", "cre")),
-    person("Amos", "Tanay", role=c("aut")))
+Authors@R: 
+    c(person(given = "Aviezer",
+             family = "Lifshitz",
+             role = c("aut", "cre"),
+             email = "aviezer.lifshitz@weizmann.ac.il"),
+      person(given = "Amos",
+             family = "Tanay",
+             role = "aut"))
+Author: Aviezer Lifshitz [aut, cre], Amos Tanay [aut]
+Maintainer: Aviezer Lifshitz <aviezer.lifshitz@weizmann.ac.il>
 Description: Efficient implementation of kmeans++ algorithm.
-BugReports: https://github.com/aviezerl/gpwm/issues
-Depends: R (>= 3.2.4)
 License: GPL
-Encoding: UTF-8
-LazyData: true
-LinkingTo: Rcpp
-SystemRequirements: C++11
+BugReports: https://github.com/aviezerl/tglkmeans/issues
+Depends: 
+    R (>= 3.2.4)
 Imports: 
     Rcpp (>= 0.12.11),
-    parallel (>= 3.3.2),
     doMC (>= 1.3.4),
-    plyr (>= 1.8.4),
-    reshape2 (>= 1.4.2),
     dplyr (>= 0.5.0),
     forcats (>=
         0.2.0),
-    purrr (>= 0.2.0),
     ggplot2 (>= 2.2.0),
     ggridges (>=
         0.4),
+    magrittr,
+    parallel (>= 3.3.2),
     pheatmap (>= 1.0.8),
-    tgstat (>= 1.0.0),
-    magrittr
-RoxygenNote: 6.1.1
+    plyr (>= 1.8.4),
+    purrr (>= 0.2.0),
+    reshape2 (>= 1.4.2),
+    tgstat (>= 1.0.0)
 Suggests: 
+    covr,
     knitr,
+    rlang,
     rmarkdown,
-    testthat,
-    covr
-VignetteBuilder: rmarkdown, knitr
+    testthat
+LinkingTo: 
+    Rcpp
+VignetteBuilder: 
+    rmarkdown,
+    knitr
+Encoding: UTF-8
+LazyData: true
 NeedsCompilation: yes
 Packaged: 2018-02-25 13:32:32 UTC; aviezerl
-Author: Aviezer Lifshitz [aut, cre],
-  Amos Tanay [aut]
-Maintainer: Aviezer Lifshitz <aviezer.lifshitz@weizmann.ac.il>
+RoxygenNote: 6.1.1
+SystemRequirements: C++11
