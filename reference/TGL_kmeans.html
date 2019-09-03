@@ -18,13 +18,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -50,6 +52,7 @@
 <![endif]-->
 
 
+
   </head>
 
   <body>
@@ -66,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tglkmeans</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -104,6 +107,9 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -114,6 +120,7 @@
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -129,9 +136,10 @@
     </div>
 
     <pre class="usage"><span class='fu'>TGL_kmeans</span>(<span class='no'>df</span>, <span class='no'>k</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"euclid"</span>, <span class='kw'>max_iter</span> <span class='kw'>=</span> <span class='fl'>40</span>,
-  <span class='kw'>min_delta</span> <span class='kw'>=</span> <span class='fl'>0.0001</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>keep_log</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>min_delta</span> <span class='kw'>=</span> <span class='fl'>1e-04</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>keep_log</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>id_column</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>reorder_func</span> <span class='kw'>=</span> <span class='st'>"hclust"</span>,
-  <span class='kw'>hclust_intra_clusters</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>bootstrap</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>hclust_intra_clusters</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"tglkmeans.parallel"</span>))</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -171,7 +179,7 @@ the first column can contain id for each observation (if id_column is TRUE).</p>
     </tr>
     <tr>
       <th>reorder_func</th>
-      <td><p>function to reorder the clusters. operates on each center and orders by the result. e.g. <code>reorder_func = mean</code> would calculate the mean of each center and then would reorder the clusters accordingly. If <code>reorder_func = hclust</code> the centers would be ordered by hclust of the euclidian distance of the corelation matrix, i.e. <code><a href='https://www.rdocumentation.org/packages/stats/topics/hclust'>hclust(dist(cor(t(centers))))</a></code>
+      <td><p>function to reorder the clusters. operates on each center and orders by the result. e.g. <code>reorder_func = mean</code> would calculate the mean of each center and then would reorder the clusters accordingly. If <code>reorder_func = hclust</code> the centers would be ordered by hclust of the euclidian distance of the corelation matrix, i.e. <code><a href='https://rdrr.io/r/stats/hclust.html'>hclust(dist(cor(t(centers))))</a></code>
 if NULL, no reordering would be done.</p></td>
     </tr>
     <tr>
@@ -183,25 +191,8 @@ if NULL, no reordering would be done.</p></td>
       <td><p>seed for the c++ random number generator</p></td>
     </tr>
     <tr>
-      <th>bootstrap</th>
-      <td><p>bootstrap to estimate robustness of the clusters</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Arguments passed on to <code>bootstrap_kmeans</code></p><dl class='dl-horizontal'>
-  <dt>df</dt><dd><p>data frame. Each row is a single observation and each column is a dimension.
-the first column can contain id for each observation (if id_column is TRUE).</p></dd>
-  <dt>k</dt><dd><p>number of clusters</p></dd>
-  <dt>N_boot</dt><dd><p>number of bootstrapping iterations</p></dd>
-  <dt>boot_ratio</dt><dd><p>percent of observations to sample on each iteration</p></dd>
-  <dt>parallel</dt><dd><p>run parallely (using doMC backend)</p></dd>
-  <dt>id_column</dt><dd><p><code>df</code>'s first column contains the observation id</p></dd>
-  <dt>seed</dt><dd><p>seed for the c++ random number generator</p></dd>
-</dl></td>
+      <th>parallel</th>
+      <td><p>cluster every cluster parallely (if hclust_intra_clusters is true)</p></td>
     </tr>
     </table>
 
@@ -212,8 +203,8 @@ the first column can contain id for each observation (if id_column is TRUE).</p>
   <dt>centers:</dt><dd><p>A matrix of cluster centres.</p></dd>
   <dt>size:</dt><dd><p>The number of points in each cluster.</p></dd>
   <dt>log:</dt><dd><p>messages from the algorithm run (only if <code>id_column == TRUE</code>).</p></dd>
-  <dt>bootstrap:</dt><dd><p>number of times the members of the clusters were clustered together divided by the total times they were sampled together (only if bootstrap = TRUE).</p></dd>
   <dt>order:</dt><dd><p>A vector of integers with the new ordering if the observations. (only if hclust_intra_clusters = TRUE)</p></dd>
+
 </dl>
 
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
@@ -222,66 +213,65 @@ the first column can contain id for each observation (if id_column is TRUE).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>dplyr</span>)</div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:testthat’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    matches</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)</div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'>
 <span class='co'># create 5 clusters normally distributed around 1:5</span>
 <span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='simulate_data.html'>simulate_data</a></span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='fl'>0.3</span>, <span class='kw'>nclust</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>dims</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>add_true_clust</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='no'>d</span>)</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 6 x 3</span><span>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>d</span>)</div><div class='output co'>#&gt; # A tibble: 6 x 3
 #&gt;      id    V1    V2
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     1 0.580 0.884
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span>     2 1.08  0.764
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span>     3 0.269 0.683
-#&gt; </span><span style='color: #BCBCBC;'>4</span><span>     4 0.998 0.761
-#&gt; </span><span style='color: #BCBCBC;'>5</span><span>     5 1.19  0.473
-#&gt; </span><span style='color: #BCBCBC;'>6</span><span>     6 1.34  0.793</div><div class='input'>
+#&gt;   &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+#&gt; 1     1 0.580 0.884
+#&gt; 2     2 1.08  0.764
+#&gt; 3     3 0.269 0.683
+#&gt; 4     4 0.998 0.761
+#&gt; 5     5 1.19  0.473
+#&gt; 6     6 1.34  0.793</div><div class='input'>
 <span class='co'># cluster</span>
 <span class='no'>km</span> <span class='kw'>&lt;-</span> <span class='fu'>TGL_kmeans</span>(<span class='no'>d</span>, <span class='kw'>k</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='st'>"euclid"</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>id column: id</span></div><div class='output co'>#&gt; KMEans: will generate seeds
 #&gt; KMeans into generate seeds
 #&gt; at seed 0
-#&gt; add new core from 8 to 0
+#&gt; add new core from 97 to 0
 #&gt; at seed 1
 #&gt; done update min distance
 #&gt; seed range 350 450
-#&gt; picked up 484 dist was 2.83851
-#&gt; add new core from 484 to 1
+#&gt; picked up 433 dist was 2.52422
+#&gt; add new core from 433 to 1
 #&gt; at seed 2
 #&gt; done update min distance
 #&gt; seed range 300 400
-#&gt; picked up 259 dist was 1.29953
-#&gt; add new core from 259 to 2
+#&gt; picked up 244 dist was 1.28203
+#&gt; add new core from 244 to 2
 #&gt; at seed 3
 #&gt; done update min distance
 #&gt; seed range 250 350
-#&gt; picked up 366 dist was 0.697244
-#&gt; add new core from 366 to 3
+#&gt; picked up 336 dist was 0.666263
+#&gt; add new core from 336 to 3
 #&gt; at seed 4
 #&gt; done update min distance
 #&gt; seed range 200 300
-#&gt; picked up 138 dist was 0.513874
-#&gt; add new core from 138 to 4
+#&gt; picked up 142 dist was 0.60569
+#&gt; add new core from 142 to 4
 #&gt; KMEans: reassign after init
 #&gt; KMEans: iter 0
-#&gt; KMEans: iter 1 changed 2
+#&gt; KMEans: iter 1 changed 5
 #&gt; KMEans: iter 1
-#&gt; KMEans: iter 2 changed 1
+#&gt; KMEans: iter 2 changed 2
 #&gt; KMEans: iter 2
-#&gt; KMEans: iter 3 changed 0</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>km</span>)</div><div class='output co'>#&gt; [1] "cluster" "centers" "size"   </div><div class='input'><span class='no'>km</span>$<span class='no'>centers</span></div><div class='output co'>#&gt;            V1       V2
-#&gt; [1,] 2.000776 2.053331
-#&gt; [2,] 3.969391 4.038842
-#&gt; [3,] 2.964869 3.008410
+#&gt; KMEans: iter 3 changed 1
+#&gt; KMEans: iter 3
+#&gt; KMEans: iter 4 changed 0</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>km</span>)</div><div class='output co'>#&gt; [1] "cluster" "centers" "size"   </div><div class='input'><span class='no'>km</span>$<span class='no'>centers</span></div><div class='output co'>#&gt;            V1       V2
+#&gt; [1,] 2.004643 2.058945
+#&gt; [2,] 3.972232 4.046328
+#&gt; [3,] 2.977600 3.015143
 #&gt; [4,] 1.019032 1.034553
-#&gt; [5,] 4.975310 5.048907</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='no'>km</span>$<span class='no'>cluster</span>)</div><div class='output co'>#&gt; 1 2 3 4 5 6 
+#&gt; [5,] 4.975310 5.048907</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>km</span>$<span class='no'>cluster</span>)</div><div class='output co'>#&gt; 1 2 3 4 5 6 
 #&gt; 4 4 4 4 4 4 </div><div class='input'><span class='no'>km</span>$<span class='no'>size</span></div><div class='output co'>#&gt;   1   2   3   4   5 
-#&gt; 101  98 102 100  99 </div><div class='input'>
-<span class='co'># bootstrapping</span>
-<span class='no'>km</span> <span class='kw'>&lt;-</span> <span class='fu'>TGL_kmeans</span>(<span class='no'>d</span>, <span class='kw'>k</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='st'>"euclid"</span>, <span class='kw'>N_boot</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>bootstrap</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>bootstrapping</span></div><div class='input'><span class='no'>km</span>$<span class='no'>bootstrap</span></div><div class='output co'>#&gt; [1] 0.9900361 0.9820651 0.9966486 0.9949646 0.9995062</div></span></pre>
+#&gt; 102  97 102 100  99 </div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -295,19 +285,23 @@ the first column can contain id for each observation (if id_column is TRUE).</p>
   </div>
 </div>
 
+
       <footer>
       <div class="copyright">
   <p>Developed by Aviezer Lifshitz, Amos Tanay.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 
