@@ -1,6 +1,6 @@
 Package: tglkmeans
 Title: Kmeans++ implementation
-Version: 0.2.4
+Version: 0.3.0
 Authors@R: 
     c(person(given = "Aviezer",
              family = "Lifshitz",
