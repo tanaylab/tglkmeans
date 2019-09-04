@@ -1,5 +1,6 @@
 library(dplyr)
 library(tglkmeans)
+set.seed(17)
 
 clustering_ok <- function(data, res, nclust, ndims, order = TRUE){
     expect_equal(nrow(data), nrow(res$clust))
