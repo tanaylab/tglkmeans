@@ -45,7 +45,7 @@ TGL_kmeans_tidy <- function(df,
                             max_iter = 40,
                             min_delta = 0.0001,
                             verbose = FALSE,
-                            keep_log = TRUE,
+                            keep_log = FALSE,
                             id_column = TRUE,
                             reorder_func = "hclust",
                             add_to_data = FALSE,
@@ -233,7 +233,7 @@ TGL_kmeans <- function(df,
                        max_iter = 40,
                        min_delta = 0.0001,
                        verbose = FALSE,
-                       keep_log = TRUE,
+                       keep_log = FALSE,
                        id_column = TRUE,
                        reorder_func = "hclust",
                        hclust_intra_clusters = FALSE,
@@ -263,7 +263,6 @@ TGL_kmeans <- function(df,
     } else {
         names(km$cluster) <- res$cluster$id
     }
-
 
     km$centers <- as.matrix(res$centers[, -1])
 
