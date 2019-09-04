@@ -1,4 +1,6 @@
 # tglkmeans 0.3.1
+* Use rownames when exist.
+* Do not fail when "id" column doesn't exist (warn instead).
 
 # tglkmeans 0.3.0
 
