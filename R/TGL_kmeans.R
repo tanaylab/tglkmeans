@@ -61,13 +61,18 @@ TGL_kmeans_tidy <- function(df,
 
     df <- as.data.frame(df)
 
-    if (!id_column) {
-        df <- df %>% mutate(id = as.character(1:n())) %>% select(id, everything())
-    } else {
-        df$id <- as.character(df$id)
-        if (verbose) {
-            message(sprintf("id column: %s", colnames(df)[1]))
-        }
+    if (!id_column) {        
+        df <- add_id_column(df)        
+    } else {   
+        if (rlang::has_name(df, "id")){
+            df$id <- as.character(df$id)
+            if (verbose) {
+                message(sprintf("id column: %s", colnames(df)[1]))
+            }            
+        }  else {
+            warning("Input doesn't have a column named \"id\". Using rownames instead.")
+            df <- add_id_column(df) 
+        }        
     }
     mat <- t(df[, -1])
 
@@ -142,6 +147,18 @@ TGL_kmeans_tidy <- function(df,
     
     return(km)
 }
+
+
+add_id_column <- function(df){
+    if (tibble::has_rownames(df)) {
+        df <- df %>% tibble::rowid_to_column("id")
+    } else {
+        df <- df %>% tibble::rownames_to_column("id")
+    }   
+    return(df)
+}
+
+
 
 reorder_clusters <- function(km, func = "hclust") {
     if (is.null(func)) {

@@ -1,6 +1,25 @@
 library(dplyr)
 library(tglkmeans)
 
+clustering_ok <- function(data, res, nclust, ndims, order = TRUE){
+    expect_equal(nrow(data), nrow(res$clust))
+    expect_true(all(data$id %in% res$cluster$id))
+    if (order){
+        expect_true(all(data$id %in% res$order$id))    
+    }    
+
+    expect_equal(nclust, nrow(res$centers))
+    expect_equal(ndims, ncol(res$centers) - 1)
+    expect_equal(nclust, length(unique(res$clust$clust)))
+    expect_equal(nclust, length(unique(res$size$clust)))
+
+    expect_true(all(res$center$clust %in% res$cluster$clust))
+    expect_true(all(res$cluster$clust %in% res$center$clust))
+    expect_true(all(res$size$clust %in% res$center$clust))
+    expect_true(all(res$scenter$clust %in% res$size$clust))
+
+    expect_equal(nrow(data), sum(res$size$n))
+}
 
 context("Missing data")
 test_that("Stop when there are rows which contain only missing data", {
@@ -17,20 +36,35 @@ test_that("Do not fail when input is matrix", {
     data <- simulate_data(n = 200, sd = 0.3, dims = 5, nclust = nclust, frac_na = 0.05)
     mat <- data %>% select(starts_with("V")) %>% as.matrix()
     res <- TGL_kmeans_tidy(mat, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 17)
-    expect_equal(nrow(data), nrow(res$clust))
-    expect_true(all(data$id %in% res$cluster$id))
 
-    expect_equal(nclust, nrow(res$centers))
-    expect_equal(ndims, ncol(res$centers) - 1)
-    expect_equal(nclust, length(unique(res$clust$clust)))
-    expect_equal(nclust, length(unique(res$size$clust)))
+    clustering_ok(data, res, nclust, ndims, order = FALSE)    
+})
 
-    expect_true(all(res$center$clust %in% res$cluster$clust))
-    expect_true(all(res$cluster$clust %in% res$center$clust))
-    expect_true(all(res$size$clust %in% res$center$clust))
-    expect_true(all(res$scenter$clust %in% res$size$clust))
+context("Rownames")
+test_that("Use rownames if exists", {
+    nclust <- 30
+    ndims <- 5
+    data <- simulate_data(n = 200, sd = 0.3, dims = 5, nclust = nclust, frac_na = 0.05)
+    data <- data %>% 
+        as.data.frame() %>% 
+        select(id, starts_with("V")) %>% 
+        mutate(id = paste0("id_", id)) %>% 
+        tibble::column_to_rownames('id')
 
-    expect_equal(nrow(data), sum(res$size$n))
+    res <- TGL_kmeans_tidy(data, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 17)
+    clustering_ok(data, res, nclust, ndims, order = FALSE)
+})
+
+test_that("Dot not fail when rownames do not exist", {
+    nclust <- 30
+    ndims <- 5
+    data <- simulate_data(n = 200, sd = 0.3, dims = 5, nclust = nclust, frac_na = 0.05)
+    data <- data %>% select(starts_with("V")) %>% as.data.frame()  
+    data <- tibble::remove_rownames(data)
+
+    res <- TGL_kmeans_tidy(data, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 17)
+    clustering_ok(data, res, nclust, ndims, order = FALSE)
+
 })
 
 context("Correct output")
@@ -39,22 +73,7 @@ test_that("hclust intra cluster works", {
     ndims <- 5
     data <- simulate_data(n = 200, sd = 0.3, dims = 5, nclust = nclust, frac_na = 0.05)
     res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = F, hclust_intra_clusters = TRUE, parallel = FALSE)
-
-    expect_equal(nrow(data), nrow(res$clust))
-    expect_true(all(data$id %in% res$cluster$id))
-    expect_true(all(data$id %in% res$order$id))
-
-    expect_equal(nclust, nrow(res$centers))
-    expect_equal(ndims, ncol(res$centers) - 1)
-    expect_equal(nclust, length(unique(res$clust$clust)))
-    expect_equal(nclust, length(unique(res$size$clust)))
-
-    expect_true(all(res$center$clust %in% res$cluster$clust))
-    expect_true(all(res$cluster$clust %in% res$center$clust))
-    expect_true(all(res$size$clust %in% res$center$clust))
-    expect_true(all(res$scenter$clust %in% res$size$clust))
-
-    expect_equal(nrow(data), sum(res$size$n))
+    clustering_ok(data, res, nclust, ndims, order = TRUE)  
 })
 
 context("Correct output")
@@ -64,20 +83,7 @@ test_that("all ids and clusters are present", {
     data <- simulate_data(n = 200, sd = 0.3, dims = 5, nclust = nclust, frac_na = 0.05)
     res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = F)
 
-    expect_equal(nrow(data), nrow(res$clust))
-    expect_true(all(data$id %in% res$cluster$id))
-
-    expect_equal(nclust, nrow(res$centers))
-    expect_equal(ndims, ncol(res$centers) - 1)
-    expect_equal(nclust, length(unique(res$clust$clust)))
-    expect_equal(nclust, length(unique(res$size$clust)))
-
-    expect_true(all(res$center$clust %in% res$cluster$clust))
-    expect_true(all(res$cluster$clust %in% res$center$clust))
-    expect_true(all(res$size$clust %in% res$center$clust))
-    expect_true(all(res$scenter$clust %in% res$size$clust))
-
-    expect_equal(nrow(data), sum(res$size$n))
+    clustering_ok(data, res, nclust, ndims, order = FALSE)  
 })
 
 context("Verbosity")
