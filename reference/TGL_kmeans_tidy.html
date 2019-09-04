@@ -136,7 +136,7 @@
     </div>
 
     <pre class="usage"><span class='fu'>TGL_kmeans_tidy</span>(<span class='no'>df</span>, <span class='no'>k</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"euclid"</span>, <span class='kw'>max_iter</span> <span class='kw'>=</span> <span class='fl'>40</span>,
-  <span class='kw'>min_delta</span> <span class='kw'>=</span> <span class='fl'>1e-04</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>keep_log</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>min_delta</span> <span class='kw'>=</span> <span class='fl'>1e-04</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>keep_log</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>id_column</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>reorder_func</span> <span class='kw'>=</span> <span class='st'>"hclust"</span>, <span class='kw'>add_to_data</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>hclust_intra_clusters</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"tglkmeans.parallel"</span>))</pre>
@@ -234,36 +234,34 @@ if NULL, no reordering would be done.</p></td>
 <span class='no'>km</span> <span class='kw'>&lt;-</span> <span class='fu'>TGL_kmeans_tidy</span>(<span class='no'>d</span>, <span class='kw'>k</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='st'>"euclid"</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>id column: id</span></div><div class='output co'>#&gt; KMEans: will generate seeds
 #&gt; KMeans into generate seeds
 #&gt; at seed 0
-#&gt; add new core from 352 to 0
+#&gt; add new core from 363 to 0
 #&gt; at seed 1
 #&gt; done update min distance
 #&gt; seed range 350 450
-#&gt; picked up 21 dist was 1.97174
-#&gt; add new core from 21 to 1
+#&gt; picked up 15 dist was 2.33553
+#&gt; add new core from 15 to 1
 #&gt; at seed 2
 #&gt; done update min distance
 #&gt; seed range 300 400
-#&gt; picked up 241 dist was 0.730343
-#&gt; add new core from 241 to 2
+#&gt; picked up 258 dist was 1.00935
+#&gt; add new core from 258 to 2
 #&gt; at seed 3
 #&gt; done update min distance
 #&gt; seed range 250 350
-#&gt; picked up 491 dist was 0.635801
-#&gt; add new core from 491 to 3
+#&gt; picked up 178 dist was 0.67428
+#&gt; add new core from 178 to 3
 #&gt; at seed 4
 #&gt; done update min distance
 #&gt; seed range 200 300
-#&gt; picked up 112 dist was 0.453713
-#&gt; add new core from 112 to 4
+#&gt; picked up 469 dist was 0.526642
+#&gt; add new core from 469 to 4
 #&gt; KMEans: reassign after init
 #&gt; KMEans: iter 0
-#&gt; KMEans: iter 1 changed 17
+#&gt; KMEans: iter 1 changed 3
 #&gt; KMEans: iter 1
-#&gt; KMEans: iter 2 changed 7
+#&gt; KMEans: iter 2 changed 2
 #&gt; KMEans: iter 2
-#&gt; KMEans: iter 3 changed 1
-#&gt; KMEans: iter 3
-#&gt; KMEans: iter 4 changed 0</div><div class='input'><span class='no'>km</span></div><div class='output co'>#&gt; $centers
+#&gt; KMEans: iter 3 changed 0</div><div class='input'><span class='no'>km</span></div><div class='output co'>#&gt; $centers
 #&gt; # A tibble: 5 x 3
 #&gt;   clust    V1    V2
 #&gt;   &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
