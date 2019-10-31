@@ -129,8 +129,12 @@ TGL_kmeans_tidy <- function(df,
 
     colnames(km$cluster)[1] <- colnames(df)[1]
 
-    if (keep_log && !verbose) {
-        km$log <- log
+    if (keep_log) {
+        if (verbose){
+            warning("cannot keep log when verbose option is true")
+        } else {
+            km$log <- log            
+        }
     }
 
     if (add_to_data) {
@@ -269,7 +273,11 @@ TGL_kmeans <- function(df,
     km$size <- tapply(km$clust, km$clust, length)
 
     if (keep_log) {
-        km$log <- res$log
+        if (verbose){
+            warning("cannot keep log when verbose option is true")
+        } else {
+            km$log <- log            
+        }
     }
 
     if (hclust_intra_clusters) {
