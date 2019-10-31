@@ -10,7 +10,3 @@ coverage:
       default:
         target: auto
         threshold: 1%
-ignore:
-  - "src/KMeansCenterBase.cpp"
-  - "src/ReduceCoclust.cpp"
-  - "R/zzz.R"
