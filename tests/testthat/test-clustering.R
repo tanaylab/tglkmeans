@@ -205,3 +205,10 @@ test_that("clustering with NA is reasonable (high dim): euclid", {
         expect_gt(test_clustering(x[[1]], x[[2]], x[[3]], x[[5]], "euclid", frac_na = x[4]), 0.75)
     })
 })
+
+context("Data simulation")
+test_that("true_clust column is not added when add_true_clust is FALSE", {
+    data <- simulate_data(n = 100, sd = 0.3, nclust = 30, frac_na = NULL, add_true_clust = FALSE)
+    expect_true(!("true_clust" %in% colnames(data)))
+
+})
