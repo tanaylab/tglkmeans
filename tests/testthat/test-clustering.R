@@ -54,6 +54,9 @@ test_that("Use rownames if exists", {
 
     res <- TGL_kmeans_tidy(data, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 17)
     clustering_ok(data, res, nclust, ndims, order = FALSE)
+    
+    expect_warning(res1 <- TGL_kmeans_tidy(data, 30, id_column = TRUE, metric = "euclid", verbose = FALSE, seed = 17))
+    clustering_ok(data, res1, nclust, ndims, order = FALSE)
 })
 
 test_that("Dot not fail when rownames do not exist", {
@@ -65,6 +68,8 @@ test_that("Dot not fail when rownames do not exist", {
 
     res <- TGL_kmeans_tidy(data, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 17)
     clustering_ok(data, res, nclust, ndims, order = FALSE)
+    
+    res_non_tidy <- TGL_kmeans(data, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 17)
 })
 
 context("Metrics")
@@ -135,7 +140,15 @@ test_that("add_to_data works", {
 
     expect_identical(res$data %>% select(id, starts_with("V")), data %>% mutate(id = as.character(id)) %>% select(id, starts_with("V")))
     expect_equal(nrow(anti_join(res$data %>% select(id, clust), res$cluster %>% select(id, clust), by = c("id", "clust"))), 0)
+    
+    data <- data %>% 
+        as.data.frame() %>% 
+        select(id, starts_with("V")) %>% 
+        mutate(id = paste0("id_", id)) %>% 
+        tibble::column_to_rownames('id')
 
+    res <- TGL_kmeans_tidy(data, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 17, add_to_data = TRUE)
+    expect_equal(res$data %>% select(starts_with("V")), data %>% select(starts_with("V")))
 })
 
 test_that("reorder func works when set to mean", {

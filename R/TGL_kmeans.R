@@ -138,7 +138,7 @@ TGL_kmeans_tidy <- function(df,
     }
 
     if (add_to_data) {
-        km$data <- df %>% left_join(km$cluster, by = colnames(df)[1]) %>% select(clust, everything()) %>% as_tibble()
+        km$data <- df %>% mutate(id = as.character(id)) %>% left_join(km$cluster, by = colnames(df)[1]) %>% select(clust, everything()) %>% as_tibble()
         if (!id_column) {
             km$data <- km$data %>% select(-id)
         }
