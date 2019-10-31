@@ -89,7 +89,7 @@
       <h1>basic usage</h1>
                         <h4 class="author">Aviezer Lifshitz</h4>
             
-            <h4 class="date">2019-09-04</h4>
+            <h4 class="date">2019-10-31</h4>
       
       
       <div class="hidden name"><code>usage.Rmd</code></div>
@@ -108,16 +108,16 @@
 <pre><code>## # A tibble: 500 x 4
 ##       id    V1    V2 true_clust
 ##    &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;      &lt;int&gt;
-##  1     1 0.808 1.67           1
-##  2     2 1.11  0.899          1
-##  3     3 0.934 0.791          1
-##  4     4 0.754 1.75           1
-##  5     5 0.829 0.871          1
-##  6     6 0.249 1.07           1
-##  7     7 0.833 0.695          1
-##  8     8 1.20  0.878          1
-##  9     9 1.58  1.68           1
-## 10    10 0.727 0.722          1
+##  1     1 0.726 1.35           1
+##  2     2 0.801 1.10           1
+##  3     3 1.26  1.05           1
+##  4     4 0.931 0.603          1
+##  5     5 1.08  0.868          1
+##  6     6 0.915 1.32           1
+##  7     7 0.638 0.771          1
+##  8     8 0.920 1.20           1
+##  9     9 1.14  0.494          1
+## 10    10 0.969 0.882          1
 ## # … with 490 more rows</code></pre>
 <p>This is how our data looks like:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">data <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x=</span>V1, <span class="dt">y=</span>V2, <span class="dt">color=</span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(true_clust))) <span class="op">+</span><span class="st"> </span></a>
@@ -134,32 +134,32 @@
 <pre><code>## KMEans: will generate seeds
 ## KMeans into generate seeds
 ## at seed 0
-## add new core from 243 to 0
+## add new core from 133 to 0
 ## at seed 1
 ## done update min distance
 ## seed range 350 450
-## picked up 58 dist was 1.67974
-## add new core from 58 to 1
+## picked up 485 dist was 2.26095
+## add new core from 485 to 1
 ## at seed 2
 ## done update min distance
 ## seed range 300 400
-## picked up 434 dist was 1.28292
-## add new core from 434 to 2
+## picked up 302 dist was 0.985756
+## add new core from 302 to 2
 ## at seed 3
 ## done update min distance
 ## seed range 250 350
-## picked up 100 dist was 0.649649
-## add new core from 100 to 3
+## picked up 276 dist was 0.685741
+## add new core from 276 to 3
 ## at seed 4
 ## done update min distance
 ## seed range 200 300
-## picked up 367 dist was 0.617641
-## add new core from 367 to 4
+## picked up 4 dist was 0.67053
+## add new core from 4 to 4
 ## KMEans: reassign after init
 ## KMEans: iter 0
-## KMEans: iter 1 changed 3
+## KMEans: iter 1 changed 2
 ## KMEans: iter 1
-## KMEans: iter 2 changed 3
+## KMEans: iter 2 changed 2
 ## KMEans: iter 2
 ## KMEans: iter 3 changed 0</code></pre>
 <p>The returned list contains 3 fields:</p>
@@ -170,42 +170,42 @@
 <pre><code>## # A tibble: 5 x 3
 ##   clust    V1    V2
 ##   &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1     1 3.03  3.06 
-## 2     2 4.98  4.99 
-## 3     3 4.04  4.01 
-## 4     4 0.989 0.977
-## 5     5 2.03  2.00</code></pre>
+## 1     1  1.02 0.981
+## 2     2  2.01 1.98 
+## 3     3  4.01 3.99 
+## 4     4  4.96 4.98 
+## 5     5  2.99 3.03</code></pre>
 <p>clusters are numbered according to <code>order_func</code> (see ‘Custom cluster ordering’ section).</p>
 <p><code>km$cluster</code> contains tibble with <code>id</code> column with the observation id (<code>1:n</code> if no id column was supplied), and <code>clust</code> column with the observation assigned cluster:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">km<span class="op">$</span>cluster</a></code></pre></div>
 <pre><code>## # A tibble: 500 x 2
 ##    id    clust
 ##    &lt;chr&gt; &lt;int&gt;
-##  1 1         4
-##  2 2         4
-##  3 3         4
-##  4 4         4
-##  5 5         4
-##  6 6         4
-##  7 7         4
-##  8 8         4
-##  9 9         5
-## 10 10        4
+##  1 1         1
+##  2 2         1
+##  3 3         1
+##  4 4         1
+##  5 5         1
+##  6 6         1
+##  7 7         1
+##  8 8         1
+##  9 9         1
+## 10 10        1
 ## # … with 490 more rows</code></pre>
 <p><code>km$size</code> contains tibble with <code>clust</code> column and <code>n</code> column with the number of points in each cluster:</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">km<span class="op">$</span>size</a></code></pre></div>
 <pre><code>## # A tibble: 5 x 2
 ##   clust     n
 ##   &lt;int&gt; &lt;int&gt;
-## 1     1    99
-## 2     2    99
-## 3     3   101
-## 4     4   101
-## 5     5   100</code></pre>
+## 1     1   100
+## 2     2    97
+## 3     3    98
+## 4     4   100
+## 5     5   105</code></pre>
 <p>We can now check our clustering performance - fraction of observations that were classified correctly (Note that <code>match_clusters</code> function is internal to the package and is used only in this vignette):</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">d &lt;-<span class="st"> </span>tglkmeans<span class="op">:::</span><span class="kw">match_clusters</span>(data, km, <span class="dv">5</span>)</a>
 <a class="sourceLine" id="cb15-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(d<span class="op">$</span>true_clust <span class="op">==</span><span class="st"> </span>d<span class="op">$</span>new_clust, <span class="dt">na.rm=</span><span class="ot">TRUE</span>) <span class="op">/</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(d<span class="op">$</span>new_clust))</a></code></pre></div>
-<pre><code>## [1] 0.986</code></pre>
+<pre><code>## [1] 0.982</code></pre>
 <p>And plot the results:</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">d <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x=</span>V1, <span class="dt">y=</span>V2, <span class="dt">color=</span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(new_clust), <span class="dt">shape=</span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(true_clust))) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb17-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></a>
@@ -228,11 +228,11 @@
 <pre><code>## # A tibble: 5 x 3
 ##   clust    V1    V2
 ##   &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1     1 0.989 0.977
-## 2     2 2.03  2.00 
-## 3     3 3.03  3.06 
-## 4     4 4.04  4.01 
-## 5     5 4.98  4.99</code></pre>
+## 1     1  1.02 0.981
+## 2     2  2.02 1.98 
+## 3     3  2.99 3.04 
+## 4     4  4.01 3.99 
+## 5     5  4.97 4.99</code></pre>
 </div>
 <div id="missing-data" class="section level2">
 <h2 class="hasAnchor">
@@ -243,16 +243,16 @@
 <pre><code>## # A tibble: 500 x 4
 ##       id     V1    V2 true_clust
 ##    &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;      &lt;int&gt;
-##  1     1  0.808 1.67           1
-##  2     2  1.11  0.899          1
-##  3     3  0.934 0.791          1
-##  4     4  0.754 1.75           1
-##  5     5 NA     0.871          1
-##  6     6 NA     1.07           1
-##  7     7  0.833 0.695          1
-##  8     8  1.20  0.878          1
-##  9     9  1.58  1.68           1
-## 10    10  0.727 0.722          1
+##  1     1  0.726 1.35           1
+##  2     2  0.801 1.10           1
+##  3     3  1.26  1.05           1
+##  4     4  0.931 0.603          1
+##  5     5  1.08  0.868          1
+##  6     6 NA     1.32           1
+##  7     7 NA     0.771          1
+##  8     8 NA     1.20           1
+##  9     9  1.14  0.494          1
+## 10    10  0.969 0.882          1
 ## # … with 490 more rows</code></pre>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">km &lt;-<span class="st"> </span><span class="kw"><a href="../reference/TGL_kmeans_tidy.html">TGL_kmeans_tidy</a></span>(data <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(id, <span class="kw">starts_with</span>(<span class="st">'V'</span>)), </a>
 <a class="sourceLine" id="cb22-2" data-line-number="2">              <span class="dt">k=</span><span class="dv">5</span>, </a>
@@ -260,7 +260,7 @@
 <a class="sourceLine" id="cb22-4" data-line-number="4">              <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb22-5" data-line-number="5">d &lt;-<span class="st"> </span>tglkmeans<span class="op">:::</span><span class="kw">match_clusters</span>(data, km, <span class="dv">5</span>)</a>
 <a class="sourceLine" id="cb22-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(d<span class="op">$</span>true_clust <span class="op">==</span><span class="st"> </span>d<span class="op">$</span>new_clust, <span class="dt">na.rm=</span><span class="ot">TRUE</span>) <span class="op">/</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(d<span class="op">$</span>new_clust))</a></code></pre></div>
-<pre><code>## [1] 0.974</code></pre>
+<pre><code>## [1] 0.98</code></pre>
 <p>and plotting the results (without the NA’s) we get:</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1">d <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x=</span>V1, <span class="dt">y=</span>V2, <span class="dt">color=</span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(new_clust), <span class="dt">shape=</span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(true_clust))) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb24-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></a>
@@ -292,7 +292,7 @@
 <a class="sourceLine" id="cb29-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb29-4" data-line-number="4">d &lt;-<span class="st"> </span>tglkmeans<span class="op">:::</span><span class="kw">match_clusters</span>(data, km_standard, <span class="dv">30</span>)</a>
 <a class="sourceLine" id="cb29-5" data-line-number="5"><span class="kw"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(d<span class="op">$</span>true_clust <span class="op">==</span><span class="st"> </span>d<span class="op">$</span>new_clust, <span class="dt">na.rm=</span><span class="ot">TRUE</span>) <span class="op">/</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(d<span class="op">$</span>new_clust))</a></code></pre></div>
-<pre><code>## [1] 0.7142857</code></pre>
+<pre><code>## [1] 0.6818182</code></pre>
 <p>We can see that kmeans++ clusters siginifcantly better than R vannila kmeans.</p>
 </div>
 <div id="random-seed" class="section level2">
@@ -339,7 +339,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
 
       </footer>
