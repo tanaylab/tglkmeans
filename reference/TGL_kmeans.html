@@ -234,34 +234,36 @@ if NULL, no reordering would be done.</p></td>
 <span class='no'>km</span> <span class='kw'>&lt;-</span> <span class='fu'>TGL_kmeans</span>(<span class='no'>d</span>, <span class='kw'>k</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='st'>"euclid"</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>id column: id</span></div><div class='output co'>#&gt; KMEans: will generate seeds
 #&gt; KMeans into generate seeds
 #&gt; at seed 0
-#&gt; add new core from 271 to 0
+#&gt; add new core from 255 to 0
 #&gt; at seed 1
 #&gt; done update min distance
 #&gt; seed range 350 450
-#&gt; picked up 406 dist was 1.48905
+#&gt; picked up 406 dist was 1.56642
 #&gt; add new core from 406 to 1
 #&gt; at seed 2
 #&gt; done update min distance
 #&gt; seed range 300 400
-#&gt; picked up 33 dist was 1.2727
-#&gt; add new core from 33 to 2
+#&gt; picked up 15 dist was 1.22035
+#&gt; add new core from 15 to 2
 #&gt; at seed 3
 #&gt; done update min distance
 #&gt; seed range 250 350
-#&gt; picked up 328 dist was 0.733069
-#&gt; add new core from 328 to 3
+#&gt; picked up 324 dist was 0.759561
+#&gt; add new core from 324 to 3
 #&gt; at seed 4
 #&gt; done update min distance
 #&gt; seed range 200 300
-#&gt; picked up 160 dist was 0.586651
-#&gt; add new core from 160 to 4
+#&gt; picked up 174 dist was 0.537412
+#&gt; add new core from 174 to 4
 #&gt; KMEans: reassign after init
 #&gt; KMEans: iter 0
-#&gt; KMEans: iter 1 changed 6
+#&gt; KMEans: iter 1 changed 3
 #&gt; KMEans: iter 1
-#&gt; KMEans: iter 2 changed 4
+#&gt; KMEans: iter 2 changed 9
 #&gt; KMEans: iter 2
-#&gt; KMEans: iter 3 changed 0</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>km</span>)</div><div class='output co'>#&gt; [1] "cluster" "centers" "size"   </div><div class='input'><span class='no'>km</span>$<span class='no'>centers</span></div><div class='output co'>#&gt;            V1       V2
+#&gt; KMEans: iter 3 changed 1
+#&gt; KMEans: iter 3
+#&gt; KMEans: iter 4 changed 0</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>km</span>)</div><div class='output co'>#&gt; [1] "cluster" "centers" "size"   </div><div class='input'><span class='no'>km</span>$<span class='no'>centers</span></div><div class='output co'>#&gt;            V1       V2
 #&gt; [1,] 2.000776 2.053331
 #&gt; [2,] 3.969391 4.038842
 #&gt; [3,] 1.019032 1.034553
