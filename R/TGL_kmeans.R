@@ -276,7 +276,7 @@ TGL_kmeans <- function(df,
         if (verbose){
             warning("cannot keep log when verbose option is true")
         } else {
-            km$log <- log            
+            km$log <- res$log            
         }
     }
 

@@ -183,7 +183,11 @@ test_that("not quiet when verbose is turned on", {
 test_that("Log is saved when 'keep_log' is turned on", {
     data <- simulate_data(n = 100, sd = 0.3, nclust = 30, frac_na = NULL)
     expect_warning(res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = TRUE, seed = 17, keep_log=TRUE))
+    expect_warning(res <- TGL_kmeans(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = TRUE, seed = 17, keep_log=TRUE))
+    
     res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = FALSE, seed = 17, keep_log=TRUE)   
+    expect_type(res$log, "character")
+    res <- TGL_kmeans(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = FALSE, seed = 17, keep_log=TRUE)   
     expect_type(res$log, "character")
 })
 
