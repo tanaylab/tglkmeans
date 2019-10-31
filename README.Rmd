@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 This package provides R binding to a cpp implementation of kmeans++ algorithm (https://en.wikipedia.org/wiki/K-means%2B%2B).
 
-### Installation 
+## Installation 
 
 You can install the released version of **tglkmeans** using the following command:
 
@@ -35,7 +35,39 @@ if (!require("remotes")) install.packages("remotes")
 remotes::install_github("tanaylab/tglkmeans")
 ```
 
-#### Using the package
+## Basic usage
+```{r}
+library(tglkmeans)
+```
+
+
+Create 5 clusters normally distributed around 1 to 5, with sd of 0.3:
+
+```{r}
+data <- rbind(matrix(rnorm(100, mean = 1, sd = 0.3), ncol = 2),
+           	  matrix(rnorm(100, mean = 2, sd = 0.3), ncol = 2),
+           	  matrix(rnorm(100, mean = 3, sd = 0.3), ncol = 2),
+           	  matrix(rnorm(100, mean = 4, sd = 0.3), ncol = 2),
+           	  matrix(rnorm(100, mean = 5, sd = 0.3), ncol = 2))
+colnames(data) <- c("x", "y")
+head(data)
+```
+
+Cluster using kmeans++:
+
+```{r}
+km <- TGL_kmeans(data, k=5, id_column = FALSE)
+km
+```
+
+Plot the results:
+```{r, clustering, fig.show='hold', fig.asp = 1}
+plot(data, col = km$cluster)
+points(km$centers, pch=8, cex=2)
+```
+
+## Vignette
+
 Please refer to the package vignettes for usage and workflow, or look at the [usage](https://tanaylab.github.io/tglkmeans/articles/usage.html) section in the site.
 
 
