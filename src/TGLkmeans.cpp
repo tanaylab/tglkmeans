@@ -15,7 +15,7 @@ using namespace Rcpp;
 using namespace std;
 
 void vec2df(const vector<vector<float > >& vec, DataFrame& df){
-    unsigned long nc = vec.size(), nr = vec[0].size();
+    unsigned long nc = vec.size();
     List list( nc );
 
     for( int j=0; j<nc; j++){

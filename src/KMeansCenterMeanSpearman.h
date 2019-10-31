@@ -14,9 +14,9 @@ protected:
     vector<float> m_rank2;
 public:
     KMeansCenterMeanSpearman(int dim) :
+		    KMeansCenterMean(dim),
             m_rank1(dim),
-            m_rank2(dim),
-            KMeansCenterMean(dim)
+            m_rank2(dim)           
     {}
 
     virtual float dist(const vector<float> &v);
