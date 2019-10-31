@@ -22,8 +22,17 @@ This package provides R binding to a cpp implementation of kmeans++ algorithm (h
 
 ### Installation 
 
+You can install the released version of **tglkmeans** using the following command:
+
 ```{r, eval=FALSE}
 install.packages('tglkmeans', repos=c(getOption('repos'), 'https://tanaylab.github.io/repo'))
+```
+
+Or install the develpoment version using: 
+
+```{r, eval=FALSE}
+if (!require("remotes")) install.packages("remotes")
+remotes::install_github("tanaylab/tglkmeans")
 ```
 
 #### Using the package

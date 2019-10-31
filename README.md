@@ -14,8 +14,18 @@ algorithm (<https://en.wikipedia.org/wiki/K-means%2B%2B>).
 
 ### Installation
 
+You can install the released version of **tglkmeans** using the
+following command:
+
 ``` r
 install.packages('tglkmeans', repos=c(getOption('repos'), 'https://tanaylab.github.io/repo'))
+```
+
+Or install the develpoment version using:
+
+``` r
+if (!require("remotes")) install.packages("remotes")
+remotes::install_github("tanaylab/tglkmeans")
 ```
 
 #### Using the package
