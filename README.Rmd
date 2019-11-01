@@ -11,6 +11,8 @@ knitr::opts_chunk$set(
 ```
 
 <!-- badges: start -->
+[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![CRAN status](https://www.r-pkg.org/badges/version/tglkmeans)](https://CRAN.R-project.org/package=tglkmeans)
 [![Travis build status](https://travis-ci.com/tanaylab/tglkmeans.svg?branch=master)](https://travis-ci.org/tanaylab/tglkmeans)
 [![Codecov test coverage](https://codecov.io/gh/tanaylab/tglkmeans/branch/master/graph/badge.svg)](https://codecov.io/gh/tanaylab/tglkmeans?branch=master)
 <!-- badges: end -->
