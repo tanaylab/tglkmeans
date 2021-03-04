@@ -12,7 +12,7 @@ Authors@R:
 Author: Aviezer Lifshitz [aut, cre], Amos Tanay [aut]
 Maintainer: Aviezer Lifshitz <aviezer.lifshitz@weizmann.ac.il>
 Description: Efficient implementation of kmeans++ algorithm.
-License: GPL
+License: MIT
 BugReports: https://github.com/tanaylab/tglkmeans/issues
 Depends: 
     R (>= 3.2.4)
