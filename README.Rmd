@@ -30,7 +30,7 @@ You can install the released version of **tglkmeans** using the following comman
 install.packages('tglkmeans', repos=c(getOption('repos'), 'https://tanaylab.github.io/repo'))
 ```
 
-Or install the develpoment version using: 
+Or install the development version using: 
 
 ```{r, eval=FALSE}
 if (!require("remotes")) install.packages("remotes")

@@ -1,6 +1,6 @@
 #' Set parallel threads
 #'
-#' @param thread_num number of threads. use '1' for non parallel behaviour
+#' @param thread_num number of threads. use '1' for non parallel behavior
 #'
 #' @return None
 #'

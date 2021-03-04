@@ -25,7 +25,7 @@ following command:
 install.packages('tglkmeans', repos=c(getOption('repos'), 'https://tanaylab.github.io/repo'))
 ```
 
-Or install the develpoment version using:
+Or install the development version using:
 
 ``` r
 if (!require("remotes")) install.packages("remotes")

@@ -9,7 +9,7 @@
 #' @param verbose display algorithm messages
 #' @param keep_log keep algorithm messages in 'log' field
 #' @param id_column \code{df}'s first column contains the observation id
-#' @param reorder_func function to reorder the clusters. operates on each center and orders by the result. e.g. \code{reorder_func = mean} would calculate the mean of each center and then would reorder the clusters accordingly. If \code{reorder_func = hclust} the centers would be ordered by hclust of the euclidian distance of the corelation matrix, i.e. \code{hclust(dist(cor(t(centers))))}
+#' @param reorder_func function to reorder the clusters. operates on each center and orders by the result. e.g. \code{reorder_func = mean} would calculate the mean of each center and then would reorder the clusters accordingly. If \code{reorder_func = hclust} the centers would be ordered by hclust of the euclidian distance of the correlation matrix, i.e. \code{hclust(dist(cor(t(centers))))}
 #' if NULL, no reordering would be done.
 #' @param add_to_data return also the original data frame with an extra 'clust' column with the cluster ids ('id' is the first column)
 #' @param hclust_intra_clusters run hierarchical clustering within each cluster and return an ordering of the observations.
@@ -209,7 +209,7 @@ reorder_clusters <- function(km, func = "hclust") {
 #' @return list with the following components:
 #' \describe{
 #'   \item{cluster:}{A vector of integers (from ‘1:k’) indicating the cluster to which each point is allocated.}
-#'   \item{centers:}{A matrix of cluster centres.}
+#'   \item{centers:}{A matrix of cluster centers.}
 #'   \item{size:}{The number of points in each cluster.}
 #'   \item{log:}{messages from the algorithm run (only if \code{id_column == TRUE}).}
 #'   \item{order:}{A vector of integers with the new ordering if the observations. (only if hclust_intra_clusters = TRUE)}
