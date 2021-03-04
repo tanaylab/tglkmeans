@@ -49,5 +49,5 @@ Encoding: UTF-8
 LazyData: true
 NeedsCompilation: yes
 Packaged: 2018-02-25 13:32:32 UTC; aviezerl
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 SystemRequirements: C++11

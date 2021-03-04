@@ -4,11 +4,20 @@
 \alias{TGL_kmeans}
 \title{kmeans++ with return value similar to R kmeans}
 \usage{
-TGL_kmeans(df, k, metric = "euclid", max_iter = 40,
-  min_delta = 1e-04, verbose = FALSE, keep_log = FALSE,
-  id_column = TRUE, reorder_func = "hclust",
-  hclust_intra_clusters = FALSE, seed = NULL,
-  parallel = getOption("tglkmeans.parallel"))
+TGL_kmeans(
+  df,
+  k,
+  metric = "euclid",
+  max_iter = 40,
+  min_delta = 1e-04,
+  verbose = FALSE,
+  keep_log = FALSE,
+  id_column = TRUE,
+  reorder_func = "hclust",
+  hclust_intra_clusters = FALSE,
+  seed = NULL,
+  parallel = getOption("tglkmeans.parallel")
+)
 }
 \arguments{
 \item{df}{data frame. Each row is a single observation and each column is a dimension.
@@ -51,8 +60,6 @@ list with the following components:
 kmeans++ with return value similar to R kmeans
 }
 \examples{
-
-library(dplyr)
 
 # create 5 clusters normally distributed around 1:5
 d <- simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2, add_true_clust = FALSE)

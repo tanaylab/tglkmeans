@@ -28,7 +28,6 @@
 #'
 #' @examples
 #' 
-#' library(dplyr)
 #' # create 5 clusters normally distributed around 1:5
 #' d <- simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2, add_true_clust = FALSE)
 #' head(d)
@@ -217,8 +216,6 @@ reorder_clusters <- function(km, func = "hclust") {
 #' }
 #'
 #' @examples
-#' 
-#' library(dplyr)
 #' 
 #' # create 5 clusters normally distributed around 1:5
 #' d <- simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2, add_true_clust = FALSE)

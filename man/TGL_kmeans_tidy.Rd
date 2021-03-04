@@ -4,11 +4,21 @@
 \alias{TGL_kmeans_tidy}
 \title{TGL kmeans with 'tidy' output}
 \usage{
-TGL_kmeans_tidy(df, k, metric = "euclid", max_iter = 40,
-  min_delta = 1e-04, verbose = FALSE, keep_log = FALSE,
-  id_column = TRUE, reorder_func = "hclust", add_to_data = FALSE,
-  hclust_intra_clusters = FALSE, seed = NULL,
-  parallel = getOption("tglkmeans.parallel"))
+TGL_kmeans_tidy(
+  df,
+  k,
+  metric = "euclid",
+  max_iter = 40,
+  min_delta = 1e-04,
+  verbose = FALSE,
+  keep_log = FALSE,
+  id_column = TRUE,
+  reorder_func = "hclust",
+  add_to_data = FALSE,
+  hclust_intra_clusters = FALSE,
+  seed = NULL,
+  parallel = getOption("tglkmeans.parallel")
+)
 }
 \arguments{
 \item{df}{data frame. Each row is a single observation and each column is a dimension.
@@ -55,7 +65,6 @@ TGL kmeans with 'tidy' output
 }
 \examples{
 
-library(dplyr)
 # create 5 clusters normally distributed around 1:5
 d <- simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2, add_true_clust = FALSE)
 head(d)
