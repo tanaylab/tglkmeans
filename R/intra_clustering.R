@@ -1,17 +1,22 @@
 hclust_every_cluster <- function(km, df, parallel = TRUE) {
     if (!rlang::has_name(km, "data")) {
-        km$data <- df %>% left_join(km$cluster, by = colnames(df)[1]) %>% select(clust, everything()) %>% as_tibble()
+        km$data <- df %>%
+            left_join(km$cluster, by = colnames(df)[1]) %>%
+            select(clust, everything()) %>%
+            as_tibble()
     }
 
-    all_hc <- km$data %>% plyr::dlply(plyr::.(clust), function(x) {
-        ids <- x$id
-        hc <- as.matrix(x[, -1:-2]) %>%
-            t() %>%
-            tgs_cor(pairwise.complete.obs = TRUE, spearman = TRUE) %>%
-            tgs_dist() %>%
-            hclust(method = "ward.D2")
-        return(tibble(clust = x$clust[1], id = ids, intra_clust_order = hc$order))
-    }, .parallel = parallel) %>% purrr::map_df(~.x)
+    all_hc <- km$data %>%
+        plyr::dlply(plyr::.(clust), function(x) {
+            ids <- x$id
+            hc <- as.matrix(x[, -1:-2]) %>%
+                t() %>%
+                tgs_cor(pairwise.complete.obs = TRUE, spearman = TRUE) %>%
+                tgs_dist() %>%
+                hclust(method = "ward.D2")
+            return(tibble(clust = x$clust[1], id = ids, intra_clust_order = hc$order))
+        }, .parallel = parallel) %>%
+        purrr::map_df(~.x)
 
     res <- km$data %>%
         select(id, clust) %>%

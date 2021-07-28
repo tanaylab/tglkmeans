@@ -15,7 +15,7 @@
 #'
 #' @examples
 #' simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2)
-#' 
+#'
 #' # add 20% missing data
 #' simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2, frac_na = 0.2)
 simulate_data <- function(n = 100, sd = 0.3, nclust = 30, dims = 2, frac_na = NULL, add_true_clust = TRUE) {
@@ -37,7 +37,11 @@ simulate_data <- function(n = 100, sd = 0.3, nclust = 30, dims = 2, frac_na = NU
 
 match_clusters <- function(data, res, nclust) {
     d <- data %>% left_join(res$clust %>% mutate(id = as.numeric(as.character(id))), by = "id")
-    clust_map <- d %>% group_by(clust, true_clust) %>% summarise(n = n()) %>% top_n(1, n) %>% ungroup()
+    clust_map <- d %>%
+        group_by(clust, true_clust) %>%
+        summarise(n = n()) %>%
+        top_n(1, n) %>%
+        ungroup()
     d <- d %>% left_join(clust_map %>% select(new_clust = true_clust, clust), by = "clust")
     return(d)
 }
