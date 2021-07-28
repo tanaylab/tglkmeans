@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tglkmeans</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
       </span>
     </div>
 
@@ -62,7 +62,7 @@
 </li>
 <li>
   <a href="https://github.com/tanaylab/tglkmeans/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -95,7 +95,7 @@
       <h1 data-toc-skip>basic usage</h1>
                         <h4 class="author">Aviezer Lifshitz</h4>
             
-            <h4 class="date">2020-09-16</h4>
+            <h4 class="date">2021-07-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/tanaylab/tglkmeans/blob/master/vignettes/usage.Rmd"><code>vignettes/usage.Rmd</code></a></small>
       <div class="hidden name"><code>usage.Rmd</code></div>
@@ -108,134 +108,125 @@
 <div id="basic-usage" class="section level2">
 <h2 class="hasAnchor">
 <a href="#basic-usage" class="anchor"></a>Basic usage</h2>
-<p>First, let’s create 5 clusters normally distributed around 1 to 5, with sd of 0.3:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_data.html">simulate_data</a></span>(n=<span class="fl">100</span>, sd=<span class="fl">0.3</span>, nclust=<span class="fl">5</span>, dims=<span class="fl">2</span>)
-<span class="kw">data</span>
-</pre></div>
-<pre><code>## # A tibble: 500 x 4
+<p>First, let's create 5 clusters normally distributed around 1 to 5, with sd of 0.3:</p>
+<div class="sourceCode"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_data.html">simulate_data</a></span><span class="op">(</span>n<span class="op">=</span><span class="fl">100</span>, sd<span class="op">=</span><span class="fl">0.3</span>, nclust<span class="op">=</span><span class="fl">5</span>, dims<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
+<span class="va">data</span></code></pre></div>
+<pre><code>## # A tibble: 500 × 4
 ##       id    V1    V2 true_clust
 ##    &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;      &lt;int&gt;
-##  1     1 1.30  0.787          1
-##  2     2 0.454 1.28           1
-##  3     3 0.746 0.598          1
-##  4     4 1.37  0.969          1
-##  5     5 0.825 1.17           1
-##  6     6 0.662 1.16           1
-##  7     7 1.28  1.07           1
-##  8     8 0.792 0.882          1
-##  9     9 0.565 1.08           1
-## 10    10 1.31  1.05           1
+##  1     1 0.901 1.10           1
+##  2     2 0.859 1.40           1
+##  3     3 1.19  1.24           1
+##  4     4 1.22  1.07           1
+##  5     5 0.897 0.570          1
+##  6     6 1.19  1.01           1
+##  7     7 0.674 0.720          1
+##  8     8 0.728 1.08           1
+##  9     9 0.715 0.967          1
+## 10    10 1.03  1.38           1
 ## # … with 490 more rows</code></pre>
 <p>This is how our data looks like:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="kw">data</span> <span class="op">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(x=<span class="kw">V1</span>, y=<span class="kw">V2</span>, color=<span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="kw">true_clust</span>))) <span class="op">+</span> 
-    <span class="fu">geom_point</span>() <span class="op">+</span> 
-    <span class="fu">scale_color_discrete</span>(name=<span class="st">'true cluster'</span>)
-</pre></div>
+<div class="sourceCode"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">data</span> <span class="op">%&gt;%</span> <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">V1</span>, y<span class="op">=</span><span class="va">V2</span>, color<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">true_clust</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+    <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
+    <span class="fu">scale_color_discrete</span><span class="op">(</span>name<span class="op">=</span><span class="st">'true cluster'</span><span class="op">)</span></code></pre></div>
 <p><img src="usage_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 <p>Now we can cluster it using kmeans++:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="kw">data_for_clust</span> <span class="op">&lt;-</span> <span class="kw">data</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">id</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span>(<span class="st">'V'</span>))
-<span class="kw">km</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/TGL_kmeans_tidy.html">TGL_kmeans_tidy</a></span>(<span class="kw">data_for_clust</span>,
-              k=<span class="fl">5</span>, 
-              metric=<span class="st">'euclid'</span>, 
-              verbose=<span class="fl">TRUE</span>)
-</pre></div>
+<div class="sourceCode"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">data_for_clust</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">%&gt;%</span> <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="fu">starts_with</span><span class="op">(</span><span class="st">'V'</span><span class="op">)</span><span class="op">)</span>
+<span class="va">km</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/TGL_kmeans_tidy.html">TGL_kmeans_tidy</a></span><span class="op">(</span><span class="va">data_for_clust</span>,
+              k<span class="op">=</span><span class="fl">5</span>, 
+              metric<span class="op">=</span><span class="st">'euclid'</span>, 
+              verbose<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <pre><code>## id column: id</code></pre>
 <pre><code>## KMEans: will generate seeds
 ## KMeans into generate seeds
 ## at seed 0
-## add new core from 355 to 0
+## add new core from 174 to 0
 ## at seed 1
 ## done update min distance
 ## seed range 350 450
-## picked up 18 dist was 2.12638
-## add new core from 18 to 1
+## picked up 318 dist was 1.7732
+## add new core from 318 to 1
 ## at seed 2
 ## done update min distance
 ## seed range 300 400
-## picked up 426 dist was 0.813255
-## add new core from 426 to 2
+## picked up 29 dist was 0.926808
+## add new core from 29 to 2
 ## at seed 3
 ## done update min distance
 ## seed range 250 350
-## picked up 166 dist was 0.733476
-## add new core from 166 to 3
+## picked up 200 dist was 0.799287
+## add new core from 200 to 3
 ## at seed 4
 ## done update min distance
 ## seed range 200 300
-## picked up 284 dist was 0.726499
-## add new core from 284 to 4
+## picked up 314 dist was 0.43303
+## add new core from 314 to 4
 ## KMEans: reassign after init
 ## KMEans: iter 0
-## KMEans: iter 1 changed 1
+## KMEans: iter 1 changed 15
 ## KMEans: iter 1
-## KMEans: iter 2 changed 1
+## KMEans: iter 2 changed 5
 ## KMEans: iter 2
 ## KMEans: iter 3 changed 0</code></pre>
 <p>The returned list contains 3 fields:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">km</span>)
-</pre></div>
+<div class="sourceCode"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">km</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] "centers" "cluster" "size"</code></pre>
 <p><code>km$centers</code> contains a tibble with <code>clust</code> column and the cluster centers:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="kw">km</span><span class="op">$</span><span class="kw">centers</span>
-</pre></div>
-<pre><code>## # A tibble: 5 x 3
+<div class="sourceCode"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">km</span><span class="op">$</span><span class="va">centers</span></code></pre></div>
+<pre><code>## # A tibble: 5 × 3
 ##   clust    V1    V2
 ##   &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1     1 4.03  4.00 
-## 2     2 2.96  3.05 
-## 3     3 1.95  1.97 
-## 4     4 0.952 0.972
-## 5     5 4.98  5.03</code></pre>
-<p>clusters are numbered according to <code>order_func</code> (see ‘Custom cluster ordering’ section).</p>
+## 1     1 4.99  4.99 
+## 2     2 4.02  4.02 
+## 3     3 2.97  2.96 
+## 4     4 2.03  2.01 
+## 5     5 0.988 0.975</code></pre>
+<p>clusters are numbered according to <code>order_func</code> (see 'Custom cluster ordering' section).</p>
 <p><code>km$cluster</code> contains tibble with <code>id</code> column with the observation id (<code>1:n</code> if no id column was supplied), and <code>clust</code> column with the observation assigned cluster:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="kw">km</span><span class="op">$</span><span class="kw">cluster</span>
-</pre></div>
-<pre><code>## # A tibble: 500 x 2
+<div class="sourceCode"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">km</span><span class="op">$</span><span class="va">cluster</span></code></pre></div>
+<pre><code>## # A tibble: 500 × 2
 ##    id    clust
 ##    &lt;chr&gt; &lt;int&gt;
-##  1 1         4
-##  2 2         4
-##  3 3         4
-##  4 4         4
-##  5 5         4
-##  6 6         4
-##  7 7         4
-##  8 8         4
-##  9 9         4
-## 10 10        4
+##  1 1         5
+##  2 2         5
+##  3 3         5
+##  4 4         5
+##  5 5         5
+##  6 6         5
+##  7 7         5
+##  8 8         5
+##  9 9         5
+## 10 10        5
 ## # … with 490 more rows</code></pre>
 <p><code>km$size</code> contains tibble with <code>clust</code> column and <code>n</code> column with the number of points in each cluster:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit">
-<span class="kw">km</span><span class="op">$</span><span class="kw">size</span>
-</pre></div>
-<pre><code>## # A tibble: 5 x 2
+<div class="sourceCode"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">km</span><span class="op">$</span><span class="va">size</span></code></pre></div>
+<pre><code>## # A tibble: 5 × 2
 ##   clust     n
 ##   &lt;int&gt; &lt;int&gt;
-## 1     1   101
-## 2     2    99
-## 3     3   101
-## 4     4   100
-## 5     5    99</code></pre>
+## 1     1   100
+## 2     2   101
+## 3     3    99
+## 4     4    99
+## 5     5   101</code></pre>
 <p>We can now check our clustering performance - fraction of observations that were classified correctly (Note that <code>match_clusters</code> function is internal to the package and is used only in this vignette):</p>
-<div class="sourceCode" id="cb15"><pre class="downlit">
-<span class="kw">d</span> <span class="op">&lt;-</span> <span class="kw">tglkmeans</span>:::<span class="fu">match_clusters</span>(<span class="kw">data</span>, <span class="kw">km</span>, <span class="fl">5</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="kw">d</span><span class="op">$</span><span class="kw">true_clust</span> <span class="op">==</span> <span class="kw">d</span><span class="op">$</span><span class="kw">new_clust</span>, na.rm=<span class="fl">TRUE</span>) <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="kw">d</span><span class="op">$</span><span class="kw">new_clust</span>))
-</pre></div>
-<pre><code>## [1] 0.988</code></pre>
+<div class="sourceCode"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">tglkmeans</span><span class="fu">:::</span><span class="fu">match_clusters</span><span class="op">(</span><span class="va">data</span>, <span class="va">km</span>, <span class="fl">5</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">true_clust</span> <span class="op">==</span> <span class="va">d</span><span class="op">$</span><span class="va">new_clust</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">new_clust</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] 0.984</code></pre>
 <p>And plot the results:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit">
-<span class="kw">d</span> <span class="op">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(x=<span class="kw">V1</span>, y=<span class="kw">V2</span>, color=<span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="kw">new_clust</span>), shape=<span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="kw">true_clust</span>))) <span class="op">+</span> 
-    <span class="fu">geom_point</span>() <span class="op">+</span> 
-    <span class="fu">scale_color_discrete</span>(name=<span class="st">'cluster'</span>) <span class="op">+</span> 
-    <span class="fu">scale_shape_discrete</span>(name=<span class="st">'true cluster'</span>) <span class="op">+</span> 
-    <span class="fu">geom_point</span>(data=<span class="kw">km</span><span class="op">$</span><span class="kw">centers</span>, size=<span class="fl">7</span>, color=<span class="st">'black'</span>, shape=<span class="st">'X'</span>)
-</pre></div>
+<div class="sourceCode"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">d</span> <span class="op">%&gt;%</span> <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">V1</span>, y<span class="op">=</span><span class="va">V2</span>, color<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">new_clust</span><span class="op">)</span>, shape<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">true_clust</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+    <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
+    <span class="fu">scale_color_discrete</span><span class="op">(</span>name<span class="op">=</span><span class="st">'cluster'</span><span class="op">)</span> <span class="op">+</span> 
+    <span class="fu">scale_shape_discrete</span><span class="op">(</span>name<span class="op">=</span><span class="st">'true cluster'</span><span class="op">)</span> <span class="op">+</span> 
+    <span class="fu">geom_point</span><span class="op">(</span>data<span class="op">=</span><span class="va">km</span><span class="op">$</span><span class="va">centers</span>, size<span class="op">=</span><span class="fl">7</span>, color<span class="op">=</span><span class="st">'black'</span>, shape<span class="op">=</span><span class="st">'X'</span><span class="op">)</span></code></pre></div>
 <p><img src="usage_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
 </div>
 <div id="custom-cluster-ordering" class="section level2">
@@ -243,113 +234,105 @@
 <a href="#custom-cluster-ordering" class="anchor"></a>Custom cluster ordering</h2>
 <p>By default, the clusters where ordered using the following function: <code><a href="https://rdrr.io/r/stats/hclust.html">hclust(dist(cor(t(centers))))</a></code> - hclust of the euclidian distance of the correlation matrix of the centers.</p>
 <p>We can supply our own function to order the clusters using <code>reorder_func</code> argument. The function would be applied to each center and he clusters would be ordered by the result.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit">
-<span class="kw">km</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/TGL_kmeans_tidy.html">TGL_kmeans_tidy</a></span>(<span class="kw">data</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">id</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span>(<span class="st">'V'</span>)), 
-              k=<span class="fl">5</span>, 
-              metric=<span class="st">'euclid'</span>, 
-              verbose=<span class="fl">FALSE</span>, 
-              reorder_func=<span class="kw">median</span>)
-<span class="kw">km</span><span class="op">$</span><span class="kw">centers</span>
-</pre></div>
-<pre><code>## # A tibble: 5 x 3
+<div class="sourceCode"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">km</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/TGL_kmeans_tidy.html">TGL_kmeans_tidy</a></span><span class="op">(</span><span class="va">data</span> <span class="op">%&gt;%</span> <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="fu">starts_with</span><span class="op">(</span><span class="st">'V'</span><span class="op">)</span><span class="op">)</span>, 
+              k<span class="op">=</span><span class="fl">5</span>, 
+              metric<span class="op">=</span><span class="st">'euclid'</span>, 
+              verbose<span class="op">=</span><span class="cn">FALSE</span>, 
+              reorder_func<span class="op">=</span><span class="va">median</span><span class="op">)</span>
+<span class="va">km</span><span class="op">$</span><span class="va">centers</span></code></pre></div>
+<pre><code>## # A tibble: 5 × 3
 ##   clust    V1    V2
 ##   &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1     1 0.952 0.972
-## 2     2 1.95  1.97 
-## 3     3 2.96  3.05 
-## 4     4 4.02  3.99 
-## 5     5 4.98  5.03</code></pre>
+## 1     1 0.988 0.975
+## 2     2 2.03  2.01 
+## 3     3 2.97  2.96 
+## 4     4 4.02  4.02 
+## 5     5 4.99  4.99</code></pre>
 </div>
 <div id="missing-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#missing-data" class="anchor"></a>Missing data</h2>
 <p>tglkmeans can deal with missing data, as long as at least one dimension is not missing. for example:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit">
-<span class="kw">data</span><span class="op">$</span><span class="kw">V1</span>[<span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="kw">data</span>), <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="kw">data</span>)<span class="op">*</span><span class="fl">0.2</span>))] <span class="op">&lt;-</span> <span class="fl">NA</span>
-<span class="kw">data</span>
-</pre></div>
-<pre><code>## # A tibble: 500 x 4
+<div class="sourceCode"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">data</span><span class="op">$</span><span class="va">V1</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">*</span><span class="fl">0.2</span><span class="op">)</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span>
+<span class="va">data</span></code></pre></div>
+<pre><code>## # A tibble: 500 × 4
 ##       id     V1    V2 true_clust
 ##    &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;      &lt;int&gt;
-##  1     1  1.30  0.787          1
-##  2     2  0.454 1.28           1
-##  3     3  0.746 0.598          1
-##  4     4  1.37  0.969          1
-##  5     5  0.825 1.17           1
-##  6     6  0.662 1.16           1
-##  7     7  1.28  1.07           1
-##  8     8 NA     0.882          1
-##  9     9  0.565 1.08           1
-## 10    10  1.31  1.05           1
+##  1     1  0.901 1.10           1
+##  2     2 NA     1.40           1
+##  3     3  1.19  1.24           1
+##  4     4  1.22  1.07           1
+##  5     5  0.897 0.570          1
+##  6     6 NA     1.01           1
+##  7     7  0.674 0.720          1
+##  8     8  0.728 1.08           1
+##  9     9  0.715 0.967          1
+## 10    10  1.03  1.38           1
 ## # … with 490 more rows</code></pre>
-<div class="sourceCode" id="cb22"><pre class="downlit">
-<span class="kw">km</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/TGL_kmeans_tidy.html">TGL_kmeans_tidy</a></span>(<span class="kw">data</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">id</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span>(<span class="st">'V'</span>)), 
-              k=<span class="fl">5</span>, 
-              metric=<span class="st">'euclid'</span>, 
-              verbose=<span class="fl">FALSE</span>)
-<span class="kw">d</span> <span class="op">&lt;-</span> <span class="kw">tglkmeans</span>:::<span class="fu">match_clusters</span>(<span class="kw">data</span>, <span class="kw">km</span>, <span class="fl">5</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="kw">d</span><span class="op">$</span><span class="kw">true_clust</span> <span class="op">==</span> <span class="kw">d</span><span class="op">$</span><span class="kw">new_clust</span>, na.rm=<span class="fl">TRUE</span>) <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="kw">d</span><span class="op">$</span><span class="kw">new_clust</span>))
-</pre></div>
-<pre><code>## [1] 0.978</code></pre>
-<p>and plotting the results (without the NA’s) we get:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit">
-<span class="kw">d</span> <span class="op">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(x=<span class="kw">V1</span>, y=<span class="kw">V2</span>, color=<span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="kw">new_clust</span>), shape=<span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="kw">true_clust</span>))) <span class="op">+</span> 
-    <span class="fu">geom_point</span>() <span class="op">+</span> 
-    <span class="fu">scale_color_discrete</span>(name=<span class="st">'cluster'</span>) <span class="op">+</span> 
-    <span class="fu">scale_shape_discrete</span>(name=<span class="st">'true cluster'</span>) <span class="op">+</span> 
-    <span class="fu">geom_point</span>(data=<span class="kw">km</span><span class="op">$</span><span class="kw">centers</span>, size=<span class="fl">7</span>, color=<span class="st">'black'</span>, shape=<span class="st">'X'</span>)
-</pre></div>
+<div class="sourceCode"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">km</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/TGL_kmeans_tidy.html">TGL_kmeans_tidy</a></span><span class="op">(</span><span class="va">data</span> <span class="op">%&gt;%</span> <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="fu">starts_with</span><span class="op">(</span><span class="st">'V'</span><span class="op">)</span><span class="op">)</span>, 
+              k<span class="op">=</span><span class="fl">5</span>, 
+              metric<span class="op">=</span><span class="st">'euclid'</span>, 
+              verbose<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+<span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">tglkmeans</span><span class="fu">:::</span><span class="fu">match_clusters</span><span class="op">(</span><span class="va">data</span>, <span class="va">km</span>, <span class="fl">5</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">true_clust</span> <span class="op">==</span> <span class="va">d</span><span class="op">$</span><span class="va">new_clust</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">new_clust</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] 0.976</code></pre>
+<p>and plotting the results (without the NA's) we get:</p>
+<div class="sourceCode"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">d</span> <span class="op">%&gt;%</span> <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">V1</span>, y<span class="op">=</span><span class="va">V2</span>, color<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">new_clust</span><span class="op">)</span>, shape<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">true_clust</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+    <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
+    <span class="fu">scale_color_discrete</span><span class="op">(</span>name<span class="op">=</span><span class="st">'cluster'</span><span class="op">)</span> <span class="op">+</span> 
+    <span class="fu">scale_shape_discrete</span><span class="op">(</span>name<span class="op">=</span><span class="st">'true cluster'</span><span class="op">)</span> <span class="op">+</span> 
+    <span class="fu">geom_point</span><span class="op">(</span>data<span class="op">=</span><span class="va">km</span><span class="op">$</span><span class="va">centers</span>, size<span class="op">=</span><span class="fl">7</span>, color<span class="op">=</span><span class="st">'black'</span>, shape<span class="op">=</span><span class="st">'X'</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning: Removed 100 rows containing missing values (geom_point).</code></pre>
 <p><img src="usage_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
 </div>
 <div id="high-dimensions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#high-dimensions" class="anchor"></a>High dimensions</h2>
-<p>Let’s move to higher dimensions (and higher noise):</p>
-<div class="sourceCode" id="cb26"><pre class="downlit">
-<span class="kw">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_data.html">simulate_data</a></span>(n=<span class="fl">100</span>, sd=<span class="fl">0.3</span>, nclust=<span class="fl">30</span>, dims=<span class="fl">300</span>)
-<span class="kw">km</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/TGL_kmeans_tidy.html">TGL_kmeans_tidy</a></span>(<span class="kw">data</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">id</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span>(<span class="st">'V'</span>)), 
-    k=<span class="fl">30</span>, 
-    metric=<span class="st">'euclid'</span>, 
-    verbose=<span class="fl">FALSE</span>)
-</pre></div>
-<div class="sourceCode" id="cb27"><pre class="downlit">
-<span class="kw">d</span> <span class="op">&lt;-</span> <span class="kw">tglkmeans</span>:::<span class="fu">match_clusters</span>(<span class="kw">data</span>, <span class="kw">km</span>, <span class="fl">30</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="kw">d</span><span class="op">$</span><span class="kw">true_clust</span> <span class="op">==</span> <span class="kw">d</span><span class="op">$</span><span class="kw">new_clust</span>, na.rm=<span class="fl">TRUE</span>) <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="kw">d</span><span class="op">$</span><span class="kw">new_clust</span>))
-</pre></div>
+<p>Let's move to higher dimensions (and higher noise):</p>
+<div class="sourceCode"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_data.html">simulate_data</a></span><span class="op">(</span>n<span class="op">=</span><span class="fl">100</span>, sd<span class="op">=</span><span class="fl">0.3</span>, nclust<span class="op">=</span><span class="fl">30</span>, dims<span class="op">=</span><span class="fl">300</span><span class="op">)</span>
+<span class="va">km</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/TGL_kmeans_tidy.html">TGL_kmeans_tidy</a></span><span class="op">(</span><span class="va">data</span> <span class="op">%&gt;%</span> <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="fu">starts_with</span><span class="op">(</span><span class="st">'V'</span><span class="op">)</span><span class="op">)</span>, 
+    k<span class="op">=</span><span class="fl">30</span>, 
+    metric<span class="op">=</span><span class="st">'euclid'</span>, 
+    verbose<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">tglkmeans</span><span class="fu">:::</span><span class="fu">match_clusters</span><span class="op">(</span><span class="va">data</span>, <span class="va">km</span>, <span class="fl">30</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">true_clust</span> <span class="op">==</span> <span class="va">d</span><span class="op">$</span><span class="va">new_clust</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">new_clust</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 1</code></pre>
 </div>
 <div id="comparison-with-r-vanilla-kmeans" class="section level2">
 <h2 class="hasAnchor">
 <a href="#comparison-with-r-vanilla-kmeans" class="anchor"></a>Comparison with R vanilla kmeans</h2>
-<p>Let’s compare it to R vanilla kmeans:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit">
-<span class="kw">km_standard</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/kmeans.html">kmeans</a></span>(<span class="kw">data</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span>(<span class="st">'V'</span>)), <span class="fl">30</span>)
-<span class="kw">km_standard</span><span class="op">$</span><span class="kw">clust</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span>(id = <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="kw">data</span>), clust=<span class="kw">km_standard</span><span class="op">$</span><span class="kw">cluster</span>)
+<p>Let's compare it to R vanilla kmeans:</p>
+<div class="sourceCode"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">km_standard</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/kmeans.html">kmeans</a></span><span class="op">(</span><span class="va">data</span> <span class="op">%&gt;%</span> <span class="fu">select</span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">'V'</span><span class="op">)</span><span class="op">)</span>, <span class="fl">30</span><span class="op">)</span>
+<span class="va">km_standard</span><span class="op">$</span><span class="va">clust</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>, clust<span class="op">=</span><span class="va">km_standard</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span>
 
-<span class="kw">d</span> <span class="op">&lt;-</span> <span class="kw">tglkmeans</span>:::<span class="fu">match_clusters</span>(<span class="kw">data</span>, <span class="kw">km_standard</span>, <span class="fl">30</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="kw">d</span><span class="op">$</span><span class="kw">true_clust</span> <span class="op">==</span> <span class="kw">d</span><span class="op">$</span><span class="kw">new_clust</span>, na.rm=<span class="fl">TRUE</span>) <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="kw">d</span><span class="op">$</span><span class="kw">new_clust</span>))
-</pre></div>
-<pre><code>## [1] 0.6521739</code></pre>
-<p>We can see that kmeans++ clusters siginifcantly better than R vannila kmeans.</p>
+<span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">tglkmeans</span><span class="fu">:::</span><span class="fu">match_clusters</span><span class="op">(</span><span class="va">data</span>, <span class="va">km_standard</span>, <span class="fl">30</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">true_clust</span> <span class="op">==</span> <span class="va">d</span><span class="op">$</span><span class="va">new_clust</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">new_clust</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] 0.7142857</code></pre>
+<p>We can see that kmeans++ clusters siginificantly better than R vainlla kmeans.</p>
 </div>
 <div id="random-seed" class="section level2">
 <h2 class="hasAnchor">
 <a href="#random-seed" class="anchor"></a>Random seed</h2>
-<p>we can set the seed for the c++ random number generator, for reproducable results:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit">
-<span class="kw">km1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/TGL_kmeans_tidy.html">TGL_kmeans_tidy</a></span>(<span class="kw">data</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">id</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span>(<span class="st">'V'</span>)), 
-               k=<span class="fl">30</span>, 
-               metric=<span class="st">'euclid'</span>, 
-               verbose=<span class="fl">FALSE</span>, 
-               seed=<span class="fl">17</span>)
-<span class="kw">km2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/TGL_kmeans_tidy.html">TGL_kmeans_tidy</a></span>(<span class="kw">data</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">id</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span>(<span class="st">'V'</span>)), 
-               k=<span class="fl">30</span>, 
-               metric=<span class="st">'euclid'</span>, 
-               verbose=<span class="fl">FALSE</span>, 
-               seed=<span class="fl">17</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/all.html">all</a></span>(<span class="kw">km1</span><span class="op">$</span><span class="kw">centers</span>[, <span class="op">-</span><span class="fl">1</span>] <span class="op">==</span> <span class="kw">km2</span><span class="op">$</span><span class="kw">centers</span>[, <span class="op">-</span><span class="fl">1</span>])
-</pre></div>
+<p>we can set the seed for the c++ random number generator, for reproducible results:</p>
+<div class="sourceCode"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">km1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/TGL_kmeans_tidy.html">TGL_kmeans_tidy</a></span><span class="op">(</span><span class="va">data</span> <span class="op">%&gt;%</span> <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="fu">starts_with</span><span class="op">(</span><span class="st">'V'</span><span class="op">)</span><span class="op">)</span>, 
+               k<span class="op">=</span><span class="fl">30</span>, 
+               metric<span class="op">=</span><span class="st">'euclid'</span>, 
+               verbose<span class="op">=</span><span class="cn">FALSE</span>, 
+               seed<span class="op">=</span><span class="fl">17</span><span class="op">)</span>
+<span class="va">km2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/TGL_kmeans_tidy.html">TGL_kmeans_tidy</a></span><span class="op">(</span><span class="va">data</span> <span class="op">%&gt;%</span> <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="fu">starts_with</span><span class="op">(</span><span class="st">'V'</span><span class="op">)</span><span class="op">)</span>, 
+               k<span class="op">=</span><span class="fl">30</span>, 
+               metric<span class="op">=</span><span class="st">'euclid'</span>, 
+               verbose<span class="op">=</span><span class="cn">FALSE</span>, 
+               seed<span class="op">=</span><span class="fl">17</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/all.html">all</a></span><span class="op">(</span><span class="va">km1</span><span class="op">$</span><span class="va">centers</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span> <span class="op">==</span> <span class="va">km2</span><span class="op">$</span><span class="va">centers</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
 </div>
   </div>

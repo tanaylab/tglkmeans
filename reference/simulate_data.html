@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tglkmeans</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
       </span>
     </div>
 
@@ -103,7 +103,7 @@
 </li>
 <li>
   <a href="https://github.com/tanaylab/tglkmeans/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -144,8 +144,14 @@
     <p>Creates <code>nclust</code> clusters normally distributed around <code>1:nclust</code></p>
     </div>
 
-    <pre class="usage"><span class='fu'>simulate_data</span>(n = <span class='fl'>100</span>, sd = <span class='fl'>0.3</span>, nclust = <span class='fl'>30</span>, dims = <span class='fl'>2</span>,
-  frac_na = <span class='kw'>NULL</span>, add_true_clust = <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>simulate_data</span><span class='op'>(</span>
+  n <span class='op'>=</span> <span class='fl'>100</span>,
+  sd <span class='op'>=</span> <span class='fl'>0.3</span>,
+  nclust <span class='op'>=</span> <span class='fl'>30</span>,
+  dims <span class='op'>=</span> <span class='fl'>2</span>,
+  frac_na <span class='op'>=</span> <span class='cn'>NULL</span>,
+  add_true_clust <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -181,37 +187,37 @@
     <p>simulated data</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>simulate_data</span>(n = <span class='fl'>100</span>, sd = <span class='fl'>0.3</span>, nclust = <span class='fl'>5</span>, dims = <span class='fl'>2</span>)
-</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 500 x 4</span><span>
+    <pre class="examples"><div class='input'><span class='fu'>simulate_data</span><span class='op'>(</span>n <span class='op'>=</span> <span class='fl'>100</span>, sd <span class='op'>=</span> <span class='fl'>0.3</span>, nclust <span class='op'>=</span> <span class='fl'>5</span>, dims <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 500 × 4</span>
 #&gt;       id    V1    V2 true_clust
-#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 1</span><span>     1 0.950 1.25           1
-#&gt; </span><span style='color: #555555;'> 2</span><span>     2 1.04  1.38           1
-#&gt; </span><span style='color: #555555;'> 3</span><span>     3 0.801 0.787          1
-#&gt; </span><span style='color: #555555;'> 4</span><span>     4 0.841 0.894          1
-#&gt; </span><span style='color: #555555;'> 5</span><span>     5 0.910 0.675          1
-#&gt; </span><span style='color: #555555;'> 6</span><span>     6 0.819 1.29           1
-#&gt; </span><span style='color: #555555;'> 7</span><span>     7 0.905 0.856          1
-#&gt; </span><span style='color: #555555;'> 8</span><span>     8 1.09  0.688          1
-#&gt; </span><span style='color: #555555;'> 9</span><span>     9 1.24  1.06           1
-#&gt; </span><span style='color: #555555;'>10</span><span>    10 1.53  1.51           1
-#&gt; </span><span style='color: #555555;'># … with 490 more rows</span><span></div><div class='input'>
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span>     1 0.950 1.25           1
+#&gt; <span style='color: #BCBCBC;'> 2</span>     2 1.04  1.38           1
+#&gt; <span style='color: #BCBCBC;'> 3</span>     3 0.801 0.787          1
+#&gt; <span style='color: #BCBCBC;'> 4</span>     4 0.841 0.894          1
+#&gt; <span style='color: #BCBCBC;'> 5</span>     5 0.910 0.675          1
+#&gt; <span style='color: #BCBCBC;'> 6</span>     6 0.819 1.29           1
+#&gt; <span style='color: #BCBCBC;'> 7</span>     7 0.905 0.856          1
+#&gt; <span style='color: #BCBCBC;'> 8</span>     8 1.09  0.688          1
+#&gt; <span style='color: #BCBCBC;'> 9</span>     9 1.24  1.06           1
+#&gt; <span style='color: #BCBCBC;'>10</span>    10 1.53  1.51           1
+#&gt; <span style='color: #949494;'># … with 490 more rows</span></div><div class='input'>
 <span class='co'># add 20% missing data</span>
-<span class='fu'>simulate_data</span>(n = <span class='fl'>100</span>, sd = <span class='fl'>0.3</span>, nclust = <span class='fl'>5</span>, dims = <span class='fl'>2</span>, frac_na = <span class='fl'>0.2</span>)
-</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 500 x 4</span><span>
+<span class='fu'>simulate_data</span><span class='op'>(</span>n <span class='op'>=</span> <span class='fl'>100</span>, sd <span class='op'>=</span> <span class='fl'>0.3</span>, nclust <span class='op'>=</span> <span class='fl'>5</span>, dims <span class='op'>=</span> <span class='fl'>2</span>, frac_na <span class='op'>=</span> <span class='fl'>0.2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 500 × 4</span>
 #&gt;       id     V1    V2 true_clust
-#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 1</span><span>     1 </span><span style='color: #BB0000;'>NA</span><span>     0.583          1
-#&gt; </span><span style='color: #555555;'> 2</span><span>     2 </span><span style='color: #BB0000;'>NA</span><span>     1.13           1
-#&gt; </span><span style='color: #555555;'> 3</span><span>     3  0.705 1.09           1
-#&gt; </span><span style='color: #555555;'> 4</span><span>     4  0.849 1.06           1
-#&gt; </span><span style='color: #555555;'> 5</span><span>     5  1.30  0.863          1
-#&gt; </span><span style='color: #555555;'> 6</span><span>     6  1.66  1.24           1
-#&gt; </span><span style='color: #555555;'> 7</span><span>     7  0.950 1.08           1
-#&gt; </span><span style='color: #555555;'> 8</span><span>     8 </span><span style='color: #BB0000;'>NA</span><span>     1.00           1
-#&gt; </span><span style='color: #555555;'> 9</span><span>     9 </span><span style='color: #BB0000;'>NA</span><span>     1.60           1
-#&gt; </span><span style='color: #555555;'>10</span><span>    10 </span><span style='color: #BB0000;'>NA</span><span>     1.09           1
-#&gt; </span><span style='color: #555555;'># … with 490 more rows</span><span></div></span></pre>
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span>     1 <span style='color: #BB0000;'>NA</span>     0.583          1
+#&gt; <span style='color: #BCBCBC;'> 2</span>     2 <span style='color: #BB0000;'>NA</span>     1.13           1
+#&gt; <span style='color: #BCBCBC;'> 3</span>     3  0.705 1.09           1
+#&gt; <span style='color: #BCBCBC;'> 4</span>     4  0.849 1.06           1
+#&gt; <span style='color: #BCBCBC;'> 5</span>     5  1.30  0.863          1
+#&gt; <span style='color: #BCBCBC;'> 6</span>     6  1.66  1.24           1
+#&gt; <span style='color: #BCBCBC;'> 7</span>     7  0.950 1.08           1
+#&gt; <span style='color: #BCBCBC;'> 8</span>     8 <span style='color: #BB0000;'>NA</span>     1.00           1
+#&gt; <span style='color: #BCBCBC;'> 9</span>     9 <span style='color: #BB0000;'>NA</span>     1.60           1
+#&gt; <span style='color: #BCBCBC;'>10</span>    10 <span style='color: #BB0000;'>NA</span>     1.09           1
+#&gt; <span style='color: #949494;'># … with 490 more rows</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

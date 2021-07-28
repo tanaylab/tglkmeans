@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tglkmeans</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
       </span>
     </div>
 
@@ -103,7 +103,7 @@
 </li>
 <li>
   <a href="https://github.com/tanaylab/tglkmeans/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -144,11 +144,20 @@
     <p>kmeans++ with return value similar to R kmeans</p>
     </div>
 
-    <pre class="usage"><span class='fu'>TGL_kmeans</span>(<span class='kw'>df</span>, <span class='kw'>k</span>, metric = <span class='st'>"euclid"</span>, max_iter = <span class='fl'>40</span>,
-  min_delta = <span class='fl'>1e-04</span>, verbose = <span class='fl'>FALSE</span>, keep_log = <span class='fl'>FALSE</span>,
-  id_column = <span class='fl'>TRUE</span>, reorder_func = <span class='st'>"hclust"</span>,
-  hclust_intra_clusters = <span class='fl'>FALSE</span>, seed = <span class='kw'>NULL</span>,
-  parallel = <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"tglkmeans.parallel"</span>))</pre>
+    <pre class="usage"><span class='fu'>TGL_kmeans</span><span class='op'>(</span>
+  <span class='va'>df</span>,
+  <span class='va'>k</span>,
+  metric <span class='op'>=</span> <span class='st'>"euclid"</span>,
+  max_iter <span class='op'>=</span> <span class='fl'>40</span>,
+  min_delta <span class='op'>=</span> <span class='fl'>0.0001</span>,
+  verbose <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  keep_log <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  id_column <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  reorder_func <span class='op'>=</span> <span class='st'>"hclust"</span>,
+  hclust_intra_clusters <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  seed <span class='op'>=</span> <span class='cn'>NULL</span>,
+  parallel <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span><span class='op'>(</span><span class='st'>"tglkmeans.parallel"</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -188,7 +197,7 @@ the first column can contain id for each observation (if id_column is TRUE).</p>
     </tr>
     <tr>
       <th>reorder_func</th>
-      <td><p>function to reorder the clusters. operates on each center and orders by the result. e.g. <code>reorder_func = mean</code> would calculate the mean of each center and then would reorder the clusters accordingly. If <code>reorder_func = hclust</code> the centers would be ordered by hclust of the euclidian distance of the corelation matrix, i.e. <code><a href='https://rdrr.io/r/stats/hclust.html'>hclust(dist(cor(t(centers))))</a></code>
+      <td><p>function to reorder the clusters. operates on each center and orders by the result. e.g. <code>reorder_func = mean</code> would calculate the mean of each center and then would reorder the clusters accordingly. If <code>reorder_func = hclust</code> the centers would be ordered by hclust of the euclidian distance of the correlation matrix, i.e. <code><a href='https://rdrr.io/r/stats/hclust.html'>hclust(dist(cor(t(centers))))</a></code>
 if NULL, no reordering would be done.</p></td>
     </tr>
     <tr>
@@ -209,7 +218,7 @@ if NULL, no reordering would be done.</p></td>
 
     <p>list with the following components:</p><dl>
   <dt>cluster:</dt><dd><p>A vector of integers (from ‘1:k’) indicating the cluster to which each point is allocated.</p></dd>
-  <dt>centers:</dt><dd><p>A matrix of cluster centres.</p></dd>
+  <dt>centers:</dt><dd><p>A matrix of cluster centers.</p></dd>
   <dt>size:</dt><dd><p>The number of points in each cluster.</p></dd>
   <dt>log:</dt><dd><p>messages from the algorithm run (only if <code>id_column == TRUE</code>).</p></dd>
   <dt>order:</dt><dd><p>A vector of integers with the new ordering if the observations. (only if hclust_intra_clusters = TRUE)</p></dd>
@@ -222,70 +231,61 @@ if NULL, no reordering would be done.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://dplyr.tidyverse.org'>dplyr</a></span>)
-</div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'>
 <span class='co'># create 5 clusters normally distributed around 1:5</span>
-<span class='kw'>d</span> <span class='op'>&lt;-</span> <span class='fu'><a href='simulate_data.html'>simulate_data</a></span>(n = <span class='fl'>100</span>, sd = <span class='fl'>0.3</span>, nclust = <span class='fl'>5</span>, dims = <span class='fl'>2</span>, add_true_clust = <span class='fl'>FALSE</span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='kw'>d</span>)
-</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 6 x 3</span><span>
+<span class='va'>d</span> <span class='op'>&lt;-</span> <span class='fu'><a href='simulate_data.html'>simulate_data</a></span><span class='op'>(</span>n <span class='op'>=</span> <span class='fl'>100</span>, sd <span class='op'>=</span> <span class='fl'>0.3</span>, nclust <span class='op'>=</span> <span class='fl'>5</span>, dims <span class='op'>=</span> <span class='fl'>2</span>, add_true_clust <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>d</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 6 × 3</span>
 #&gt;      id    V1    V2
-#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span>     1 0.580 0.884
-#&gt; </span><span style='color: #555555;'>2</span><span>     2 1.08  0.764
-#&gt; </span><span style='color: #555555;'>3</span><span>     3 0.269 0.683
-#&gt; </span><span style='color: #555555;'>4</span><span>     4 0.998 0.761
-#&gt; </span><span style='color: #555555;'>5</span><span>     5 1.19  0.473
-#&gt; </span><span style='color: #555555;'>6</span><span>     6 1.34  0.793</div><div class='input'>
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span>     1 0.580 0.884
+#&gt; <span style='color: #BCBCBC;'>2</span>     2 1.08  0.764
+#&gt; <span style='color: #BCBCBC;'>3</span>     3 0.269 0.683
+#&gt; <span style='color: #BCBCBC;'>4</span>     4 0.998 0.761
+#&gt; <span style='color: #BCBCBC;'>5</span>     5 1.19  0.473
+#&gt; <span style='color: #BCBCBC;'>6</span>     6 1.34  0.793</div><div class='input'>
 <span class='co'># cluster</span>
-<span class='kw'>km</span> <span class='op'>&lt;-</span> <span class='fu'>TGL_kmeans</span>(<span class='kw'>d</span>, k = <span class='fl'>5</span>, <span class='st'>"euclid"</span>, verbose = <span class='fl'>TRUE</span>)
+<span class='va'>km</span> <span class='op'>&lt;-</span> <span class='fu'>TGL_kmeans</span><span class='op'>(</span><span class='va'>d</span>, k <span class='op'>=</span> <span class='fl'>5</span>, <span class='st'>"euclid"</span>, verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>id column: id</span></div><div class='output co'>#&gt; KMEans: will generate seeds
 #&gt; KMeans into generate seeds
 #&gt; at seed 0
-#&gt; add new core from 26 to 0
+#&gt; add new core from 267 to 0
 #&gt; at seed 1
 #&gt; done update min distance
 #&gt; seed range 350 450
-#&gt; picked up 481 dist was 2.96102
-#&gt; add new core from 481 to 1
+#&gt; picked up 2 dist was 1.72777
+#&gt; add new core from 2 to 1
 #&gt; at seed 2
 #&gt; done update min distance
 #&gt; seed range 300 400
-#&gt; picked up 206 dist was 1.35296
-#&gt; add new core from 206 to 2
+#&gt; picked up 473 dist was 1.47502
+#&gt; add new core from 473 to 2
 #&gt; at seed 3
 #&gt; done update min distance
 #&gt; seed range 250 350
-#&gt; picked up 128 dist was 0.672143
-#&gt; add new core from 128 to 3
+#&gt; picked up 307 dist was 0.661523
+#&gt; add new core from 307 to 3
 #&gt; at seed 4
 #&gt; done update min distance
 #&gt; seed range 200 300
-#&gt; picked up 352 dist was 0.651756
-#&gt; add new core from 352 to 4
+#&gt; picked up 168 dist was 0.557587
+#&gt; add new core from 168 to 4
 #&gt; KMEans: reassign after init
 #&gt; KMEans: iter 0
-#&gt; KMEans: iter 1 changed 10
+#&gt; KMEans: iter 1 changed 3
 #&gt; KMEans: iter 1
-#&gt; KMEans: iter 2 changed 1
-#&gt; KMEans: iter 2
-#&gt; KMEans: iter 3 changed 0</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='kw'>km</span>)
-</div><div class='output co'>#&gt; [1] "cluster" "centers" "size"   </div><div class='input'><span class='kw'>km</span><span class='op'>$</span><span class='kw'>centers</span>
+#&gt; KMEans: iter 2 changed 0</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>km</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "cluster" "centers" "size"   </div><div class='input'><span class='va'>km</span><span class='op'>$</span><span class='va'>centers</span>
 </div><div class='output co'>#&gt;            V1       V2
-#&gt; [1,] 3.972232 4.046328
-#&gt; [2,] 2.004643 2.058945
-#&gt; [3,] 2.977600 3.015143
-#&gt; [4,] 1.019032 1.034553
-#&gt; [5,] 4.975310 5.048907</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='kw'>km</span><span class='op'>$</span><span class='kw'>cluster</span>)
+#&gt; [1,] 2.000776 2.053331
+#&gt; [2,] 3.969391 4.038842
+#&gt; [3,] 4.975310 5.048907
+#&gt; [4,] 2.964869 3.008410
+#&gt; [5,] 1.019032 1.034553</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>km</span><span class='op'>$</span><span class='va'>cluster</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; 1 2 3 4 5 6 
-#&gt; 4 4 4 4 4 4 </div><div class='input'><span class='kw'>km</span><span class='op'>$</span><span class='kw'>size</span>
+#&gt; 5 5 5 5 5 5 </div><div class='input'><span class='va'>km</span><span class='op'>$</span><span class='va'>size</span>
 </div><div class='output co'>#&gt;   1   2   3   4   5 
-#&gt;  97 102 102 100  99 </div><div class='input'>
-</div></span></pre>
+#&gt; 101  98  99 102 100 </div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
