@@ -9,7 +9,7 @@ TGL_kmeans_tidy(
   k,
   metric = "euclid",
   max_iter = 40,
-  min_delta = 1e-04,
+  min_delta = 0.0001,
   verbose = FALSE,
   keep_log = FALSE,
   id_column = TRUE,
@@ -38,7 +38,7 @@ the first column can contain id for each observation (if id_column is TRUE).}
 
 \item{id_column}{\code{df}'s first column contains the observation id}
 
-\item{reorder_func}{function to reorder the clusters. operates on each center and orders by the result. e.g. \code{reorder_func = mean} would calculate the mean of each center and then would reorder the clusters accordingly. If \code{reorder_func = hclust} the centers would be ordered by hclust of the euclidian distance of the corelation matrix, i.e. \code{hclust(dist(cor(t(centers))))}
+\item{reorder_func}{function to reorder the clusters. operates on each center and orders by the result. e.g. \code{reorder_func = mean} would calculate the mean of each center and then would reorder the clusters accordingly. If \code{reorder_func = hclust} the centers would be ordered by hclust of the euclidian distance of the correlation matrix, i.e. \code{hclust(dist(cor(t(centers))))}
 if NULL, no reordering would be done.}
 
 \item{add_to_data}{return also the original data frame with an extra 'clust' column with the cluster ids ('id' is the first column)}
