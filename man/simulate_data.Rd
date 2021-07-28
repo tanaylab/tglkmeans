@@ -4,8 +4,14 @@
 \alias{simulate_data}
 \title{Simulate normal data for kmeans tests}
 \usage{
-simulate_data(n = 100, sd = 0.3, nclust = 30, dims = 2,
-  frac_na = NULL, add_true_clust = TRUE)
+simulate_data(
+  n = 100,
+  sd = 0.3,
+  nclust = 30,
+  dims = 2,
+  frac_na = NULL,
+  add_true_clust = TRUE
+)
 }
 \arguments{
 \item{n}{number of observations per cluster}

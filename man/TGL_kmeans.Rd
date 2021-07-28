@@ -4,11 +4,20 @@
 \alias{TGL_kmeans}
 \title{kmeans++ with return value similar to R kmeans}
 \usage{
-TGL_kmeans(df, k, metric = "euclid", max_iter = 40,
-  min_delta = 1e-04, verbose = FALSE, keep_log = FALSE,
-  id_column = TRUE, reorder_func = "hclust",
-  hclust_intra_clusters = FALSE, seed = NULL,
-  parallel = getOption("tglkmeans.parallel"))
+TGL_kmeans(
+  df,
+  k,
+  metric = "euclid",
+  max_iter = 40,
+  min_delta = 0.0001,
+  verbose = FALSE,
+  keep_log = FALSE,
+  id_column = TRUE,
+  reorder_func = "hclust",
+  hclust_intra_clusters = FALSE,
+  seed = NULL,
+  parallel = getOption("tglkmeans.parallel")
+)
 }
 \arguments{
 \item{df}{data frame. Each row is a single observation and each column is a dimension.
@@ -28,7 +37,7 @@ the first column can contain id for each observation (if id_column is TRUE).}
 
 \item{id_column}{\code{df}'s first column contains the observation id}
 
-\item{reorder_func}{function to reorder the clusters. operates on each center and orders by the result. e.g. \code{reorder_func = mean} would calculate the mean of each center and then would reorder the clusters accordingly. If \code{reorder_func = hclust} the centers would be ordered by hclust of the euclidian distance of the corelation matrix, i.e. \code{hclust(dist(cor(t(centers))))}
+\item{reorder_func}{function to reorder the clusters. operates on each center and orders by the result. e.g. \code{reorder_func = mean} would calculate the mean of each center and then would reorder the clusters accordingly. If \code{reorder_func = hclust} the centers would be ordered by hclust of the euclidian distance of the correlation matrix, i.e. \code{hclust(dist(cor(t(centers))))}
 if NULL, no reordering would be done.}
 
 \item{hclust_intra_clusters}{run hierarchical clustering within each cluster and return an ordering of the observations.}
@@ -41,7 +50,7 @@ if NULL, no reordering would be done.}
 list with the following components:
 \describe{
   \item{cluster:}{A vector of integers (from ‘1:k’) indicating the cluster to which each point is allocated.}
-  \item{centers:}{A matrix of cluster centres.}
+  \item{centers:}{A matrix of cluster centers.}
   \item{size:}{The number of points in each cluster.}
   \item{log:}{messages from the algorithm run (only if \code{id_column == TRUE}).}
   \item{order:}{A vector of integers with the new ordering if the observations. (only if hclust_intra_clusters = TRUE)}
@@ -51,8 +60,6 @@ list with the following components:
 kmeans++ with return value similar to R kmeans
 }
 \examples{
-
-library(dplyr)
 
 # create 5 clusters normally distributed around 1:5
 d <- simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2, add_true_clust = FALSE)

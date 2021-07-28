@@ -10,3 +10,5 @@
 ^doc$
 ^Meta$
 ^_pkgdown\.yml$
+^\.tg_repo/*$
+^.covrignore$

@@ -7,7 +7,7 @@
 tglkmeans.set_parallel(thread_num)
 }
 \arguments{
-\item{thread_num}{number of threads. use '1' for non parallel behaviour}
+\item{thread_num}{number of threads. use '1' for non parallel behavior}
 }
 \value{
 None

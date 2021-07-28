@@ -1,6 +1,6 @@
 Package: tglkmeans
 Title: Efficient Implementation of Kmeans++ Algorithm
-Version: 0.3.1.9000
+Version: 0.3.3
 Authors@R: 
     c(person(given = "Aviezer",
              family = "Lifshitz",
@@ -12,7 +12,7 @@ Authors@R:
 Author: Aviezer Lifshitz [aut, cre], Amos Tanay [aut]
 Maintainer: Aviezer Lifshitz <aviezer.lifshitz@weizmann.ac.il>
 Description: Efficient implementation of kmeans++ algorithm.
-License: GPL
+License: MIT
 BugReports: https://github.com/tanaylab/tglkmeans/issues
 Depends: 
     R (>= 3.2.4)
@@ -32,8 +32,6 @@ Imports:
     purrr (>= 0.2.0),
     reshape2 (>= 1.4.2),
     tgstat (>= 1.0.0)
-Remotes: 
-    tanaylab/tgstat
 Suggests: 
     covr,
     knitr,
@@ -49,5 +47,5 @@ Encoding: UTF-8
 LazyData: true
 NeedsCompilation: yes
 Packaged: 2018-02-25 13:32:32 UTC; aviezerl
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 SystemRequirements: C++11

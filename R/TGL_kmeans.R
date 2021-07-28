@@ -9,7 +9,7 @@
 #' @param verbose display algorithm messages
 #' @param keep_log keep algorithm messages in 'log' field
 #' @param id_column \code{df}'s first column contains the observation id
-#' @param reorder_func function to reorder the clusters. operates on each center and orders by the result. e.g. \code{reorder_func = mean} would calculate the mean of each center and then would reorder the clusters accordingly. If \code{reorder_func = hclust} the centers would be ordered by hclust of the euclidian distance of the corelation matrix, i.e. \code{hclust(dist(cor(t(centers))))}
+#' @param reorder_func function to reorder the clusters. operates on each center and orders by the result. e.g. \code{reorder_func = mean} would calculate the mean of each center and then would reorder the clusters accordingly. If \code{reorder_func = hclust} the centers would be ordered by hclust of the euclidian distance of the correlation matrix, i.e. \code{hclust(dist(cor(t(centers))))}
 #' if NULL, no reordering would be done.
 #' @param add_to_data return also the original data frame with an extra 'clust' column with the cluster ids ('id' is the first column)
 #' @param hclust_intra_clusters run hierarchical clustering within each cluster and return an ordering of the observations.
@@ -27,12 +27,11 @@
 #' }
 #'
 #' @examples
-#' 
-#' library(dplyr)
+#'
 #' # create 5 clusters normally distributed around 1:5
 #' d <- simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2, add_true_clust = FALSE)
 #' head(d)
-#' 
+#'
 #' # cluster
 #' km <- TGL_kmeans_tidy(d, k = 5, "euclid", verbose = TRUE)
 #' km
@@ -61,18 +60,18 @@ TGL_kmeans_tidy <- function(df,
 
     df <- as.data.frame(df)
 
-    if (!id_column) {        
-        df <- add_id_column(df)        
-    } else {   
-        if (rlang::has_name(df, "id")){
+    if (!id_column) {
+        df <- add_id_column(df)
+    } else {
+        if (rlang::has_name(df, "id")) {
             df$id <- as.character(df$id)
             if (verbose) {
                 message(sprintf("id column: %s", colnames(df)[1]))
-            }            
-        }  else {
+            }
+        } else {
             warning("Input doesn't have a column named \"id\". Using rownames instead.")
-            df <- add_id_column(df) 
-        }        
+            df <- add_id_column(df)
+        }
     }
     mat <- t(df[, -1])
 
@@ -111,7 +110,7 @@ TGL_kmeans_tidy <- function(df,
             )
         )
     }
-    
+
     km$centers <- t(km$centers) %>%
         as_tibble(.name_repair = "minimal") %>%
         purrr::set_names(column_names) %>%
@@ -119,26 +118,34 @@ TGL_kmeans_tidy <- function(df,
         select(clust, everything()) %>%
         as_tibble()
 
-    km$cluster <- km$cluster %>% mutate(clust = clust + 1) %>% as_tibble()
+    km$cluster <- km$cluster %>%
+        mutate(clust = clust + 1) %>%
+        as_tibble()
 
     if (k > 1) {
         km <- reorder_clusters(km, func = reorder_func)
     }
 
-    km$size <- km$cluster %>% count(clust) %>% ungroup()
+    km$size <- km$cluster %>%
+        count(clust) %>%
+        ungroup()
 
     colnames(km$cluster)[1] <- colnames(df)[1]
 
     if (keep_log) {
-        if (verbose){
+        if (verbose) {
             warning("cannot keep log when verbose option is true")
         } else {
-            km$log <- log            
+            km$log <- log
         }
     }
 
     if (add_to_data) {
-        km$data <- df %>% mutate(id = as.character(id)) %>% left_join(km$cluster, by = colnames(df)[1]) %>% select(clust, everything()) %>% as_tibble()
+        km$data <- df %>%
+            mutate(id = as.character(id)) %>%
+            left_join(km$cluster, by = colnames(df)[1]) %>%
+            select(clust, everything()) %>%
+            as_tibble()
         if (!id_column) {
             km$data <- as.data.frame(km$data)
             rownames(km$data) <- km$data$id
@@ -150,17 +157,17 @@ TGL_kmeans_tidy <- function(df,
         message("running hclust within each cluster")
         km$order <- hclust_every_cluster(km, df, parallel = parallel)
     }
-    
+
     return(km)
 }
 
 
-add_id_column <- function(df){
+add_id_column <- function(df) {
     if (!tibble::has_rownames(df)) {
         df <- df %>% tibble::rowid_to_column("id")
     } else {
         df <- df %>% tibble::rownames_to_column("id")
-    }   
+    }
     return(df)
 }
 
@@ -176,12 +183,17 @@ reorder_clusters <- function(km, func = "hclust") {
         if (min(apply(km$centers[, -1], 1, var, na.rm = TRUE), na.rm = TRUE) == 0) {
             warning("standard deviation of kmeans center is 0")
         } else {
-            centers_hc <-
-                km$centers[, -1] %>%
+            cm <- km$centers[, -1] %>%
                 t() %>%
-                cor(use = "pairwise.complete.obs") %>%
+                cor(use = "pairwise.complete.obs")
+
+            # we set NA's to zero in order for hclust not to fail when NA's are present in the dist object
+            cm[is.na(cm)] <- 0
+
+            centers_hc <- cm %>%
                 dist() %>%
-                hclust("ward.D2")
+                stats::hclust("ward.D2")
+
             new_order <- centers_hc$order
         }
     } else {
@@ -210,27 +222,24 @@ reorder_clusters <- function(km, func = "hclust") {
 #' @return list with the following components:
 #' \describe{
 #'   \item{cluster:}{A vector of integers (from ‘1:k’) indicating the cluster to which each point is allocated.}
-#'   \item{centers:}{A matrix of cluster centres.}
+#'   \item{centers:}{A matrix of cluster centers.}
 #'   \item{size:}{The number of points in each cluster.}
 #'   \item{log:}{messages from the algorithm run (only if \code{id_column == TRUE}).}
 #'   \item{order:}{A vector of integers with the new ordering if the observations. (only if hclust_intra_clusters = TRUE)}
 #' }
 #'
 #' @examples
-#' 
-#' library(dplyr)
-#' 
+#'
 #' # create 5 clusters normally distributed around 1:5
 #' d <- simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2, add_true_clust = FALSE)
 #' head(d)
-#' 
+#'
 #' # cluster
 #' km <- TGL_kmeans(d, k = 5, "euclid", verbose = TRUE)
 #' names(km)
 #' km$centers
 #' head(km$cluster)
 #' km$size
-#' 
 #' @seealso \code{\link{TGL_kmeans_tidy}}
 #' @export
 TGL_kmeans <- function(df,
@@ -275,10 +284,10 @@ TGL_kmeans <- function(df,
     km$size <- tapply(km$clust, km$clust, length)
 
     if (keep_log) {
-        if (verbose){
+        if (verbose) {
             warning("cannot keep log when verbose option is true")
         } else {
-            km$log <- res$log            
+            km$log <- res$log
         }
     }
 

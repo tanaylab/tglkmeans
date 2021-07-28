@@ -6,4 +6,3 @@ library(purrr)
 library(tgstat)
 
 test_check("tglkmeans")
-
