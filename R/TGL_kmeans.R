@@ -175,12 +175,17 @@ reorder_clusters <- function(km, func = "hclust") {
         if (min(apply(km$centers[, -1], 1, var, na.rm = TRUE), na.rm = TRUE) == 0) {
             warning("standard deviation of kmeans center is 0")
         } else {
-            centers_hc <-
-                km$centers[, -1] %>%
+            cm <- km$centers[, -1] %>%
                 t() %>%
-                cor(use = "pairwise.complete.obs") %>%
+                cor(use = "pairwise.complete.obs")
+
+            # we set NA's to zero in order for hclust not to fail when NA's are present in the dist object
+            cm[is.na(cm)] <- 0
+
+            centers_hc <- cm %>%
                 dist() %>%
-                hclust("ward.D2")
+                stats::hclust("ward.D2")
+            
             new_order <- centers_hc$order
         }
     } else {
