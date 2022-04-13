@@ -1,6 +1,6 @@
 Package: tglkmeans
-Title: Efficient Implementation of Kmeans++ Algorithm
-Version: 0.3.3
+Title: Efficient Implementation of K-means++ Algorithm
+Version: 0.3.4
 Authors@R: 
     c(person(given = "Aviezer",
              family = "Lifshitz",
@@ -11,7 +11,7 @@ Authors@R:
              role = "aut"))
 Author: Aviezer Lifshitz [aut, cre], Amos Tanay [aut]
 Maintainer: Aviezer Lifshitz <aviezer.lifshitz@weizmann.ac.il>
-Description: Efficient implementation of kmeans++ algorithm.
+Description: Efficient implementation of k-means++ algorithm.
 License: MIT + file LICENSE
 BugReports: https://github.com/tanaylab/tglkmeans/issues
 OS_type: unix

@@ -1,5 +1,8 @@
 # tglkmeans (development version)
 
+# tglkmeans 0.3.4 
+
+* First CRAN release.
 # tglkmeans 0.3.3
 * Set NA values to zeros in correlation matrix when reordering clusters 
 (avoid crashing on some datasets with NA's in the `dist` object)
