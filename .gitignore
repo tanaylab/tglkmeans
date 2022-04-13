@@ -5,3 +5,5 @@ src/*.o
 src/*.so
 README.html
 .tg_repo
+/doc/
+/Meta/

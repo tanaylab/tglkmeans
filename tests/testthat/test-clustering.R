@@ -220,6 +220,7 @@ test_that("clustering with NA is reasonable (low dim): euclid", {
 
 context("Correct Classification (high dim)")
 test_that("clustering is reasonable (high dim): euclid", {
+    skip_on_cran()
     test_params <- expand.grid(n = c(500), sd = c(0.3), nclust = c(5, 30), dims = c(300)) %>% filter(nclust < n)
     apply(test_params, 1, function(x) {
         expect_gt(test_clustering(x[[1]], x[[2]], x[[3]], x[[4]], "euclid"), 0.9)
@@ -227,6 +228,7 @@ test_that("clustering is reasonable (high dim): euclid", {
 })
 
 test_that("clustering with NA is reasonable (high dim): euclid", {
+    skip_on_cran()
     test_params <- expand.grid(n = c(500), sd = c(0.3), nclust = c(5, 30), frac_na = c(0.1, 0.2), dims = c(300)) %>% filter(nclust < n * (1 - frac_na))
     apply(test_params, 1, function(x) {
         expect_gt(test_clustering(x[[1]], x[[2]], x[[3]], x[[5]], "euclid", frac_na = x[4]), 0.75)

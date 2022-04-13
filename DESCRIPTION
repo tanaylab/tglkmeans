@@ -14,11 +14,13 @@ Maintainer: Aviezer Lifshitz <aviezer.lifshitz@weizmann.ac.il>
 Description: Efficient implementation of kmeans++ algorithm.
 License: MIT + file LICENSE
 BugReports: https://github.com/tanaylab/tglkmeans/issues
+OS_type: unix
 Depends: 
     R (>= 3.2.4)
 Imports: 
     Rcpp (>= 0.12.11),
     doFuture,
+    future,
     dplyr (>= 0.5.0),    
     ggplot2 (>= 2.2.0),    
     magrittr,
@@ -35,8 +37,7 @@ Suggests:
     testthat
 LinkingTo: 
     Rcpp
-VignetteBuilder: 
-    rmarkdown,
+VignetteBuilder:   
     knitr
 Encoding: UTF-8
 NeedsCompilation: yes

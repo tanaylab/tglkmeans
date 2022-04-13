@@ -9,12 +9,12 @@
 #' @param verbose display algorithm messages
 #' @param keep_log keep algorithm messages in 'log' field
 #' @param id_column \code{df}'s first column contains the observation id
-#' @param reorder_func function to reorder the clusters. operates on each center and orders by the result. e.g. \code{reorder_func = mean} would calculate the mean of each center and then would reorder the clusters accordingly. If \code{reorder_func = hclust} the centers would be ordered by hclust of the euclidian distance of the correlation matrix, i.e. \code{hclust(dist(cor(t(centers))))}
+#' @param reorder_func function to reorder the clusters. operates on each center and orders by the result. e.g. \code{reorder_func = mean} would calculate the mean of each center and then would reorder the clusters accordingly. If \code{reorder_func = hclust} the centers would be ordered by hclust of the euclidean distance of the correlation matrix, i.e. \code{hclust(dist(cor(t(centers))))}
 #' if NULL, no reordering would be done.
 #' @param add_to_data return also the original data frame with an extra 'clust' column with the cluster ids ('id' is the first column)
 #' @param hclust_intra_clusters run hierarchical clustering within each cluster and return an ordering of the observations.
 #' @param seed seed for the c++ random number generator
-#' @param parallel cluster every cluster parallely (if hclust_intra_clusters is true)
+#' @param parallel cluster every cluster parallelly (if hclust_intra_clusters is true)
 #'
 #' @return list with the following components:
 #' \describe{
@@ -27,6 +27,9 @@
 #' }
 #'
 #' @examples
+#' \dontshow{
+#' tglkmeans.set_parallel(1)
+#' }
 #'
 #' # create 5 clusters normally distributed around 1:5
 #' d <- simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2, add_true_clust = FALSE)
@@ -229,6 +232,9 @@ reorder_clusters <- function(km, func = "hclust") {
 #' }
 #'
 #' @examples
+#' \dontshow{
+#' tglkmeans.set_parallel(1)
+#' }
 #'
 #' # create 5 clusters normally distributed around 1:5
 #' d <- simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2, add_true_clust = FALSE)

@@ -5,5 +5,5 @@
 \alias{tglkmeans}
 \title{tglkmeans}
 \description{
-tglkmeans pacakge
+tglkmeans package
 }

@@ -1,6 +1,6 @@
 #' tglkmeans
 #'
-#' tglkmeans pacakge
+#' tglkmeans package
 #'
 #' @import dplyr
 #' @import ggplot2

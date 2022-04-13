@@ -6,10 +6,9 @@
 ^\.publish_html/*$
 ^\.travis\.yml$
 ^codecov\.yml$
-^docs$
 ^doc$
-^Meta$
 ^_pkgdown\.yml$
 ^\.tg_repo/*$
 ^.covrignore$
 ^LICENSE\.md$
+^Meta$
