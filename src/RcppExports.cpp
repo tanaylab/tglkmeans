@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // reduce_coclust
 void reduce_coclust(const List& boot_nodes_l, const List& cc_ij_mat_l, NumericMatrix& cc_mat);
 RcppExport SEXP _tglkmeans_reduce_coclust(SEXP boot_nodes_lSEXP, SEXP cc_ij_mat_lSEXP, SEXP cc_matSEXP) {

@@ -162,12 +162,12 @@ km1 <- TGL_kmeans_tidy(data %>% select(id, starts_with('V')),
 		       k=30, 
 		       metric='euclid', 
 		       verbose=FALSE, 
-		       seed=17)
+		       seed = 60427)
 km2 <- TGL_kmeans_tidy(data %>% select(id, starts_with('V')), 
 		       k=30, 
 		       metric='euclid', 
 		       verbose=FALSE, 
-		       seed=17)
+		       seed = 60427)
 all(km1$centers[, -1] == km2$centers[, -1])
 ```
 

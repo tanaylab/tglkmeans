@@ -71,7 +71,6 @@ names(km)
 km$centers
 head(km$cluster)
 km$size
-
 }
 \seealso{
 \code{\link{TGL_kmeans_tidy}}

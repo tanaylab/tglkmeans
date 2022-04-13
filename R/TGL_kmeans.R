@@ -163,10 +163,10 @@ TGL_kmeans_tidy <- function(df,
 
 
 add_id_column <- function(df) {
-    if (!tibble::has_rownames(df)) {
-        df <- df %>% tibble::rowid_to_column("id")
+    if (!has_rownames(df)) {
+        df <- df %>% rowid_to_column("id")
     } else {
-        df <- df %>% tibble::rownames_to_column("id")
+        df <- df %>% rownames_to_column("id")
     }
     return(df)
 }
