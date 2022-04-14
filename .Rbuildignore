@@ -12,3 +12,5 @@
 ^.covrignore$
 ^LICENSE\.md$
 ^Meta$
+^cran-comments\.md$
+^CRAN-SUBMISSION$
