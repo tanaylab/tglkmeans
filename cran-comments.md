@@ -5,6 +5,7 @@
 ## README changes
 
 * Changed the 'covr' link to a non-broken one: https://app.codecov.io/gh/tanaylab/tglkmeans?branch=master
+* Removed the lifecycle and travis badges
 
 ## DESCRIPTION changes
 
