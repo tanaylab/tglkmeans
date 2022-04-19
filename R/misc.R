@@ -5,7 +5,9 @@
 #' @return None
 #'
 #' @examples
+#' \donttest{
 #' tglkmeans.set_parallel(8)
+#' }
 #' @export
 tglkmeans.set_parallel <- function(thread_num) {
     if (1 == thread_num) {

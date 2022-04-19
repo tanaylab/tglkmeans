@@ -16,5 +16,7 @@ None
 Set parallel threads
 }
 \examples{
+\donttest{
 tglkmeans.set_parallel(8)
+}
 }

@@ -2,11 +2,11 @@
 
 0 errors | 0 warnings | 0 notes
 
-## README changes
-
-* Changed the 'covr' link to a non-broken one: https://app.codecov.io/gh/tanaylab/tglkmeans?branch=master
-* Removed the lifecycle and travis badges
-
 ## DESCRIPTION changes
 
-* Changed the title field to title case: "Efficient Implementation of K-Means++ Algorithm"
+* Added Weizmann Institute of Science as cph
+* Added references of the original algorithm to the description part. 
+
+## Regarding the use of cores in the examples
+
+* Added \donttest clause wrapping `tglmeans.set_parallel` examples section. The other examples work with a single core. 
