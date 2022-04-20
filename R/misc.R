@@ -5,13 +5,16 @@
 #' @return None
 #'
 #' @examples
+#' \donttest{
 #' tglkmeans.set_parallel(8)
+#' }
 #' @export
 tglkmeans.set_parallel <- function(thread_num) {
     if (1 == thread_num) {
         options(tglkmeans.parallel = FALSE)
     } else {
-        doMC::registerDoMC(thread_num)
+        doFuture::registerDoFuture()
+        future::plan(future::multicore, workers = thread_num)
         options(tglkmeans.parallel = TRUE)
         options(tglkmeans.parallel.thread_num = thread_num)
     }

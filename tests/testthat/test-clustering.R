@@ -1,6 +1,6 @@
 library(dplyr)
 library(tglkmeans)
-set.seed(17)
+set.seed(60427)
 
 clustering_ok <- function(data, res, nclust, ndims, order = TRUE) {
     expect_equal(nrow(data), nrow(res$clust))
@@ -27,7 +27,7 @@ test_that("Stop when there are rows which contain only missing data", {
     data <- simulate_data(n = 100, sd = 0.3, nclust = 30, frac_na = NULL)
     data[3, -1] <- NA
     data[4, -1] <- NA
-    expect_error(TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = FALSE, seed = 17), "The following rows contain only missing values: 3,4")
+    expect_error(TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = FALSE, seed = 60427), "The following rows contain only missing values: 3,4")
 })
 
 context("Matrix input")
@@ -38,7 +38,7 @@ test_that("Do not fail when input is matrix", {
     mat <- data %>%
         select(starts_with("V")) %>%
         as.matrix()
-    res <- TGL_kmeans_tidy(mat, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 17)
+    res <- TGL_kmeans_tidy(mat, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 60427)
 
     clustering_ok(data, res, nclust, ndims, order = FALSE)
 })
@@ -52,12 +52,12 @@ test_that("Use rownames if exists", {
         as.data.frame() %>%
         select(id, starts_with("V")) %>%
         mutate(id = paste0("id_", id)) %>%
-        tibble::column_to_rownames("id")
+        column_to_rownames("id")
 
-    res <- TGL_kmeans_tidy(data, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 17)
+    res <- TGL_kmeans_tidy(data, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 60427)
     clustering_ok(data, res, nclust, ndims, order = FALSE)
 
-    expect_warning(res1 <- TGL_kmeans_tidy(data, 30, id_column = TRUE, metric = "euclid", verbose = FALSE, seed = 17))
+    expect_warning(res1 <- TGL_kmeans_tidy(data, 30, id_column = TRUE, metric = "euclid", verbose = FALSE, seed = 60427))
     clustering_ok(data, res1, nclust, ndims, order = FALSE)
 })
 
@@ -68,12 +68,12 @@ test_that("Dot not fail when rownames do not exist", {
     data <- data %>%
         select(starts_with("V")) %>%
         as.data.frame()
-    data <- tibble::remove_rownames(data)
+    data <- remove_rownames(data)
 
-    res <- TGL_kmeans_tidy(data, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 17)
+    res <- TGL_kmeans_tidy(data, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 60427)
     clustering_ok(data, res, nclust, ndims, order = FALSE)
 
-    res_non_tidy <- TGL_kmeans(data, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 17)
+    res_non_tidy <- TGL_kmeans(data, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 60427)
 })
 
 context("Metrics")
@@ -81,7 +81,7 @@ test_that("Pearson metric works", {
     nclust <- 30
     ndims <- 5
     data <- simulate_data(n = 200, sd = 0.3, dims = 5, nclust = nclust, frac_na = 0.05)
-    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, id_column = TRUE, metric = "pearson", verbose = FALSE, seed = 17)
+    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, id_column = TRUE, metric = "pearson", verbose = FALSE, seed = 60427)
     clustering_ok(data, res, nclust, ndims, order = FALSE)
 })
 
@@ -89,7 +89,7 @@ test_that("Spearman metric works", {
     nclust <- 30
     ndims <- 5
     data <- simulate_data(n = 200, sd = 0.3, dims = 5, nclust = nclust, frac_na = 0.05)
-    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, id_column = TRUE, metric = "spearman", verbose = FALSE, seed = 17)
+    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, id_column = TRUE, metric = "spearman", verbose = FALSE, seed = 60427)
     clustering_ok(data, res, nclust, ndims, order = FALSE)
 })
 
@@ -108,8 +108,8 @@ test_that("non tidy version works", {
     nclust <- 30
     ndims <- 5
     data <- simulate_data(n = 200, sd = 0.3, dims = 5, nclust = nclust, frac_na = 0.05)
-    res <- TGL_kmeans(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = FALSE, seed = 17)
-    res_tidy <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = FALSE, seed = 17)
+    res <- TGL_kmeans(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = FALSE, seed = 60427)
+    res_tidy <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = FALSE, seed = 60427)
 
     clustering_ok(data, res_tidy, nclust, ndims, order = FALSE)
 
@@ -126,9 +126,9 @@ test_that("hclust intra cluster works", {
     nclust <- 30
     ndims <- 5
     data <- simulate_data(n = 200, sd = 0.3, dims = 5, nclust = nclust, frac_na = 0.05)
-    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = FALSE, hclust_intra_clusters = TRUE, parallel = FALSE, seed = 17)
+    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = FALSE, hclust_intra_clusters = TRUE, parallel = FALSE, seed = 60427)
     clustering_ok(data, res, nclust, ndims, order = TRUE)
-    res_non_tidy <- TGL_kmeans(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = FALSE, hclust_intra_clusters = TRUE, parallel = FALSE, , seed = 17)
+    res_non_tidy <- TGL_kmeans(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = FALSE, hclust_intra_clusters = TRUE, parallel = FALSE, , seed = 60427)
 
     expect_equal(res_non_tidy$order, res$order$order)
 })
@@ -148,9 +148,9 @@ test_that("add_to_data works", {
         as.data.frame() %>%
         select(id, starts_with("V")) %>%
         mutate(id = paste0("id_", id)) %>%
-        tibble::column_to_rownames("id")
+        column_to_rownames("id")
 
-    res <- TGL_kmeans_tidy(data, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 17, add_to_data = TRUE)
+    res <- TGL_kmeans_tidy(data, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 60427, add_to_data = TRUE)
     expect_equal(res$data %>% select(starts_with("V")), data %>% select(starts_with("V")))
 })
 
@@ -175,22 +175,22 @@ test_that("reorder func works when set to NULL", {
 context("Verbosity")
 test_that("quiet if verbose is turned off", {
     data <- simulate_data(n = 100, sd = 0.3, nclust = 30, frac_na = NULL)
-    expect_silent(TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = FALSE, seed = 17))
+    expect_silent(TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = FALSE, seed = 60427))
 })
 
 test_that("not quiet when verbose is turned on", {
     data <- simulate_data(n = 100, sd = 0.3, nclust = 30, frac_na = NULL)
-    expect_message(TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = TRUE, seed = 17))
+    expect_message(TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = TRUE, seed = 60427))
 })
 
 test_that("Log is saved when 'keep_log' is turned on", {
     data <- simulate_data(n = 100, sd = 0.3, nclust = 30, frac_na = NULL)
-    expect_warning(res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = TRUE, seed = 17, keep_log = TRUE))
-    expect_warning(res <- TGL_kmeans(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = TRUE, seed = 17, keep_log = TRUE))
+    expect_warning(res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = TRUE, seed = 60427, keep_log = TRUE))
+    expect_warning(res <- TGL_kmeans(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = TRUE, seed = 60427, keep_log = TRUE))
 
-    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = FALSE, seed = 17, keep_log = TRUE)
+    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = FALSE, seed = 60427, keep_log = TRUE)
     expect_type(res$log, "character")
-    res <- TGL_kmeans(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = FALSE, seed = 17, keep_log = TRUE)
+    res <- TGL_kmeans(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = FALSE, seed = 60427, keep_log = TRUE)
     expect_type(res$log, "character")
 })
 
@@ -198,8 +198,8 @@ context("Random seed")
 test_that("setting the seed returns reproducible results", {
     nclust <- 30
     data <- simulate_data(n = 100, sd = 0.3, nclust = nclust, frac_na = NULL)
-    res1 <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = FALSE, seed = 17)
-    res2 <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = FALSE, seed = 17)
+    res1 <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = FALSE, seed = 60427)
+    res2 <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = FALSE, seed = 60427)
     expect_true(all(res1$centers[, -1] == res2$centers[, -1]))
 })
 
@@ -220,6 +220,7 @@ test_that("clustering with NA is reasonable (low dim): euclid", {
 
 context("Correct Classification (high dim)")
 test_that("clustering is reasonable (high dim): euclid", {
+    skip_on_cran()
     test_params <- expand.grid(n = c(500), sd = c(0.3), nclust = c(5, 30), dims = c(300)) %>% filter(nclust < n)
     apply(test_params, 1, function(x) {
         expect_gt(test_clustering(x[[1]], x[[2]], x[[3]], x[[4]], "euclid"), 0.9)
@@ -227,6 +228,7 @@ test_that("clustering is reasonable (high dim): euclid", {
 })
 
 test_that("clustering with NA is reasonable (high dim): euclid", {
+    skip_on_cran()
     test_params <- expand.grid(n = c(500), sd = c(0.3), nclust = c(5, 30), frac_na = c(0.1, 0.2), dims = c(300)) %>% filter(nclust < n * (1 - frac_na))
     apply(test_params, 1, function(x) {
         expect_gt(test_clustering(x[[1]], x[[2]], x[[3]], x[[5]], "euclid", frac_na = x[4]), 0.75)

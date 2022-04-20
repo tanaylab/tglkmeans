@@ -3,4 +3,7 @@
 \docType{package}
 \name{tglkmeans}
 \alias{tglkmeans}
-\title{tglkmeans.}
+\title{tglkmeans}
+\description{
+tglkmeans package
+}

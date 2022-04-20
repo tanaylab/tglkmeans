@@ -37,14 +37,14 @@ the first column can contain id for each observation (if id_column is TRUE).}
 
 \item{id_column}{\code{df}'s first column contains the observation id}
 
-\item{reorder_func}{function to reorder the clusters. operates on each center and orders by the result. e.g. \code{reorder_func = mean} would calculate the mean of each center and then would reorder the clusters accordingly. If \code{reorder_func = hclust} the centers would be ordered by hclust of the euclidian distance of the correlation matrix, i.e. \code{hclust(dist(cor(t(centers))))}
+\item{reorder_func}{function to reorder the clusters. operates on each center and orders by the result. e.g. \code{reorder_func = mean} would calculate the mean of each center and then would reorder the clusters accordingly. If \code{reorder_func = hclust} the centers would be ordered by hclust of the euclidean distance of the correlation matrix, i.e. \code{hclust(dist(cor(t(centers))))}
 if NULL, no reordering would be done.}
 
 \item{hclust_intra_clusters}{run hierarchical clustering within each cluster and return an ordering of the observations.}
 
 \item{seed}{seed for the c++ random number generator}
 
-\item{parallel}{cluster every cluster parallely (if hclust_intra_clusters is true)}
+\item{parallel}{cluster every cluster parallelly (if hclust_intra_clusters is true)}
 }
 \value{
 list with the following components:
@@ -60,6 +60,9 @@ list with the following components:
 kmeans++ with return value similar to R kmeans
 }
 \examples{
+\dontshow{
+tglkmeans.set_parallel(1)
+}
 
 # create 5 clusters normally distributed around 1:5
 d <- simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2, add_true_clust = FALSE)
@@ -71,7 +74,6 @@ names(km)
 km$centers
 head(km$cluster)
 km$size
-
 }
 \seealso{
 \code{\link{TGL_kmeans_tidy}}

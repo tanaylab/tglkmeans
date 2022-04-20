@@ -5,3 +5,6 @@ src/*.o
 src/*.so
 README.html
 .tg_repo
+/doc/
+/Meta/
+src/symbols.rds

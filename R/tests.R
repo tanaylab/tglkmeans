@@ -20,8 +20,8 @@
 #' simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2, frac_na = 0.2)
 simulate_data <- function(n = 100, sd = 0.3, nclust = 30, dims = 2, frac_na = NULL, add_true_clust = TRUE) {
     data <- purrr::map_dfr(1:nclust, ~
-    as.data.frame(matrix(rnorm(n * dims, mean = .x, sd = sd), ncol = dims)) %>%
-        mutate(true_clust = .x)) %>%
+        as.data.frame(matrix(rnorm(n * dims, mean = .x, sd = sd), ncol = dims)) %>%
+            mutate(true_clust = .x)) %>%
         as_tibble() %>%
         mutate(id = 1:n()) %>%
         select(id, everything(), true_clust)

@@ -11,10 +11,8 @@ knitr::opts_chunk$set(
 ```
 
 <!-- badges: start -->
-[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![CRAN status](https://www.r-pkg.org/badges/version/tglkmeans)](https://CRAN.R-project.org/package=tglkmeans)
-[![Travis build status](https://travis-ci.com/tanaylab/tglkmeans.svg?branch=master)](https://travis-ci.org/tanaylab/tglkmeans)
-[![Codecov test coverage](https://codecov.io/gh/tanaylab/tglkmeans/branch/master/graph/badge.svg)](https://codecov.io/gh/tanaylab/tglkmeans?branch=master)
+[![Codecov test coverage](https://codecov.io/gh/tanaylab/tglkmeans/branch/master/graph/badge.svg)](https://app.codecov.io/gh/tanaylab/tglkmeans?branch=master)
 <!-- badges: end -->
 
 
@@ -27,7 +25,7 @@ This package provides R binding to a cpp implementation of kmeans++ algorithm (h
 You can install the released version of **tglkmeans** using the following command:
 
 ```{r, eval=FALSE}
-install.packages('tglkmeans', repos=c(getOption('repos'), 'https://tanaylab.github.io/repo'))
+install.packages('tglkmeans')
 ```
 
 Or install the development version using: 

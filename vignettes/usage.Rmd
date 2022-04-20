@@ -87,7 +87,7 @@ d %>% ggplot(aes(x=V1, y=V2, color=factor(new_clust), shape=factor(true_clust)))
 ```
 
 ## Custom cluster ordering
-By default, the clusters where ordered using the following function: `hclust(dist(cor(t(centers))))` - hclust of the euclidian distance of the correlation matrix of the centers.
+By default, the clusters where ordered using the following function: `hclust(dist(cor(t(centers))))` - hclust of the euclidean distance of the correlation matrix of the centers.
 
 We can supply our own function to order the clusters using `reorder_func` argument. The function would be applied to each center and he clusters would be ordered by the result.
 
@@ -152,7 +152,7 @@ d <- tglkmeans:::match_clusters(data, km_standard, 30)
 sum(d$true_clust == d$new_clust, na.rm=TRUE) / sum(!is.na(d$new_clust))
 
 ```
-We can see that kmeans++ clusters siginificantly better than R vainlla kmeans.
+We can see that kmeans++ clusters significantly better than R vanilla kmeans.
 
 ## Random seed
 we can set the seed for the c++ random number generator, for reproducible results:
@@ -162,12 +162,12 @@ km1 <- TGL_kmeans_tidy(data %>% select(id, starts_with('V')),
 		       k=30, 
 		       metric='euclid', 
 		       verbose=FALSE, 
-		       seed=17)
+		       seed = 60427)
 km2 <- TGL_kmeans_tidy(data %>% select(id, starts_with('V')), 
 		       k=30, 
 		       metric='euclid', 
 		       verbose=FALSE, 
-		       seed=17)
+		       seed = 60427)
 all(km1$centers[, -1] == km2$centers[, -1])
 ```
 
