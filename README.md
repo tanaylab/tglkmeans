@@ -9,8 +9,8 @@ coverage](https://codecov.io/gh/tanaylab/tglkmeans/branch/master/graph/badge.svg
 
 # tglkmeans - efficient implementation of kmeans++ algorithm
 
-This package provides R binding to a cpp implementation of kmeans++
-algorithm (<https://en.wikipedia.org/wiki/K-means%2B%2B>).
+This package provides R binding to a cpp implementation of the [kmeans++
+algorithm](<https://en.wikipedia.org/wiki/K-means%2B%2B>).
 
 ## Installation
 
