@@ -18,7 +18,7 @@ You can install the released version of **tglkmeans** using the
 following command:
 
 ``` r
-install.packages('tglkmeans', repos=c(getOption('repos'), 'https://tanaylab.github.io/repo'))
+install.packages('tglkmeans')
 ```
 
 Or install the development version using:
