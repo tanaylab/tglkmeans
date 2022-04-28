@@ -1,5 +1,7 @@
 # tglkmeans (development version)
 
+* Changed errors from cpp to 1 based indexing.
+
 # tglkmeans 0.3.4 
 
 * First CRAN release.

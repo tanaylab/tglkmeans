@@ -146,7 +146,7 @@ void KMeans::reassign() {
 
         if (best_id_i == -1) {
             throw std::logic_error(
-                    "Cannot assign any center to element " + to_string(data_i - m_data.begin()) + " all dist == real(max)");
+                    "Cannot assign any center to element " + to_string(data_i - m_data.begin() + 1) + " all dist is NA");
         }
 
         if (*assign_i != best_id_i) {
