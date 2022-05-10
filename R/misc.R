@@ -10,7 +10,7 @@
 #' }
 #' @export
 tglkmeans.set_parallel <- function(thread_num) {
-    if (1 == thread_num) {
+    if (thread_num <= 1) {
         options(tglkmeans.parallel = FALSE)
     } else {
         doFuture::registerDoFuture()

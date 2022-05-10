@@ -35,10 +35,11 @@ Suggests:
     knitr,
     rlang,
     rmarkdown,
-    testthat
+    testthat,
+    withr
 LinkingTo: 
     Rcpp
-VignetteBuilder:   
+VignetteBuilder: 
     knitr
 Encoding: UTF-8
 NeedsCompilation: yes
