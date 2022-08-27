@@ -2,11 +2,7 @@
 
 0 errors | 0 warnings | 0 notes
 
-## DESCRIPTION changes
+# Fix
 
-* Added Weizmann Institute of Science as cph
-* Added references of the original algorithm to the description part. 
+* loading the package failed on machines with a single core. 
 
-## Regarding the use of cores in the examples
-
-* Added \donttest clause wrapping `tglmeans.set_parallel` examples section. The other examples work with a single core. 

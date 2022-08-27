@@ -1,10 +1,12 @@
-# tglkmeans (development version)
+# tglkmeans 0.3.5
 
 * Changed errors from cpp to 1 based indexing.
+* fix: loading the package failed on machines with a single core. 
 
 # tglkmeans 0.3.4 
 
 * First CRAN release.
+
 # tglkmeans 0.3.3
 
 * Set NA values to zeros in correlation matrix when reordering clusters 
