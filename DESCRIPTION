@@ -44,5 +44,5 @@ VignetteBuilder:
 Encoding: UTF-8
 NeedsCompilation: yes
 Packaged: 2018-02-25 13:32:32 UTC; aviezerl
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 SystemRequirements: C++11

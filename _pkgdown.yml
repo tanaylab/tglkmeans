@@ -24,12 +24,13 @@ navbar:
 reference:
 - title: TGL kmeans 
   desc:  run kmeans++ algorithm
-  contents:
+- contents:
   - TGL_kmeans
   - TGL_kmeans_tidy
 - title: misc
   desc: utility functions
-  contents: 
+- contents: 
   - tglkmeans.set_parallel
   - simulate_data  
+  - tglkmeans
 
