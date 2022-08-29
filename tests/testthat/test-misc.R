@@ -10,12 +10,30 @@ test_that("onLoad does not fail", {
 })
 
 context("number of threads")
-test_that("parallel is turned off when number of threads is 1", {
-    tglkmeans.set_parallel(1)
-    expect_false(getOption("tglkmeans.parallel"))
+test_that("parallel is turned off when number of threads <= 1", {
+    withr::with_options(
+        list(tglkmeans.parallel = TRUE),
+        {
+            tglkmeans.set_parallel(1)
+            expect_false(getOption("tglkmeans.parallel"))
+        }
+    )
+
+    withr::with_options(
+        list(tglkmeans.parallel = TRUE),
+        {
+            tglkmeans.set_parallel(0)
+            expect_false(getOption("tglkmeans.parallel"))
+        }
+    )
 })
 
 test_that("parallel is turned on when number of threads is not 1", {
-    tglkmeans.set_parallel(2)
-    expect_true(getOption("tglkmeans.parallel"))
+    withr::with_options(
+        list(tglkmeans.parallel = FALSE),
+        {
+            tglkmeans.set_parallel(2)
+            expect_true(getOption("tglkmeans.parallel"))
+        }
+    )
 })

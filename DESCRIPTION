@@ -1,6 +1,6 @@
 Package: tglkmeans
 Title: Efficient Implementation of K-Means++ Algorithm
-Version: 0.3.4
+Version: 0.3.5
 Authors@R: 
     c(person(given = "Aviezer",
              family = "Lifshitz",
@@ -35,10 +35,11 @@ Suggests:
     knitr,
     rlang,
     rmarkdown,
-    testthat
+    testthat,
+    withr
 LinkingTo: 
     Rcpp
-VignetteBuilder:   
+VignetteBuilder: 
     knitr
 Encoding: UTF-8
 NeedsCompilation: yes
