@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tglkmeans</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.5</span>
       </span>
     </div>
 
@@ -67,59 +67,72 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">simulate_data</span><span class="op">(</span>
-  n <span class="op">=</span> <span class="fl">100</span>,
-  sd <span class="op">=</span> <span class="fl">0.3</span>,
-  nclust <span class="op">=</span> <span class="fl">30</span>,
-  dims <span class="op">=</span> <span class="fl">2</span>,
-  frac_na <span class="op">=</span> <span class="cn">NULL</span>,
-  add_true_clust <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">simulate_data</span><span class="op">(</span></span>
+<span>  n <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  sd <span class="op">=</span> <span class="fl">0.3</span>,</span>
+<span>  nclust <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>  dims <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  frac_na <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  add_true_clust <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>n</dt>
 <dd><p>number of observations per cluster</p></dd>
+
+
 <dt>sd</dt>
 <dd><p>sd</p></dd>
+
+
 <dt>nclust</dt>
 <dd><p>number of clusters</p></dd>
+
+
 <dt>dims</dt>
 <dd><p>number of dimensions</p></dd>
+
+
 <dt>frac_na</dt>
 <dd><p>fraction of NA in the first dimension</p></dd>
+
+
 <dt>add_true_clust</dt>
 <dd><p>add a column with the true cluster ids</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>simulated data</p>
+    
+
+<p>simulated data</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">simulate_data</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span>, sd <span class="op">=</span> <span class="fl">0.3</span>, nclust <span class="op">=</span> <span class="fl">5</span>, dims <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">simulate_data</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span>, sd <span class="op">=</span> <span class="fl">0.3</span>, nclust <span class="op">=</span> <span class="fl">5</span>, dims <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # A tibble: 500 x 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   id        V1        V2 true_clust</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1 1.3044553 1.1167235          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2 1.3038997 0.7117056          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  3 0.7954670 0.4467023          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  4 1.5047576 0.7689409          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  5 0.6567438 1.2085276          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  6 0.9744028 1.1144344          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1 0.6564581 1.4949001          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2 1.4126320 1.0270575          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  3 1.3003442 0.6898675          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  4 0.6131221 0.9023984          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  5 1.2904668 1.2000157          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  6 0.7886982 0.8773591          1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # ... with 494 more rows</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># add 20% missing data</span></span>
-<span class="r-in"><span class="fu">simulate_data</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span>, sd <span class="op">=</span> <span class="fl">0.3</span>, nclust <span class="op">=</span> <span class="fl">5</span>, dims <span class="op">=</span> <span class="fl">2</span>, frac_na <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># add 20% missing data</span></span></span>
+<span class="r-in"><span><span class="fu">simulate_data</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span>, sd <span class="op">=</span> <span class="fl">0.3</span>, nclust <span class="op">=</span> <span class="fl">5</span>, dims <span class="op">=</span> <span class="fl">2</span>, frac_na <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # A tibble: 500 x 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   id        V1        V2 true_clust</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1 1.1017818 1.9597811          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2        NA 1.2048177          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  3        NA 1.3173847          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  4 1.0720897 0.9503722          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  5 0.5510374 1.0763364          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  6 0.6722654 0.5369125          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1 1.1936915 1.2949704          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2        NA 1.3760359          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  3 1.2377886 0.8206213          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  4 0.8747331 0.7615559          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  5        NA 0.9510989          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  6 1.7378288 0.8064775          1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # ... with 494 more rows</span>
 </code></pre></div>
     </div>
@@ -135,7 +148,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>
