@@ -32,7 +32,7 @@ simulate_data <- function(n = 100, sd = 0.3, nclust = 30, dims = 2, frac_na = NU
     if (!add_true_clust) {
         data <- data %>% select(-true_clust)
     }
-    return(data)
+    return(as.data.frame(data))
 }
 
 match_clusters <- function(data, res, nclust) {

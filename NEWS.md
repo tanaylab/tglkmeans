@@ -1,3 +1,7 @@
+# tglkmeans 0.3.6
+
+* Fixed error on debian systems. 
+
 # tglkmeans 0.3.5
 
 * Changed errors from cpp to 1 based indexing.
@@ -19,5 +23,5 @@
 
 # tglkmeans 0.3.0
 
-* Removed bootstrapping (it was causing a lot of problems in travis testing and almost wasn't used.
+* Removed bootstrapping (it was causing a lot of problems in travis testing and almost wasn't used).
 * Added a `NEWS.md` file to track changes to the package.

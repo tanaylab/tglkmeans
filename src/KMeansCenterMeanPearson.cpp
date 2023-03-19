@@ -32,7 +32,7 @@ float KMeansCenterMeanPearson::dist(const vector<float> &x)
         return(0);
     }
     return(cov/sqrt(m_center_v * x_v));
-};
+}
 
 void KMeansCenterMeanPearson::update_center_stats()
 {

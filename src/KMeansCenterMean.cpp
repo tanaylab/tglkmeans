@@ -50,7 +50,7 @@ void KMeansCenterMean::update_center_stats() {
 }
 
 void KMeansCenterMean::report(ostream &out) {
-    for (int i = 0; i < m_center.size(); i++) {
+    for (size_t i = 0; i < m_center.size(); i++) {
         if (i != 0) {
             out << "\t";
         }
