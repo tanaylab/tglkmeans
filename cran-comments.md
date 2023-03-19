@@ -4,5 +4,5 @@
 
 # Fix
 
-* loading the package failed on machines with a single core. 
+* Fixed error on debian systems.
 
