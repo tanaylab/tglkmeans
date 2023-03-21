@@ -19,4 +19,4 @@ float KMeansCenterMeanEuclid::dist(const vector<float> &x) {
         x_i++;
     }
     return (n > 0 ? sqrt(dist2) / n : REAL_MAX);
-};
+}

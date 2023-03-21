@@ -24,7 +24,7 @@ clustering_ok <- function(data, res, nclust, ndims, order = TRUE) {
 
 context("Missing data")
 test_that("Stop when there are rows which contain only missing data", {
-    data <- simulate_data(n = 100, sd = 0.3, nclust = 30, frac_na = NULL)
+    data <- as.data.frame(simulate_data(n = 100, sd = 0.3, nclust = 30, frac_na = NULL))
     data[3, -1] <- NA
     data[4, -1] <- NA
     expect_error(TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = FALSE, seed = 60427), "The following rows contain only missing values: 3,4")
@@ -141,7 +141,7 @@ test_that("add_to_data works", {
 
     clustering_ok(data, res, nclust, ndims, order = FALSE)
 
-    expect_identical(res$data %>% select(id, starts_with("V")), data %>% mutate(id = as.character(id)) %>% select(id, starts_with("V")))
+    expect_identical(res$data %>% select(id, starts_with("V")), data %>% as_tibble() %>% mutate(id = as.character(id)) %>% select(id, starts_with("V")))
     expect_equal(nrow(anti_join(res$data %>% select(id, clust), res$cluster %>% select(id, clust), by = c("id", "clust"))), 0)
 
     data <- data %>%

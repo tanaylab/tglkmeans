@@ -2,7 +2,7 @@
 
 0 errors | 0 warnings | 0 notes
 
-# Fix
+# Resubmission
 
-* loading the package failed on machines with a single core. 
+* Removed C++11 specification also from Makevars. 
 

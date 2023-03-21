@@ -176,7 +176,7 @@ void KMeans::report_assignment(vector<string> &row_names, ostream &assign_tab) {
     assign_tab << "id\tclust";
     m_centers[0]->report_meta_data_header(assign_tab);
     assign_tab << "\n";
-    for (int i = 0; i < m_data.size(); i++) {
+    for (size_t i = 0; i < m_data.size(); i++) {
         assign_tab << row_names[i] << "\t" << m_assignment[i];
 
         m_centers[m_assignment[i]]->report_meta_data(assign_tab, m_data[i]);

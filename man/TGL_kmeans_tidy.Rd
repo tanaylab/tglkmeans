@@ -9,7 +9,7 @@ TGL_kmeans_tidy(
   k,
   metric = "euclid",
   max_iter = 40,
-  min_delta = 0.0001,
+  min_delta = 1e-04,
   verbose = FALSE,
   keep_log = FALSE,
   id_column = TRUE,

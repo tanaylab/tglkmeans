@@ -15,10 +15,10 @@ using namespace Rcpp;
 using namespace std;
 
 void vec2df(const vector<vector<float > >& vec, DataFrame& df){
-    unsigned long nc = vec.size();
+    size_t nc = vec.size();
     List list( nc );
 
-    for( int j=0; j<nc; j++){
+    for( size_t j=0; j<nc; j++){
         list[j] = wrap( vec[j].begin(), vec[j].end() );
     }
 
