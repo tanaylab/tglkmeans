@@ -1,6 +1,6 @@
 Package: tglkmeans
 Title: Efficient Implementation of K-Means++ Algorithm
-Version: 0.3.6
+Version: 0.3.7
 Authors@R: 
     c(person(given = "Aviezer",
              family = "Lifshitz",
@@ -17,7 +17,7 @@ License: MIT + file LICENSE
 BugReports: https://github.com/tanaylab/tglkmeans/issues
 OS_type: unix
 Depends: 
-    R (>= 3.2.4)
+    R (>= 4.0.0)
 Imports: 
     Rcpp (>= 0.12.11),
     doFuture,

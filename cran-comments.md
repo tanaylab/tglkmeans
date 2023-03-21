@@ -2,7 +2,7 @@
 
 0 errors | 0 warnings | 0 notes
 
-# Fix
+# Resubmission
 
-* Fixed error on debian systems.
+* Removed C++11 specification. 
 
