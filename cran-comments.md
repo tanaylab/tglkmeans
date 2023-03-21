@@ -4,5 +4,5 @@
 
 # Resubmission
 
-* Removed C++11 specification. 
+* Removed C++11 specification also from Makevars. 
 

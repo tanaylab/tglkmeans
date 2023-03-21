@@ -1,6 +1,6 @@
 Package: tglkmeans
 Title: Efficient Implementation of K-Means++ Algorithm
-Version: 0.3.7
+Version: 0.3.8
 Authors@R: 
     c(person(given = "Aviezer",
              family = "Lifshitz",
@@ -45,4 +45,3 @@ Encoding: UTF-8
 NeedsCompilation: yes
 Packaged: 2018-02-25 13:32:32 UTC; aviezerl
 RoxygenNote: 7.2.3
-SystemRequirements: C++11
