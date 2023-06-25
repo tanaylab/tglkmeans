@@ -23,7 +23,7 @@ TGL_kmeans(
 \item{df}{data frame. Each row is a single observation and each column is a dimension.
 the first column can contain id for each observation (if id_column is TRUE).}
 
-\item{k}{number of clusters}
+\item{k}{number of clusters. Note that in some cases the algorithm might return less clusters than k.}
 
 \item{metric}{distance metric for kmeans++ seeding. can be 'euclid', 'pearson' or 'spearman'}
 

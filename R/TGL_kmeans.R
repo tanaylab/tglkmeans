@@ -2,7 +2,7 @@
 #'
 #' @param df data frame. Each row is a single observation and each column is a dimension.
 #' the first column can contain id for each observation (if id_column is TRUE).
-#' @param k number of clusters
+#' @param k number of clusters. Note that in some cases the algorithm might return less clusters than k.
 #' @param metric distance metric for kmeans++ seeding. can be 'euclid', 'pearson' or 'spearman'
 #' @param max_iter maximal number of iterations
 #' @param min_delta minimal change in assignments (fraction out of all observations) to continue iterating
@@ -129,11 +129,11 @@ TGL_kmeans_tidy <- function(df,
         km <- reorder_clusters(km, func = reorder_func)
     }
 
+    colnames(km$cluster)[1] <- colnames(df)[1]
+
     km$size <- km$cluster %>%
         count(clust) %>%
         ungroup()
-
-    colnames(km$cluster)[1] <- colnames(df)[1]
 
     if (keep_log) {
         if (verbose) {
@@ -177,6 +177,31 @@ add_id_column <- function(df) {
 
 
 reorder_clusters <- function(km, func = "hclust") {
+    # if there is an empty cluster, remove it and renumber the clusters
+    empty_clusters <- km$centers %>%
+        filter(!(clust %in% km$cluster$clust)) %>%
+        pull(clust) %>%
+        unique()
+
+    if (length(empty_clusters) > 0) {
+        clust_map <- km$centers %>%
+            filter(!(clust %in% empty_clusters)) %>%
+            mutate(new_clust = 1:n()) %>%
+            select(clust, new_clust)
+
+        km$centers <- km$centers %>%
+            filter(!(clust %in% empty_clusters)) %>%
+            left_join(clust_map, by = "clust") %>%
+            mutate(clust = new_clust) %>%
+            select(-new_clust)
+
+        km$cluster <- km$cluster %>%
+            filter(!(clust %in% empty_clusters)) %>%
+            left_join(clust_map, by = "clust") %>%
+            mutate(clust = new_clust) %>%
+            select(-new_clust)
+    }
+
     if (is.null(func)) {
         return(km)
     }

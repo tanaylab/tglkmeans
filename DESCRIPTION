@@ -1,6 +1,6 @@
 Package: tglkmeans
 Title: Efficient Implementation of K-Means++ Algorithm
-Version: 0.3.8.9000
+Version: 0.3.9
 Authors@R: 
     c(person(given = "Aviezer",
              family = "Lifshitz",
