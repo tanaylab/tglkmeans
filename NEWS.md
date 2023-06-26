@@ -1,5 +1,9 @@
 # tglkmeans (development version)
 
+# tgkmeans 0.3.10
+
+* Removed broken link to one of the references in the description.
+
 # tgkmeans 0.3.9
 
 * Remove empty clusters. This may happen when the number of clusters is larger than the number of observations, and currently caused an error in the reordering step.
