@@ -1,4 +1,3 @@
-
 #' Simulate normal data for kmeans tests
 #'
 #' Creates \code{nclust} clusters normally distributed around \code{1:nclust}

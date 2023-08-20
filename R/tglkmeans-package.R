@@ -1,7 +1,7 @@
-#' tglkmeans
-#'
-#' tglkmeans package
-#'
+#' @keywords internal
+"_PACKAGE"
+
+## usethis namespace: start
 #' @import dplyr
 #' @import ggplot2
 #' @importFrom purrr set_names
@@ -15,7 +15,5 @@
 #'
 #' @useDynLib tglkmeans
 #' @importFrom Rcpp sourceCpp
-#'
-#' @name tglkmeans
-#' @docType package
+## usethis namespace: end
 NULL
