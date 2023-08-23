@@ -1,5 +1,9 @@
 # tglkmeans (development version)
 
+# tgkmeans 0.3.11
+
+* Changed pkgdoc, see: https://github.com/r-lib/roxygen2/issues/1491.
+
 # tgkmeans 0.3.10
 
 * Removed broken link to one of the references in the description.
