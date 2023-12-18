@@ -240,3 +240,8 @@ test_that("true_clust column is not added when add_true_clust is FALSE", {
     data <- simulate_data(n = 100, sd = 0.3, nclust = 30, frac_na = NULL, add_true_clust = FALSE)
     expect_true(!("true_clust" %in% colnames(data)))
 })
+
+test_that("and error is thrown when number of observations is less than number of clusters", {
+    expect_error(TGL_kmeans(data.frame(id = 1:10, V1 = rnorm(10)), 30, metric = "euclid", verbose = FALSE, seed = 60427))
+    expect_error(TGL_kmeans(data.frame(id = numeric(0))))
+})
