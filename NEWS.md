@@ -1,4 +1,6 @@
-# tglkmeans (development version)
+# tglkmeans 0.3.12
+
+* Added validity checks for `k` and the number of observations. 
 
 # tgkmeans 0.3.11
 

@@ -76,6 +76,15 @@ TGL_kmeans_tidy <- function(df,
             df <- add_id_column(df)
         }
     }
+
+    if (k < 1) {
+        stop("k must be greater than 0")
+    }
+
+    if (nrow(df) < k) {
+        stop(paste0("number of observations (", nrow(df), ") must be greater than k (", k, ")"))
+    }
+
     mat <- t(df[, -1])
 
     # Thorw an error if there are rows that do not contain any value
