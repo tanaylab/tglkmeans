@@ -13,6 +13,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/tglkmeans)](https://CRAN.R-project.org/package=tglkmeans)
 [![Codecov test coverage](https://codecov.io/gh/tanaylab/tglkmeans/branch/master/graph/badge.svg)](https://app.codecov.io/gh/tanaylab/tglkmeans?branch=master)
+[![R-CMD-check](https://github.com/tanaylab/tglkmeans/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tanaylab/tglkmeans/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 
