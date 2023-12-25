@@ -1,4 +1,4 @@
-context("onLoad")
+# onLoad:
 test_that("onLoad does not fail", {
     library(tglkmeans)
     cores <- round(parallel::detectCores() / 2)
@@ -9,7 +9,7 @@ test_that("onLoad does not fail", {
     }
 })
 
-context("number of threads")
+# number of threads:
 test_that("parallel is turned off when number of threads <= 1", {
     withr::with_options(
         list(tglkmeans.parallel = TRUE),

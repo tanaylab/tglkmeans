@@ -43,7 +43,8 @@ LinkingTo:
     RcppParallel
 VignetteBuilder: 
     knitr
+Config/testthat/edition: 3
+Config/testthat/parallel: false
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2018-02-25 13:32:32 UTC; aviezerl
 RoxygenNote: 7.2.3

@@ -4,8 +4,8 @@
 
 #include <algorithm>
 #include "KMeans.h"
-#include "Random.h"
 #include "UpdateMinDistanceWorker.h"
+#include "ReassignWorker.h"
 #include <Rcpp.h>
 
 KMeans::KMeans(const vector<vector<float>> &data, int k, vector<KMeansCenterBase *> &centers) :
@@ -16,51 +16,51 @@ KMeans::KMeans(const vector<vector<float>> &data, int k, vector<KMeansCenterBase
 }
 
 void KMeans::cluster(int max_iter, float min_assign_change_fraction) {
-    Rcpp::Rcout << "tglkmeans: will generate seeds" << endl;
+    Rcpp::Rcout << "will generate seeds" << endl;
     generate_seeds();
 
     int iter = 0;
     m_changes = 0;
 
-    Rcpp::Rcout << "tglkmeans: reassign after init" << endl;
+    Rcpp::Rcout << "reassign after init" << endl;
     reassign();
 
     while (iter < max_iter && m_changes / m_assignment.size() > min_assign_change_fraction) {
-        Rcpp::Rcout << "tglkmeans: iter " << iter << endl;
+        Rcpp::Rcout << "iter " << iter << endl;
         m_changes = 0;
         update_centers();
         reassign();
         iter++;
-        Rcpp::Rcout << "tglkmeans: iter " << iter << " changed " << m_changes << endl;
+        Rcpp::Rcout << "iter " << iter << " changed " << m_changes << endl;
         Rcpp::checkUserInterrupt();
     }
 }
 
 void KMeans::generate_seeds() {
-    Rcpp::Rcout << "tglkmeans: generating seeds" << endl;
+    Rcpp::Rcout << "generating seeds" << endl;
     for (int i = 0; i < m_k; i++) {        
-        Rcpp::Rcout << "tglkmeans: at seed " << i << endl;
+        Rcpp::Rcout << "at seed " << i << endl;
         m_min_dist.resize(0);
         //compute minimal distance from centers
         //select next seed by sampling
         int seed_i = -1;
         if (i == 0) {
             // select the first seed randomly
-            seed_i = Random::fraction() * m_data.size();
+            seed_i = R::runif(0, 1) * m_data.size();
         } else {
             update_min_distance(i);
-            Rcpp::Rcout << "tglkmeans: done update min distance" << endl;
-            sort(m_min_dist.begin(), m_min_dist.end());
+            Rcpp::Rcout << "done update min distance" << endl;
+            
             //select from 1/k of the data which is in the 1-1/2k quantile of the min distance
             int to_i = int(m_min_dist.size() * (1 - 1 / (2 * m_k)));
             int from_i = to_i - int(m_data.size() / m_k);
-            Rcpp::Rcout << "tglkmeans: seed range " << from_i << " " << to_i << endl;
+            Rcpp::Rcout << "seed range " << from_i << " " << to_i << endl;
             if (from_i < 0) {
                 from_i = 0;
             }
-            int rnd_i = from_i + int(Random::fraction() * (to_i - from_i));
+            int rnd_i = from_i + int(R::runif(0, 1) * (to_i - from_i));
             seed_i = m_min_dist[rnd_i].second;
-            Rcpp::Rcout << "tglkmeans: picked up " << seed_i << " dist was " << m_min_dist[rnd_i].first << endl;
+            Rcpp::Rcout << "picked up " << seed_i << " dist was " << m_min_dist[rnd_i].first << endl;
         }
 
         add_new_core(seed_i, i);
@@ -71,13 +71,15 @@ void KMeans::generate_seeds() {
 
 void KMeans::update_min_distance(int cur_k) {
     m_min_dist.resize(m_data.size());
-    UpdateMinDistanceWorker worker(m_data, m_centers, m_min_dist, cur_k);
+    UpdateMinDistanceWorker worker(m_data, m_centers, m_min_dist, m_assignment, cur_k);
     RcppParallel::parallelFor(0, m_data.size(), worker);
+    worker.prepare_min_dist(m_min_dist);
+    sort(m_min_dist.begin(), m_min_dist.end());
 }
 
 
 void KMeans::add_new_core(int seed_i, int center_i) {
-    Rcpp::Rcout << "tglkmeans: add new core from " << seed_i << " to " << center_i << endl;
+    Rcpp::Rcout << "add new core from " << seed_i << " to " << center_i << endl;
     m_centers[center_i]->reset_votes();
     m_centers[center_i]->vote(m_data[seed_i], 1);
     m_centers[center_i]->init_to_votes();
@@ -116,33 +118,17 @@ void KMeans::update_centers() {
 }
 
 void KMeans::reassign() {
-    vector<int>::iterator assign_i = m_assignment.begin();
+    // Initialize the ReassignWorker with data, centers, and assignments
+    ReassignWorker worker(m_data, m_centers, m_assignment);
+    
+    // Perform parallel computation for reassignment
+    RcppParallel::parallelFor(0, m_data.size(), worker);
 
-    for (auto data_i = m_data.begin(); data_i != m_data.end(); data_i++) {
-        int id_i = 0;
-        float best_dist = REAL_MAX;
-        int best_id_i = -1;
-        for (auto cent_i = m_centers.begin(); cent_i != m_centers.end(); cent_i++) {
-            float dist = (*cent_i)->dist(*data_i);
-            if (dist < best_dist) {
-                best_dist = dist;
-                best_id_i = id_i;
-            }
-            id_i++;
-        }
+    // Apply accumulated votes to the centers
+    worker.apply_votes();
 
-        if (best_id_i == -1) {
-            throw std::logic_error(
-                    "Cannot assign any center to element " + to_string(data_i - m_data.begin() + 1) + " all dist is NA");
-        }
-
-        if (*assign_i != best_id_i) {
-            *assign_i = best_id_i;
-            m_changes++;
-        }
-        m_centers[best_id_i]->vote(*data_i, 1);
-        assign_i++;
-    }
+    // Update the number of changes based on the worker's results
+    m_changes = worker.get_changes();
 }
 
 void KMeans::report_centers(ostream &center_tab) {

@@ -54,11 +54,8 @@ TGL_kmeans_tidy <- function(df,
                             hclust_intra_clusters = FALSE,
                             seed = NULL,
                             parallel = getOption("tglkmeans.parallel")) {
-    if (is.null(seed)) {
-        random_seed <- TRUE
-        seed <- -1
-    } else {
-        random_seed <- FALSE
+    if (!is.null(seed)) {
+        set.seed(seed)
     }
 
     df <- as.data.frame(df)
@@ -104,9 +101,7 @@ TGL_kmeans_tidy <- function(df,
             k = k,
             metric = metric,
             max_iter = max_iter,
-            min_delta = min_delta,
-            random_seed = random_seed,
-            seed = seed
+            min_delta = min_delta
         )
     } else {
         log <- utils::capture.output(
@@ -116,9 +111,7 @@ TGL_kmeans_tidy <- function(df,
                 k = k,
                 metric = metric,
                 max_iter = max_iter,
-                min_delta = min_delta,
-                random_seed = random_seed,
-                seed = seed
+                min_delta = min_delta
             )
         )
     }

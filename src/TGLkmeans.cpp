@@ -9,7 +9,6 @@
 #include "KMeansCenterMeanEuclid.h"
 #include "KMeansCenterMeanPearson.h"
 #include "KMeansCenterMeanSpearman.h"
-#include "Random.h"
 
 using namespace Rcpp;
 using namespace std;
@@ -48,11 +47,7 @@ void real_max_to_na(DataFrame& df){
 }
 
 // [[Rcpp::export]]
-List TGL_kmeans_cpp(const StringVector& ids, DataFrame& mat, const int& k, const String& metric, const double& max_iter=40, const double& min_delta=0.0001, const bool& random_seed=true, const int& seed=-1){
-
-    if (!random_seed){
-        Random::seed(seed);
-    }
+List TGL_kmeans_cpp(const StringVector& ids, DataFrame& mat, const int& k, const String& metric, const double& max_iter=40, const double& min_delta=0.0001){
 
     replace_na(mat);
 
