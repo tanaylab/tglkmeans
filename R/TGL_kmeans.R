@@ -15,6 +15,8 @@
 #' @param hclust_intra_clusters run hierarchical clustering within each cluster and return an ordering of the observations.
 #' @param seed seed for the c++ random number generator
 #' @param parallel cluster every cluster parallelly (if hclust_intra_clusters is true)
+#' @param use_cpp_random use c++ random number generator instead of R's. This should be used for only for
+#' backwards compatibility, as from version 0.4.0 onwards the default random number generator was changed o R.
 #'
 #' @return list with the following components:
 #' \describe{
@@ -53,9 +55,12 @@ TGL_kmeans_tidy <- function(df,
                             add_to_data = FALSE,
                             hclust_intra_clusters = FALSE,
                             seed = NULL,
-                            parallel = getOption("tglkmeans.parallel")) {
+                            parallel = getOption("tglkmeans.parallel"),
+                            use_cpp_random = FALSE) {
     if (!is.null(seed)) {
         set.seed(seed)
+    } else {
+        seed <- -1
     }
 
     df <- as.data.frame(df)
@@ -101,7 +106,9 @@ TGL_kmeans_tidy <- function(df,
             k = k,
             metric = metric,
             max_iter = max_iter,
-            min_delta = min_delta
+            min_delta = min_delta,
+            use_cpp_random = use_cpp_random,
+            seed = seed
         )
     } else {
         log <- utils::capture.output(
@@ -111,7 +118,9 @@ TGL_kmeans_tidy <- function(df,
                 k = k,
                 metric = metric,
                 max_iter = max_iter,
-                min_delta = min_delta
+                min_delta = min_delta,
+                use_cpp_random = use_cpp_random,
+                seed = seed
             )
         )
     }
@@ -286,7 +295,8 @@ TGL_kmeans <- function(df,
                        reorder_func = "hclust",
                        hclust_intra_clusters = FALSE,
                        seed = NULL,
-                       parallel = getOption("tglkmeans.parallel")) {
+                       parallel = getOption("tglkmeans.parallel"),
+                       use_cpp_random = FALSE) {
     res <- TGL_kmeans_tidy(
         df = df,
         k = k,
@@ -299,7 +309,8 @@ TGL_kmeans <- function(df,
         reorder_func = reorder_func,
         seed = seed,
         hclust_intra_clusters = hclust_intra_clusters,
-        parallel = parallel
+        parallel = parallel,
+        use_cpp_random = use_cpp_random
     )
 
 

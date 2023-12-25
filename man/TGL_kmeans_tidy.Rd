@@ -17,7 +17,8 @@ TGL_kmeans_tidy(
   add_to_data = FALSE,
   hclust_intra_clusters = FALSE,
   seed = NULL,
-  parallel = getOption("tglkmeans.parallel")
+  parallel = getOption("tglkmeans.parallel"),
+  use_cpp_random = FALSE
 )
 }
 \arguments{
@@ -48,6 +49,9 @@ if NULL, no reordering would be done.}
 \item{seed}{seed for the c++ random number generator}
 
 \item{parallel}{cluster every cluster parallelly (if hclust_intra_clusters is true)}
+
+\item{use_cpp_random}{use c++ random number generator instead of R's. This should be used for only for
+backwards compatibility, as from version 0.4.0 onwards the default random number generator was changed o R.}
 }
 \value{
 list with the following components:

@@ -78,3 +78,7 @@ Please refer to the package vignettes for usage and workflow, or look at the [us
 browseVignettes("usage")
 ```
 
+
+## A note regarding random number generation
+
+From version 0.4.0 onwards, the package uses R random number generation functions instead of the C++11 random number generation functions. Note that this may result in different results from previous versions. To get the same results as previous versions, set the `use_cpp_random` argument to `TRUE` in the `TGL_kmeans` function.

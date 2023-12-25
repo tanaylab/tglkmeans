@@ -52,7 +52,7 @@ test_that("Use rownames if exists", {
         as.data.frame() %>%
         select(id, starts_with("V")) %>%
         mutate(id = paste0("id_", id)) %>%
-        column_to_rownames("id")
+        tibble::column_to_rownames("id")
 
     res <- TGL_kmeans_tidy(data, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 60427)
     clustering_ok(data, res, nclust, ndims, order = FALSE)
@@ -68,7 +68,7 @@ test_that("Dot not fail when rownames do not exist", {
     data <- data %>%
         select(starts_with("V")) %>%
         as.data.frame()
-    data <- remove_rownames(data)
+    data <- tibble::remove_rownames(data)
 
     res <- TGL_kmeans_tidy(data, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 60427)
     clustering_ok(data, res, nclust, ndims, order = FALSE)
@@ -148,7 +148,7 @@ test_that("add_to_data works", {
         as.data.frame() %>%
         select(id, starts_with("V")) %>%
         mutate(id = paste0("id_", id)) %>%
-        column_to_rownames("id")
+        tibble::column_to_rownames("id")
 
     res <- TGL_kmeans_tidy(data, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 60427, add_to_data = TRUE)
     expect_equal(res$data %>% select(starts_with("V")), data %>% select(starts_with("V")))

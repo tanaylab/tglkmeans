@@ -6,13 +6,23 @@
 #include "KMeans.h"
 #include "UpdateMinDistanceWorker.h"
 #include "ReassignWorker.h"
+#include "Random.h"
 #include <Rcpp.h>
 
-KMeans::KMeans(const vector<vector<float>> &data, int k, vector<KMeansCenterBase *> &centers) :
+KMeans::KMeans(const vector<vector<float>> &data, int k, vector<KMeansCenterBase *> &centers, const bool& use_cpp_random) :
         m_k(k),
         m_centers(centers),
         m_assignment(data.size(), -1),
-        m_data(data) {
+        m_data(data),
+        m_use_cpp_random(use_cpp_random) {
+}
+
+float KMeans::random_fraction() {
+    if (m_use_cpp_random){
+        return Random::fraction();
+    } else {
+        return R::runif(0, 1);
+    }
 }
 
 void KMeans::cluster(int max_iter, float min_assign_change_fraction) {
@@ -46,7 +56,7 @@ void KMeans::generate_seeds() {
         int seed_i = -1;
         if (i == 0) {
             // select the first seed randomly
-            seed_i = R::runif(0, 1) * m_data.size();
+            seed_i = random_fraction() * m_data.size();
         } else {
             update_min_distance(i);
             Rcpp::Rcout << "done update min distance" << endl;
@@ -58,7 +68,8 @@ void KMeans::generate_seeds() {
             if (from_i < 0) {
                 from_i = 0;
             }
-            int rnd_i = from_i + int(R::runif(0, 1) * (to_i - from_i));
+
+            int rnd_i = from_i + int(random_fraction() * (to_i - from_i));
             seed_i = m_min_dist[rnd_i].second;
             Rcpp::Rcout << "picked up " << seed_i << " dist was " << m_min_dist[rnd_i].first << endl;
         }
