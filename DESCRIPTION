@@ -29,7 +29,8 @@ Imports:
     parallel (>= 3.3.2),    
     plyr (>= 1.8.4),
     purrr (>= 0.2.0),    
-    tgstat (>= 1.0.0)
+    tgstat (>= 1.0.0),
+    RcppParallel
 Suggests: 
     covr,
     knitr,
@@ -38,7 +39,8 @@ Suggests:
     testthat,
     withr
 LinkingTo: 
-    Rcpp
+    Rcpp,
+    RcppParallel
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
