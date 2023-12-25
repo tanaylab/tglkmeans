@@ -32,12 +32,13 @@ void KMeans::cluster(int max_iter, float min_assign_change_fraction) {
         reassign();
         iter++;
         Rcpp::Rcout << "tglkmeans: iter " << iter << " changed " << m_changes << endl;
+        Rcpp::checkUserInterrupt();
     }
 }
 
 void KMeans::generate_seeds() {
     Rcpp::Rcout << "tglkmeans: generating seeds" << endl;
-    for (int i = 0; i < m_k; i++) {
+    for (int i = 0; i < m_k; i++) {        
         Rcpp::Rcout << "tglkmeans: at seed " << i << endl;
         m_min_dist.resize(0);
         //compute minimal distance from centers
@@ -63,6 +64,7 @@ void KMeans::generate_seeds() {
         }
 
         add_new_core(seed_i, i);
+        Rcpp::checkUserInterrupt();
     }
 }
 
@@ -109,6 +111,7 @@ void KMeans::update_centers() {
     for (int i = 0; i < m_k; i++) {
         m_centers[i]->init_to_votes();
         m_centers[i]->reset_votes();
+        Rcpp::checkUserInterrupt();
     }
 }
 
