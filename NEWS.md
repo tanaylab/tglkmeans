@@ -1,3 +1,8 @@
+# tglkmeans 0.4.0
+
+* Use R random number generator instead of C++11 random number generator. For backwards compatibility, the old random number generator can be used by setting `use_cpp_random` to `TRUE`.
+* Added parallelization using `RcppParallel`. 
+
 # tglkmeans 0.3.12
 
 * Added validity checks for `k` and the number of observations. 
