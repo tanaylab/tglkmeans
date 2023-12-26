@@ -55,7 +55,7 @@ float wilcoxon_rank_sum(list <T> &samples, int type = 1) {
     float EU = n1 * n2 / 2.0;
     float VarU = n1 * n2 * (samples.size() + 1) / 12.0;
 
-    Rcpp::Rcout << "W " << W << " n2 " << n2 << " EU " << EU << " Var " << VarU << endl;
+    Rcpp::Rcout << "W " << W << " n2 " << n2 << " EU " << EU << " Var " << VarU << " t2_minus_t " << t3_minus_t << endl;
 
     float pv = erfc((U - EU) / sqrt(VarU));
 
@@ -124,7 +124,7 @@ float siegel_tukey(list <T> &samples, int type = 1) {
     float EU = n1 * n2 / 2.0;
     float VarU = n1 * n2 * (samples.size() + 1) / 12.0;
 
-    Rcpp::Rcout << "W " << W << " n2 " << n2 << " EU " << EU << " Var " << VarU << endl;
+    Rcpp::Rcout << "W " << W << " n2 " << n2 << " EU " << EU << " Var " << VarU << " t2_minus_t " << t3_minus_t << endl;
     float pv = erfc((U - EU) / sqrt(VarU));
 
     return (pv);

@@ -18,6 +18,8 @@ Basic usage of the package.
 library(dplyr)
 library(ggplot2)
 library(tglkmeans)
+theme_set(theme_classic())
+set.seed(60427)
 ```
 
 First, let's create 5 clusters normally distributed around 1 to 5, with sd of 0.3:
@@ -38,7 +40,8 @@ data %>% ggplot(aes(x = V1, y = V2, color = factor(true_clust))) +
 Now we can cluster it using kmeans++:
 
 ```{r}
-data_for_clust <- data %>% select(id, starts_with("V"))
+rownames(data) <- data$id
+data_for_clust <- data %>% select(starts_with("V"))
 km <- TGL_kmeans_tidy(data_for_clust,
     k = 5,
     metric = "euclid",
@@ -137,9 +140,12 @@ data <- simulate_data(n = 100, sd = 0.3, nclust = 30, dims = 300)
 km <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")),
     k = 30,
     metric = "euclid",
-    verbose = FALSE
+    verbose = FALSE,
+    id_column = TRUE
 )
 ```
+
+Note that here we supplied `id_column = TRUE` to indicate that the first column is the id column.
 
 ```{r}
 d <- tglkmeans:::match_clusters(data, km, 30)
@@ -158,16 +164,16 @@ sum(d$true_clust == d$new_clust, na.rm = TRUE) / sum(!is.na(d$new_clust))
 We can see that kmeans++ clusters significantly better than R vanilla kmeans.
 
 ## Random seed
-we can set the seed for the c++ random number generator, for reproducible results:
+we can set the seed for reproducible results:
 
 ```{r}
-km1 <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")),
+km1 <- TGL_kmeans_tidy(data %>% select(starts_with("V")),
     k = 30,
     metric = "euclid",
     verbose = FALSE,
     seed = 60427
 )
-km2 <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")),
+km2 <- TGL_kmeans_tidy(data %>% select(starts_with("V")),
     k = 30,
     metric = "euclid",
     verbose = FALSE,

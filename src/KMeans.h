@@ -25,9 +25,11 @@ protected:
 
     float m_changes;
 
+    bool m_use_cpp_random;
+
 public:
 
-    KMeans(const vector <vector<float>> &data, int k, vector<KMeansCenterBase *> &centers);
+    KMeans(const vector <vector<float>> &data, int k, vector<KMeansCenterBase *> &centers, const bool& use_cpp_random);
 
     void cluster(int max_iter, float min_delta_assign);
 
@@ -48,6 +50,8 @@ public:
     void report_assignment(vector <string> &row_names, ostream &assign_tab);
 
     vector<int> report_assignment_to_vector();
+
+    float random_fraction();
 };
 
 

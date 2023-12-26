@@ -8,16 +8,18 @@
 #' @param dims number of dimensions
 #' @param frac_na fraction of NA in the first dimension
 #' @param add_true_clust add a column with the true cluster ids
+#' @param id_column add a column with the id
 #'
 #' @return simulated data
-#' @export
 #'
 #' @examples
 #' simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2)
 #'
 #' # add 20% missing data
 #' simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2, frac_na = 0.2)
-simulate_data <- function(n = 100, sd = 0.3, nclust = 30, dims = 2, frac_na = NULL, add_true_clust = TRUE) {
+#'
+#' @export
+simulate_data <- function(n = 100, sd = 0.3, nclust = 30, dims = 2, frac_na = NULL, add_true_clust = TRUE, id_column = TRUE) {
     data <- purrr::map_dfr(1:nclust, ~
         as.data.frame(matrix(rnorm(n * dims, mean = .x, sd = sd), ncol = dims)) %>%
             mutate(true_clust = .x)) %>%
@@ -31,6 +33,12 @@ simulate_data <- function(n = 100, sd = 0.3, nclust = 30, dims = 2, frac_na = NU
     if (!add_true_clust) {
         data <- data %>% select(-true_clust)
     }
+    if (!id_column) {
+        data <- as.data.frame(data)
+        rownames(data) <- data$id
+        data <- data %>% select(-id)
+    }
+
     return(as.data.frame(data))
 }
 
@@ -47,7 +55,7 @@ match_clusters <- function(data, res, nclust) {
 
 test_clustering <- function(n, sd, nclust, dims = 2, method = "euclid", frac_na = NULL) {
     data <- simulate_data(n = n, sd = sd, nclust = nclust, dims = dims)
-    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, method, verbose = FALSE)
+    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, method, id_column = TRUE, verbose = FALSE)
     mres <- match_clusters(data, res, nclust)
     frac_success <- sum(mres$true_clust == mres$new_clust, na.rm = TRUE) / sum(!is.na(mres$new_clust))
     return(frac_success)

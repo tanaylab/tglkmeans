@@ -1,12 +1,5 @@
 hclust_every_cluster <- function(km, df, parallel = TRUE) {
-    if (!rlang::has_name(km, "data")) {
-        km$data <- df %>%
-            left_join(km$cluster, by = colnames(df)[1]) %>%
-            select(clust, everything()) %>%
-            as_tibble()
-    }
-
-    all_hc <- km$data %>%
+    all_hc <- df %>%
         plyr::dlply(plyr::.(clust), function(x) {
             ids <- x$id
             hc <- as.matrix(x[, -1:-2]) %>%
@@ -18,7 +11,7 @@ hclust_every_cluster <- function(km, df, parallel = TRUE) {
         }, .parallel = parallel) %>%
         purrr::map_df(~.x)
 
-    res <- km$data %>%
+    res <- df %>%
         select(id, clust) %>%
         mutate(idx = 1:n()) %>%
         left_join(all_hc, by = c("id", "clust")) %>%

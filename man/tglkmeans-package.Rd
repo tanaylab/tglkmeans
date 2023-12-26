@@ -11,6 +11,8 @@ Efficient implementation of K-Means++ algorithm. For more information see (1) "k
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://tanaylab.github.io/tglkmeans/}
+  \item \url{https://github.com/tanaylab/tglkmeans}
   \item Report bugs at \url{https://github.com/tanaylab/tglkmeans/issues}
 }
 

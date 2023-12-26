@@ -1,8 +1,9 @@
 ## R CMD check results
 
-0 errors | 0 warnings | 0 notes
+0 errors | 0 warnings | 1 note
 
-* Changed pkgdoc as requested by Kurt Hornik. 
+* The requirement for GNU make is due to the use of RcppParallel which requires GNU make.
+* This is a unix only package since it is using tgstat which is not available on windows.
 
 
 

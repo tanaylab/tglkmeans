@@ -1,7 +1,8 @@
 #' TGL kmeans with 'tidy' output
 #'
-#' @param df data frame. Each row is a single observation and each column is a dimension.
-#' the first column can contain id for each observation (if id_column is TRUE).
+#' @param df a data frame or a matrix. Each row is a single observation and each column is a dimension.
+#' the first column can contain id for each observation (if id_column is TRUE),
+#' otherwise the rownames are used.
 #' @param k number of clusters. Note that in some cases the algorithm might return less clusters than k.
 #' @param metric distance metric for kmeans++ seeding. can be 'euclid', 'pearson' or 'spearman'
 #' @param max_iter maximal number of iterations
@@ -15,6 +16,8 @@
 #' @param hclust_intra_clusters run hierarchical clustering within each cluster and return an ordering of the observations.
 #' @param seed seed for the c++ random number generator
 #' @param parallel cluster every cluster parallelly (if hclust_intra_clusters is true)
+#' @param use_cpp_random use c++ random number generator instead of R's. This should be used for only for
+#' backwards compatibility, as from version 0.4.0 onwards the default random number generator was changed o R.
 #'
 #' @return list with the following components:
 #' \describe{
@@ -22,7 +25,7 @@
 #'   \item{centers:}{tibble with `clust` column and the cluster centers.}
 #'   \item{size:}{tibble with `clust` column and `n` column with the number of points in each cluster.}
 #'   \item{data:}{tibble with `clust` column the original data frame.}
-#'   \item{log:}{messages from the algorithm run (only if \code{id_column = TRUE}).}
+#'   \item{log:}{messages from the algorithm run (only if \code{id_column = FALSE}).}
 #'   \item{order:}{tibble with 'id' column, 'clust' column, 'order' column with a new ordering if the observations and 'intra_clust_order' column with the order within each cluster. (only if hclust_intra_clusters = TRUE)}
 #' }
 #'
@@ -32,7 +35,15 @@
 #' }
 #'
 #' # create 5 clusters normally distributed around 1:5
-#' d <- simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2, add_true_clust = FALSE)
+#' d <- simulate_data(
+#'     n = 100,
+#'     sd = 0.3,
+#'     nclust = 5,
+#'     dims = 2,
+#'     add_true_clust = FALSE,
+#'     id_column = FALSE
+#' )
+#'
 #' head(d)
 #'
 #' # cluster
@@ -48,84 +59,101 @@ TGL_kmeans_tidy <- function(df,
                             min_delta = 0.0001,
                             verbose = FALSE,
                             keep_log = FALSE,
-                            id_column = TRUE,
+                            id_column = FALSE,
                             reorder_func = "hclust",
                             add_to_data = FALSE,
                             hclust_intra_clusters = FALSE,
                             seed = NULL,
-                            parallel = getOption("tglkmeans.parallel")) {
-    if (is.null(seed)) {
-        random_seed <- TRUE
-        seed <- -1
+                            parallel = getOption("tglkmeans.parallel"),
+                            use_cpp_random = FALSE) {
+    if (!is.null(seed)) {
+        set.seed(seed)
     } else {
-        random_seed <- FALSE
+        seed <- -1
     }
 
-    df <- as.data.frame(df)
+    if (!(metric %in% c("euclid", "pearson", "spearman"))) {
+        cli_abort("{.field metric} must be one of 'euclid', 'pearson' or 'spearman'")
+    }
 
-    if (!id_column) {
-        df <- add_id_column(df)
-    } else {
-        if (rlang::has_name(df, "id")) {
-            df$id <- as.character(df$id)
-            if (verbose) {
-                message(sprintf("id column: %s", colnames(df)[1]))
-            }
-        } else {
-            warning("Input doesn't have a column named \"id\". Using rownames instead.")
-            df <- add_id_column(df)
+    if (max_iter < 1) {
+        cli_abort("{.field max_iter} must be greater than 0")
+    }
+
+    if (min_delta < 0 || min_delta > 1) {
+        cli_abort("{.field min_delta} must be between 0 and 1")
+    }
+
+    if (!is.matrix(df) && !is.data.frame(df)) {
+        cli_abort("{.field df} must be a matrix or a data frame")
+    }
+
+    # Extract IDs if necessary
+    ids <- as.character(1:nrow(df))
+    id_column_name <- "id"
+    if (id_column) {
+        ids <- as.character(df[, 1])
+        id_column_name <- colnames(df)[1]
+        df <- df[, -1]
+    }
+
+    mat <- df
+
+    # make sure that the input is numeric
+    mat <- as.matrix(mat)
+    if (!is.numeric(mat)) {
+        if (any(!is.numeric(mat[, 1])) && missing(id_column) && !id_column) {
+            cli_abort("{.field df} must be numeric. Note that the default of {.field id_column} was changed to FALSE in version {.field 0.4.0}. If you want to use the first column as ids, please set {.field id_column=TRUE}")
         }
+        cli_abort("{.field df} must be numeric.")
     }
 
     if (k < 1) {
-        stop("k must be greater than 0")
+        cli_abort("k must be greater than 0")
     }
 
-    if (nrow(df) < k) {
-        stop(paste0("number of observations (", nrow(df), ") must be greater than k (", k, ")"))
+    if (nrow(mat) < k) {
+        cli_abort("number of observations ({.val {nrow(mat)}} must be greater than k ({.val {k}})")
     }
-
-    mat <- t(df[, -1])
 
     # Thorw an error if there are rows that do not contain any value
-    n_not_missing <- colSums(!is.na(mat))
+    n_not_missing <- rowSums(!is.na(mat))
     if (any(n_not_missing == 0)) {
         all_nas <- which(n_not_missing == 0)
-        stop(sprintf("The following rows contain only missing values: %s", paste(all_nas, collapse = ",")))
+        cli_abort("The following rows contain only missing values: {.val {all_nas}}")
     }
 
-    ids <- as.character(df[, 1])
-
-    column_names <- as.character(colnames(df)[-1])
     if (verbose) {
         km <- TGL_kmeans_cpp(
             ids = ids,
-            mat = mat,
+            mat = t(mat),
             k = k,
             metric = metric,
             max_iter = max_iter,
             min_delta = min_delta,
-            random_seed = random_seed,
+            use_cpp_random = use_cpp_random,
             seed = seed
         )
     } else {
         log <- utils::capture.output(
             km <- TGL_kmeans_cpp(
                 ids = ids,
-                mat = mat,
+                mat = t(mat),
                 k = k,
                 metric = metric,
                 max_iter = max_iter,
                 min_delta = min_delta,
-                random_seed = random_seed,
+                use_cpp_random = use_cpp_random,
                 seed = seed
             )
         )
     }
 
+    # Processing the output
+
     km$centers <- t(km$centers) %>%
         as_tibble(.name_repair = "minimal") %>%
-        purrr::set_names(column_names) %>%
+        purrr::set_names(colnames(mat)) %>%
         mutate(clust = 1:n()) %>%
         select(clust, everything()) %>%
         as_tibble()
@@ -138,7 +166,7 @@ TGL_kmeans_tidy <- function(df,
         km <- reorder_clusters(km, func = reorder_func)
     }
 
-    colnames(km$cluster)[1] <- colnames(df)[1]
+    colnames(km$cluster)[1] <- id_column_name
 
     km$size <- km$cluster %>%
         count(clust) %>%
@@ -146,18 +174,14 @@ TGL_kmeans_tidy <- function(df,
 
     if (keep_log) {
         if (verbose) {
-            warning("cannot keep log when verbose option is true")
+            cli_warn("cannot keep log when {.field verbose=TRUE}")
         } else {
             km$log <- log
         }
     }
 
     if (add_to_data) {
-        km$data <- df %>%
-            mutate(id = as.character(id)) %>%
-            left_join(km$cluster, by = colnames(df)[1]) %>%
-            select(clust, everything()) %>%
-            as_tibble()
+        km$data <- add_data_to_km_object(df, km$cluster, ids, id_column_name)
         if (!id_column) {
             km$data <- as.data.frame(km$data)
             rownames(km$data) <- km$data$id
@@ -166,23 +190,28 @@ TGL_kmeans_tidy <- function(df,
     }
 
     if (hclust_intra_clusters) {
-        message("running hclust within each cluster")
-        km$order <- hclust_every_cluster(km, df, parallel = parallel)
+        cli_alert_info("running hclust within each cluster")
+        if (is.null(km$data)) {
+            full_data <- add_data_to_km_object(df, km$cluster, ids, id_column_name)
+        } else {
+            full_data <- km$data
+        }
+        full_data <- full_data %>%
+            select(clust, !!id_column_name, everything())
+        km$order <- hclust_every_cluster(km, full_data, parallel = parallel)
     }
 
     return(km)
 }
 
-
-add_id_column <- function(df) {
-    if (!has_rownames(df)) {
-        df <- df %>% rowid_to_column("id")
-    } else {
-        df <- df %>% rownames_to_column("id")
-    }
-    return(df)
+add_data_to_km_object <- function(df, cluster, ids, id_column_name) {
+    df %>%
+        # add the ids at id_column_name
+        mutate(!!id_column_name := as.character(ids)) %>%
+        left_join(cluster, by = id_column_name) %>%
+        select(clust, everything()) %>%
+        as_tibble()
 }
-
 
 
 reorder_clusters <- function(km, func = "hclust") {
@@ -218,7 +247,7 @@ reorder_clusters <- function(km, func = "hclust") {
     if (identical(func, "hclust") ||
         identical(func, hclust)) {
         if (min(apply(km$centers[, -1], 1, var, na.rm = TRUE), na.rm = TRUE) == 0) {
-            warning("standard deviation of kmeans center is 0")
+            cli_warn("standard deviation of kmeans center is 0")
         } else {
             cm <- km$centers[, -1] %>%
                 t() %>%
@@ -271,7 +300,15 @@ reorder_clusters <- function(km, func = "hclust") {
 #' }
 #'
 #' # create 5 clusters normally distributed around 1:5
-#' d <- simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2, add_true_clust = FALSE)
+#' d <- simulate_data(
+#'     n = 100,
+#'     sd = 0.3,
+#'     nclust = 5,
+#'     dims = 2,
+#'     add_true_clust = FALSE,
+#'     id_column = FALSE
+#' )
+#'
 #' head(d)
 #'
 #' # cluster
@@ -289,11 +326,12 @@ TGL_kmeans <- function(df,
                        min_delta = 0.0001,
                        verbose = FALSE,
                        keep_log = FALSE,
-                       id_column = TRUE,
+                       id_column = FALSE,
                        reorder_func = "hclust",
                        hclust_intra_clusters = FALSE,
                        seed = NULL,
-                       parallel = getOption("tglkmeans.parallel")) {
+                       parallel = getOption("tglkmeans.parallel"),
+                       use_cpp_random = FALSE) {
     res <- TGL_kmeans_tidy(
         df = df,
         k = k,
@@ -306,7 +344,8 @@ TGL_kmeans <- function(df,
         reorder_func = reorder_func,
         seed = seed,
         hclust_intra_clusters = hclust_intra_clusters,
-        parallel = parallel
+        parallel = parallel,
+        use_cpp_random = use_cpp_random
     )
 
 
@@ -325,7 +364,7 @@ TGL_kmeans <- function(df,
 
     if (keep_log) {
         if (verbose) {
-            warning("cannot keep log when verbose option is true")
+            cli_warn("cannot keep log when {.field verbose=TRUE}")
         } else {
             km$log <- res$log
         }

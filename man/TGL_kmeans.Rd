@@ -12,16 +12,18 @@ TGL_kmeans(
   min_delta = 1e-04,
   verbose = FALSE,
   keep_log = FALSE,
-  id_column = TRUE,
+  id_column = FALSE,
   reorder_func = "hclust",
   hclust_intra_clusters = FALSE,
   seed = NULL,
-  parallel = getOption("tglkmeans.parallel")
+  parallel = getOption("tglkmeans.parallel"),
+  use_cpp_random = FALSE
 )
 }
 \arguments{
-\item{df}{data frame. Each row is a single observation and each column is a dimension.
-the first column can contain id for each observation (if id_column is TRUE).}
+\item{df}{a data frame or a matrix. Each row is a single observation and each column is a dimension.
+the first column can contain id for each observation (if id_column is TRUE),
+otherwise the rownames are used.}
 
 \item{k}{number of clusters. Note that in some cases the algorithm might return less clusters than k.}
 
@@ -45,6 +47,9 @@ if NULL, no reordering would be done.}
 \item{seed}{seed for the c++ random number generator}
 
 \item{parallel}{cluster every cluster parallelly (if hclust_intra_clusters is true)}
+
+\item{use_cpp_random}{use c++ random number generator instead of R's. This should be used for only for
+backwards compatibility, as from version 0.4.0 onwards the default random number generator was changed o R.}
 }
 \value{
 list with the following components:
@@ -65,7 +70,15 @@ tglkmeans.set_parallel(1)
 }
 
 # create 5 clusters normally distributed around 1:5
-d <- simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2, add_true_clust = FALSE)
+d <- simulate_data(
+    n = 100,
+    sd = 0.3,
+    nclust = 5,
+    dims = 2,
+    add_true_clust = FALSE,
+    id_column = FALSE
+)
+
 head(d)
 
 # cluster
