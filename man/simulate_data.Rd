@@ -10,7 +10,8 @@ simulate_data(
   nclust = 30,
   dims = 2,
   frac_na = NULL,
-  add_true_clust = TRUE
+  add_true_clust = TRUE,
+  id_column = TRUE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ simulate_data(
 \item{frac_na}{fraction of NA in the first dimension}
 
 \item{add_true_clust}{add a column with the true cluster ids}
+
+\item{id_column}{add a column with the id}
 }
 \value{
 simulated data
@@ -37,4 +40,5 @@ simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2)
 
 # add 20\% missing data
 simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2, frac_na = 0.2)
+
 }

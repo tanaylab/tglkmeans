@@ -27,7 +27,7 @@ test_that("Stop when there are rows which contain only missing data", {
     data <- as.data.frame(simulate_data(n = 100, sd = 0.3, nclust = 30, frac_na = NULL))
     data[3, -1] <- NA
     data[4, -1] <- NA
-    expect_error(TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = FALSE, seed = 60427), "The following rows contain only missing values: 3,4")
+    expect_error(TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, metric = "euclid", id_column = TRUE, verbose = FALSE, seed = 60427))
 })
 
 # Matrix input:
@@ -56,9 +56,6 @@ test_that("Use rownames if exists", {
 
     res <- TGL_kmeans_tidy(data, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 60427)
     clustering_ok(data, res, nclust, ndims, order = FALSE)
-
-    expect_warning(res1 <- TGL_kmeans_tidy(data, 30, id_column = TRUE, metric = "euclid", verbose = FALSE, seed = 60427))
-    clustering_ok(data, res1, nclust, ndims, order = FALSE)
 })
 
 test_that("Dot not fail when rownames do not exist", {
@@ -99,7 +96,7 @@ test_that("all ids and clusters are present", {
     nclust <- 30
     ndims <- 5
     data <- simulate_data(n = 200, sd = 0.3, dims = 5, nclust = nclust, frac_na = 0.05)
-    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = FALSE)
+    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", id_column = TRUE, verbose = FALSE)
 
     clustering_ok(data, res, nclust, ndims, order = FALSE)
 })
@@ -108,8 +105,8 @@ test_that("non tidy version works", {
     nclust <- 30
     ndims <- 5
     data <- simulate_data(n = 200, sd = 0.3, dims = 5, nclust = nclust, frac_na = 0.05)
-    res <- TGL_kmeans(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = FALSE, seed = 60427)
-    res_tidy <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = FALSE, seed = 60427)
+    res <- TGL_kmeans(data %>% select(id, starts_with("V")), nclust, metric = "euclid", id_column = TRUE, verbose = FALSE, seed = 60427)
+    res_tidy <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", id_column = TRUE, verbose = FALSE, seed = 60427)
 
     clustering_ok(data, res_tidy, nclust, ndims, order = FALSE)
 
@@ -126,9 +123,9 @@ test_that("hclust intra cluster works", {
     nclust <- 30
     ndims <- 5
     data <- simulate_data(n = 200, sd = 0.3, dims = 5, nclust = nclust, frac_na = 0.05)
-    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = FALSE, hclust_intra_clusters = TRUE, parallel = FALSE, seed = 60427)
+    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", id_column = TRUE, verbose = FALSE, hclust_intra_clusters = TRUE, parallel = FALSE, seed = 60427)
     clustering_ok(data, res, nclust, ndims, order = TRUE)
-    res_non_tidy <- TGL_kmeans(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = FALSE, hclust_intra_clusters = TRUE, parallel = FALSE, , seed = 60427)
+    res_non_tidy <- TGL_kmeans(data %>% select(id, starts_with("V")), nclust, metric = "euclid", id_column = TRUE, verbose = FALSE, hclust_intra_clusters = TRUE, parallel = FALSE, , seed = 60427)
 
     expect_equal(res_non_tidy$order, res$order$order)
 })
@@ -137,7 +134,7 @@ test_that("add_to_data works", {
     nclust <- 30
     ndims <- 5
     data <- simulate_data(n = 200, sd = 0.3, dims = 5, nclust = nclust, frac_na = 0.05)
-    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = FALSE, add_to_data = TRUE)
+    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", id_column = TRUE, verbose = FALSE, add_to_data = TRUE)
 
     clustering_ok(data, res, nclust, ndims, order = FALSE)
 
@@ -158,7 +155,7 @@ test_that("reorder func works when set to mean", {
     nclust <- 30
     ndims <- 5
     data <- simulate_data(n = 200, sd = 0.3, dims = 5, nclust = nclust, frac_na = 0.05)
-    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = FALSE, reorder_func = mean)
+    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", id_column = TRUE, verbose = FALSE, reorder_func = mean)
 
     clustering_ok(data, res, nclust, ndims, order = FALSE)
 })
@@ -167,7 +164,7 @@ test_that("reorder func works when set to NULL", {
     nclust <- 30
     ndims <- 5
     data <- simulate_data(n = 200, sd = 0.3, dims = 5, nclust = nclust, frac_na = 0.05)
-    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = FALSE, reorder_func = NULL)
+    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", id_column = TRUE, verbose = FALSE, reorder_func = NULL)
 
     clustering_ok(data, res, nclust, ndims, order = FALSE)
 })
@@ -175,22 +172,22 @@ test_that("reorder func works when set to NULL", {
 # Verbosity:
 test_that("quiet if verbose is turned off", {
     data <- simulate_data(n = 100, sd = 0.3, nclust = 30, frac_na = NULL)
-    expect_silent(TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = FALSE, seed = 60427))
+    expect_silent(TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, metric = "euclid", id_column = TRUE, verbose = FALSE, seed = 60427))
 })
 
 test_that("not quiet when verbose is turned on", {
     data <- simulate_data(n = 100, sd = 0.3, nclust = 30, frac_na = NULL)
-    expect_message(TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = TRUE, seed = 60427))
+    expect_output(TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, metric = "euclid", id_column = TRUE, verbose = TRUE, seed = 60427))
 })
 
 test_that("Log is saved when 'keep_log' is turned on", {
     data <- simulate_data(n = 100, sd = 0.3, nclust = 30, frac_na = NULL)
-    expect_warning(res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = TRUE, seed = 60427, keep_log = TRUE))
-    expect_warning(expect_warning(res <- TGL_kmeans(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = TRUE, seed = 60427, keep_log = TRUE)))
+    expect_warning(res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, id_column = TRUE, metric = "euclid", verbose = TRUE, seed = 60427, keep_log = TRUE))
+    expect_warning(expect_warning(res <- TGL_kmeans(data %>% select(id, starts_with("V")), 30, metric = "euclid", id_column = TRUE, verbose = TRUE, seed = 60427, keep_log = TRUE)))
 
-    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = FALSE, seed = 60427, keep_log = TRUE)
+    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), 30, metric = "euclid", id_column = TRUE, verbose = FALSE, seed = 60427, keep_log = TRUE)
     expect_type(res$log, "character")
-    res <- TGL_kmeans(data %>% select(id, starts_with("V")), 30, metric = "euclid", verbose = FALSE, seed = 60427, keep_log = TRUE)
+    res <- TGL_kmeans(data %>% select(id, starts_with("V")), 30, metric = "euclid", id_column = TRUE, verbose = FALSE, seed = 60427, keep_log = TRUE)
     expect_type(res$log, "character")
 })
 
@@ -198,8 +195,8 @@ test_that("Log is saved when 'keep_log' is turned on", {
 test_that("setting the seed returns reproducible results", {
     nclust <- 30
     data <- simulate_data(n = 100, sd = 0.3, nclust = nclust, frac_na = NULL)
-    res1 <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = FALSE, seed = 60427)
-    res2 <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", verbose = FALSE, seed = 60427)
+    res1 <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", id_column = TRUE, verbose = FALSE, seed = 60427)
+    res2 <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", id_column = TRUE, verbose = FALSE, seed = 60427)
     expect_true(all(res1$centers[, -1] == res2$centers[, -1]))
 })
 

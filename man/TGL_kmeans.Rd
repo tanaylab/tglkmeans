@@ -12,7 +12,7 @@ TGL_kmeans(
   min_delta = 0.0001,
   verbose = FALSE,
   keep_log = FALSE,
-  id_column = TRUE,
+  id_column = FALSE,
   reorder_func = "hclust",
   hclust_intra_clusters = FALSE,
   seed = NULL,
@@ -21,8 +21,9 @@ TGL_kmeans(
 )
 }
 \arguments{
-\item{df}{data frame. Each row is a single observation and each column is a dimension.
-the first column can contain id for each observation (if id_column is TRUE).}
+\item{df}{a data frame or a matrix. Each row is a single observation and each column is a dimension.
+the first column can contain id for each observation (if id_column is TRUE),
+otherwise the rownames are used.}
 
 \item{k}{number of clusters. Note that in some cases the algorithm might return less clusters than k.}
 
@@ -69,7 +70,7 @@ tglkmeans.set_parallel(1)
 }
 
 # create 5 clusters normally distributed around 1:5
-d <- simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2, add_true_clust = FALSE)
+d <- simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2, add_true_clust = FALSE, id_column = FALSE)
 head(d)
 
 # cluster

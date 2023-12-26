@@ -23,6 +23,7 @@ BugReports: https://github.com/tanaylab/tglkmeans/issues
 Depends: 
     R (>= 4.0.0)
 Imports: 
+    cli,
     doFuture,
     dplyr (>= 0.5.0),
     future,
