@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tglkmeans</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -62,8 +62,26 @@
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="0.4.0" id="tglkmeans-040">tglkmeans 0.4.0<a class="anchor" aria-label="anchor" href="#tglkmeans-040"></a></h2>
+<ul><li>Default of <code>id_column</code> parameter was changed to <code>FALSE</code>. Note that this is a breaking change, and if you want to use an id column, you need to set it explicitly to <code>TRUE</code>.</li>
+<li>Use R random number generator instead of C++11 random number generator. For backwards compatibility, the old random number generator can be used by setting <code>use_cpp_random</code> to <code>TRUE</code>.</li>
+<li>Added parallelization using <code>RcppParallel</code>.</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.12" id="tglkmeans-0312">tglkmeans 0.3.12<a class="anchor" aria-label="anchor" href="#tglkmeans-0312"></a></h2>
 <ul><li>Added validity checks for <code>k</code> and the number of observations.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.3.11" id="tglkmeans-0311">tglkmeans 0.3.11<small>2023-08-21</small><a class="anchor" aria-label="anchor" href="#tglkmeans-0311"></a></h2>
+<ul><li>Changed pkgdoc, see: <a href="https://github.com/r-lib/roxygen2/issues/1491" class="external-link uri">https://github.com/r-lib/roxygen2/issues/1491</a>.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.3.10" id="tglkmeans-0310">tglkmeans 0.3.10<small>2023-06-26</small><a class="anchor" aria-label="anchor" href="#tglkmeans-0310"></a></h2>
+<ul><li>Removed broken link to one of the references in the description.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.3.9" id="tglkmeans-039">tglkmeans 0.3.9<a class="anchor" aria-label="anchor" href="#tglkmeans-039"></a></h2>
+<ul><li>Remove empty clusters. This may happen when the number of clusters is larger than the number of observations, and currently caused an error in the reordering step.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.8" id="tglkmeans-038">tglkmeans 0.3.8<small>2023-03-21</small><a class="anchor" aria-label="anchor" href="#tglkmeans-038"></a></h2>

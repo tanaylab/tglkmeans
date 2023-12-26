@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tglkmeans</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -75,20 +75,22 @@
 <span>  min_delta <span class="op">=</span> <span class="fl">1e-04</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  keep_log <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  id_column <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  id_column <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  reorder_func <span class="op">=</span> <span class="st">"hclust"</span>,</span>
 <span>  add_to_data <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  hclust_intra_clusters <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  parallel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"tglkmeans.parallel"</span><span class="op">)</span></span>
+<span>  parallel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"tglkmeans.parallel"</span><span class="op">)</span>,</span>
+<span>  use_cpp_random <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>df</dt>
-<dd><p>data frame. Each row is a single observation and each column is a dimension.
-the first column can contain id for each observation (if id_column is TRUE).</p></dd>
+<dd><p>a data frame or a matrix. Each row is a single observation and each column is a dimension.
+the first column can contain id for each observation (if id_column is TRUE),
+otherwise the rownames are used.</p></dd>
 
 
 <dt>k</dt>
@@ -139,6 +141,11 @@ if NULL, no reordering would be done.</p></dd>
 <dt>parallel</dt>
 <dd><p>cluster every cluster parallelly (if hclust_intra_clusters is true)</p></dd>
 
+
+<dt>use_cpp_random</dt>
+<dd><p>use c++ random number generator instead of R's. This should be used for only for
+backwards compatibility, as from version 0.4.0 onwards the default random number generator was changed o R.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -157,7 +164,7 @@ if NULL, no reordering would be done.</p></dd>
 <dd><p>tibble with `clust` column the original data frame.</p></dd>
 
   <dt>log:</dt>
-<dd><p>messages from the algorithm run (only if <code>id_column = TRUE</code>).</p></dd>
+<dd><p>messages from the algorithm run (only if <code>id_column = FALSE</code>).</p></dd>
 
   <dt>order:</dt>
 <dd><p>tibble with 'id' column, 'clust' column, 'order' column with a new ordering if the observations and 'intra_clust_order' column with the order within each cluster. (only if hclust_intra_clusters = TRUE)</p></dd>
@@ -176,86 +183,93 @@ if NULL, no reordering would be done.</p></dd>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># create 5 clusters normally distributed around 1:5</span></span></span>
-<span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="simulate_data.html">simulate_data</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span>, sd <span class="op">=</span> <span class="fl">0.3</span>, nclust <span class="op">=</span> <span class="fl">5</span>, dims <span class="op">=</span> <span class="fl">2</span>, add_true_clust <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="simulate_data.html">simulate_data</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    n <span class="op">=</span> <span class="fl">100</span>,</span></span>
+<span class="r-in"><span>    sd <span class="op">=</span> <span class="fl">0.3</span>,</span></span>
+<span class="r-in"><span>    nclust <span class="op">=</span> <span class="fl">5</span>,</span></span>
+<span class="r-in"><span>    dims <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>    add_true_clust <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>    id_column <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   id        V1        V2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1 0.9397522 0.9378131</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2 0.9647072 1.1305204</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  3 1.2686089 0.9021724</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  4 0.8019554 0.9015526</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  5 1.0712563 0.7627880</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  6 0.9401403 1.8170481</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          V1         V2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6439353  0.1099734</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 1.1472055 -0.1135780</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 1.3202107  1.0092054</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.9809327  1.1677847</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.7309037  0.8944197</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 1.2257166  0.9905943</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># cluster</span></span></span>
 <span class="r-in"><span><span class="va">km</span> <span class="op">&lt;-</span> <span class="fu">TGL_kmeans_tidy</span><span class="op">(</span><span class="va">d</span>, k <span class="op">=</span> <span class="fl">5</span>, <span class="st">"euclid"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> id column: id</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> KMEans: will generate seeds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> KMeans into generate seeds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> will generate seeds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> generating seeds</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> at seed 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 54 to 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 486 to 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> at seed 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> done update min distance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> seed range 350 450</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 444 dist was 3.00971</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 444 to 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 28 dist was 2.84291</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 28 to 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> at seed 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> done update min distance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> seed range 300 400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 270 dist was 1.48271</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 270 to 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 279 dist was 1.24561</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 279 to 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> at seed 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> done update min distance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> seed range 250 350</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 139 dist was 0.686618</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 139 to 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 339 dist was 0.777667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 339 to 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> at seed 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> done update min distance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> seed range 200 300</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 362 dist was 0.543374</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 362 to 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> KMEans: reassign after init</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> KMEans: iter 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> KMEans: iter 1 changed 6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> KMEans: iter 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> KMEans: iter 2 changed 5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> KMEans: iter 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> KMEans: iter 3 changed 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 182 dist was 0.627971</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 182 to 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> reassign after init</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iter 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iter 1 changed 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iter 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iter 2 changed 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iter 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iter 3 changed 0</span>
 <span class="r-in"><span><span class="va">km</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $centers</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   clust    V1    V2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 2.98  3.00 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2 4.03  4.01 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3 2.08  1.99 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     4 0.996 0.960</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     5 5.10  4.97 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 0.976 0.987</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2 2.01  2.00 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3 4.00  3.96 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     4 5.02  4.99 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     5 3.00  2.98 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $cluster</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 500 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    id    clust</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 1         4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 2         4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 3         4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 4         4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 5         4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 6         4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 7         4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 8         4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 9         4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 10        4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 1         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 2         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 3         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 4         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 5         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 6         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 7         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 8         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 9         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 10        1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 490 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $size</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   clust     n</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1    96</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2   102</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3   102</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     4   101</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     5    99</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1   102</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2    98</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3   101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     4    98</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     5   101</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
