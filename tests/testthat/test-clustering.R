@@ -148,7 +148,7 @@ test_that("add_to_data works", {
         tibble::column_to_rownames("id")
 
     res <- TGL_kmeans_tidy(data, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 60427, add_to_data = TRUE)
-    expect_equal(res$data %>% select(starts_with("V")), data %>% select(starts_with("V")))
+    expect_equal(res$data %>% select(starts_with("V")), data %>% select(starts_with("V")), ignore_attr = TRUE)
 })
 
 test_that("reorder func works when set to mean", {

@@ -70,7 +70,15 @@ tglkmeans.set_parallel(1)
 }
 
 # create 5 clusters normally distributed around 1:5
-d <- simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 2, add_true_clust = FALSE, id_column = FALSE)
+d <- simulate_data(
+    n = 100,
+    sd = 0.3,
+    nclust = 5,
+    dims = 2,
+    add_true_clust = FALSE,
+    id_column = FALSE
+)
+
 head(d)
 
 # cluster
