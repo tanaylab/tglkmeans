@@ -19,6 +19,7 @@ library(dplyr)
 library(ggplot2)
 library(tglkmeans)
 theme_set(theme_classic())
+set.seed(60427)
 ```
 
 First, let's create 5 clusters normally distributed around 1 to 5, with sd of 0.3:

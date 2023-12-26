@@ -99,6 +99,15 @@ TGL_kmeans_tidy <- function(df,
 
     mat <- df
 
+    # make sure that the input is numeric
+    mat <- as.matrix(mat)
+    if (!is.numeric(mat)) {
+        if (any(!is.numeric(mat[, 1])) && missing(id_column) && !id_column) {
+            cli_abort("{.field df} must be numeric. Note that the default of {.field id_column} was changed to FALSE in version {.field 0.4.0}. If you want to use the first column as ids, please set {.field id_column=TRUE}")
+        }
+        cli_abort("{.field df} must be numeric.")
+    }
+
     if (k < 1) {
         cli_abort("k must be greater than 0")
     }
