@@ -20,6 +20,7 @@ Description: Efficient implementation of K-Means++ algorithm. For more
     <doi:10.1145/2395116.2395117>.
 License: MIT + file LICENSE
 BugReports: https://github.com/tanaylab/tglkmeans/issues
+URL: https://tanaylab.github.io/tglkmeans/, https://github.com/tanaylab/tglkmeans
 Depends: 
     R (>= 4.0.0)
 Imports: 
