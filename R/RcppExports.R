@@ -17,3 +17,7 @@ downsample_matrix_cpp <- function(input, samples, random_seed) {
     .Call('_tglkmeans_downsample_matrix_cpp', PACKAGE = 'tglkmeans', input, samples, random_seed)
 }
 
+rcpp_downsample_sparse <- function(matrix, samples, random_seed) {
+    .Call('_tglkmeans_rcpp_downsample_sparse', PACKAGE = 'tglkmeans', matrix, samples, random_seed)
+}
+

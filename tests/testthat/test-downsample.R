@@ -25,7 +25,7 @@ test_that("downsample_matrix returns the correct number of samples when there ar
     mat <- matrix(1:12, nrow = 4)
     mat[1, 1] <- NA
     target_n <- 2
-    ds_mat <- downsample_matrix(mat, target_n)
+    expect_warning(ds_mat <- downsample_matrix(mat, target_n))
     expect_true(all(colSums(ds_mat, na.rm = TRUE) == target_n))
 
     # make sure the NAs are still there

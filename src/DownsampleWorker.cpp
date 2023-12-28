@@ -114,7 +114,6 @@ static void downsample_slice(const std::vector<D>& input, std::vector<O>& output
     }
 }
 
-
 DownsampleWorker::DownsampleWorker(const Rcpp::IntegerMatrix& input, Rcpp::IntegerMatrix& output, int samples, unsigned int random_seed)
     : input_matrix(input), output_matrix(output), samples(samples), random_seed(random_seed) {}
 
@@ -129,3 +128,25 @@ void DownsampleWorker::operator()(std::size_t begin, std::size_t end) {
     }
 }
 
+DownsampleWorkerSparse::DownsampleWorkerSparse(const Rcpp::IntegerVector& i, const Rcpp::IntegerVector& p, const Rcpp::IntegerVector& x, 
+                                               Rcpp::IntegerVector& out_x, int nrows, int ncols, int samples, unsigned int random_seed)
+    : input_i(i), input_p(p), input_x(x), output_x(out_x), nrows(nrows), ncols(ncols), samples(samples), random_seed(random_seed) {}
+
+void DownsampleWorkerSparse::operator()(std::size_t begin, std::size_t end) {
+    for (std::size_t col = begin; col < end; ++col) {
+        // Extract the current column from the sparse matrix
+        std::vector<int> input_vec;
+        for (int idx = input_p[col]; idx < input_p[col + 1]; ++idx) {
+            input_vec.push_back(input_x[idx]);
+        }
+
+        std::vector<int> output_vec(input_vec.size(), 0);
+
+        downsample_slice(input_vec, output_vec, samples, random_seed);
+
+        // Store results in the output sparse matrix
+        for (int idx = input_p[col], out_idx = 0; idx < input_p[col + 1]; ++idx, ++out_idx) {
+            output_x[idx] = output_vec[out_idx];
+        }
+    }
+}

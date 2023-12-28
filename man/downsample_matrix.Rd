@@ -7,7 +7,7 @@
 downsample_matrix(mat, target_n, seed = NULL, remove_columns = FALSE)
 }
 \arguments{
-\item{mat}{The input matrix to be downsampled}
+\item{mat}{The input matrix to be downsampled. Can be a matrix or sparse matrix (dgCMatrix). If the matrix contains NAs, the function will run significantly slower.}
 
 \item{target_n}{The target number of samples to downsample to}
 
@@ -29,5 +29,9 @@ downsample_matrix(mat, 2)
 
 # Remove columns with small sums
 downsample_matrix(mat, 12, remove_columns = TRUE)
+
+# sparse matrix
+mat_sparse <- Matrix::Matrix(mat, sparse = TRUE)
+downsample_matrix(mat_sparse, 2)
 
 }

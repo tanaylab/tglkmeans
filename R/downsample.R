@@ -4,7 +4,7 @@
 #' It uses a random seed for reproducibility and allows for removing columns with
 #' small sums.
 #'
-#' @param mat The input matrix to be downsampled
+#' @param mat The input matrix to be downsampled. Can be a matrix or sparse matrix (dgCMatrix). If the matrix contains NAs, the function will run significantly slower.
 #' @param target_n The target number of samples to downsample to
 #' @param seed The random seed for reproducibility (default is NULL)
 #' @param remove_columns Logical indicating whether to remove columns with small sums (default is FALSE)
@@ -18,6 +18,10 @@
 #' # Remove columns with small sums
 #' downsample_matrix(mat, 12, remove_columns = TRUE)
 #'
+#' # sparse matrix
+#' mat_sparse <- Matrix::Matrix(mat, sparse = TRUE)
+#' downsample_matrix(mat_sparse, 2)
+#'
 #' @export
 downsample_matrix <- function(mat, target_n, seed = NULL, remove_columns = FALSE) {
     if (is.null(seed)) {
@@ -25,23 +29,42 @@ downsample_matrix <- function(mat, target_n, seed = NULL, remove_columns = FALSE
     }
 
     # replace NAs with 0s for the cpp code
-    orig_mat <- mat
-    mat[is.na(mat)] <- 0
-    ds_mat <- downsample_matrix_cpp(mat, target_n, seed)
+    has_nas <- FALSE
+    if (any(is.na(mat))) {
+        has_nas <- TRUE
+        cli_warn("Input matrix contains NAs. Processing would be significantly slower.")
+        orig_mat <- mat
+        mat[is.na(mat)] <- 0
+    }
 
-    sums <- colSums(ds_mat, na.rm = TRUE)
+
+    if (methods::is(mat, "dgCMatrix")) {
+        ds_mat <- rcpp_downsample_sparse(mat, target_n, seed)
+        sums <- Matrix::colSums(ds_mat, na.rm = TRUE)
+    } else if (is.matrix(mat)) {
+        ds_mat <- downsample_matrix_cpp(mat, target_n, seed)
+        sums <- colSums(ds_mat, na.rm = TRUE)
+    } else {
+        cli_abort("Input must be a matrix or a sparse matrix (dgCMatrix). class of {.field mat} is {.val {class(mat)}}.")
+    }
+
     small_cols <- sums < target_n
     if (any(small_cols)) {
         if (remove_columns) {
             ds_mat <- ds_mat[, !small_cols, drop = FALSE]
-            orig_mat <- orig_mat[, !small_cols, drop = FALSE]
+            if (has_nas) {
+                orig_mat <- orig_mat[, !small_cols, drop = FALSE]
+            }
         } else {
             cli_warn("Some columns ({which(small_cols)}) have a sum<{.val {target_n}}. These columns were not changed. To remove them, set {.field remove_columns=TRUE}.")
         }
     }
 
-    # put back the NAs
-    ds_mat[is.na(orig_mat)] <- NA
+    if (has_nas) {
+        # put back the NAs
+        ds_mat[is.na(orig_mat)] <- NA
+    }
+
 
     return(ds_mat)
 }
