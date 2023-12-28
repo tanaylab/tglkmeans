@@ -3,6 +3,7 @@
 export("%>%")
 export(TGL_kmeans)
 export(TGL_kmeans_tidy)
+export(downsample_matrix)
 export(simulate_data)
 export(tglkmeans.set_parallel)
 import(dplyr)

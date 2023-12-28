@@ -13,3 +13,7 @@ TGL_kmeans_cpp <- function(ids, mat, k, metric, max_iter = 40, min_delta = 0.000
     .Call('_tglkmeans_TGL_kmeans_cpp', PACKAGE = 'tglkmeans', ids, mat, k, metric, max_iter, min_delta, use_cpp_random, seed)
 }
 
+downsample_matrix_cpp <- function(input, samples, random_seed) {
+    .Call('_tglkmeans_downsample_matrix_cpp', PACKAGE = 'tglkmeans', input, samples, random_seed)
+}
+
