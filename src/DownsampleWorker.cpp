@@ -82,7 +82,7 @@ static size_t random_sample(std::vector<size_t>& tree, ssize_t random) {
 
 template<typename D, typename O>
 static void downsample_slice(const std::vector<D>& input, std::vector<O>& output, const int32_t samples, const size_t random_seed) {
-    assert(output.size() == input.size()); // Replacing FastAssertCompare
+    assert(output.size() == input.size()); 
 
     if (samples < 0 || input.size() == 0) {
         return;

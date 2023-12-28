@@ -24,17 +24,24 @@ downsample_matrix <- function(mat, target_n, seed = NULL, remove_columns = FALSE
         seed <- sample(1:10000, 1)
     }
 
+    # replace NAs with 0s for the cpp code
+    orig_mat <- mat
+    mat[is.na(mat)] <- 0
     ds_mat <- downsample_matrix_cpp(mat, target_n, seed)
 
     sums <- colSums(ds_mat, na.rm = TRUE)
     small_cols <- sums < target_n
     if (any(small_cols)) {
         if (remove_columns) {
-            ds_mat <- ds_mat[, !small_cols]
+            ds_mat <- ds_mat[, !small_cols, drop = FALSE]
+            orig_mat <- orig_mat[, !small_cols, drop = FALSE]
         } else {
             cli_warn("Some columns ({which(small_cols)}) have a sum<{.val {target_n}}. These columns were not changed. To remove them, set {.field remove_columns=TRUE}.")
         }
     }
+
+    # put back the NAs
+    ds_mat[is.na(orig_mat)] <- NA
 
     return(ds_mat)
 }
