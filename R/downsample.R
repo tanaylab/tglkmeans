@@ -4,8 +4,10 @@
 #' It uses a random seed for reproducibility and allows for removing columns with
 #' small sums.
 #'
-#' @param mat The input matrix to be downsampled. Can be a matrix or sparse matrix (dgCMatrix). If the matrix contains NAs, the function will run significantly slower.
-#' @param target_n The target number of samples to downsample to
+#' @param mat An integer matrix to be downsampled. Can be a matrix or sparse matrix (dgCMatrix).
+#' If the matrix contains NAs, the function will run significantly slower. Values that are
+#' not integers will be coerced to integers using {.code floor()}.
+#' @param target_n The target number of samples to downsample to.
 #' @param seed The random seed for reproducibility (default is NULL)
 #' @param remove_columns Logical indicating whether to remove columns with small sums (default is FALSE)
 #'
@@ -26,6 +28,8 @@
 downsample_matrix <- function(mat, target_n, seed = NULL, remove_columns = FALSE) {
     if (is.null(seed)) {
         seed <- sample(1:10000, 1)
+    } else if (!is.numeric(seed) || seed <= 0 || seed != as.integer(seed)) {
+        cli_abort("{.field seed} must be a positive integer.")
     }
 
     # replace NAs with 0s for the cpp code
@@ -35,6 +39,14 @@ downsample_matrix <- function(mat, target_n, seed = NULL, remove_columns = FALSE
         cli_warn("Input matrix contains NAs. Processing would be significantly slower.")
         orig_mat <- mat
         mat[is.na(mat)] <- 0
+    }
+
+    if (!is.logical(remove_columns)) {
+        cli_abort("{.field remove_columns} must be a logical value.")
+    }
+
+    if (target_n <= 0 || target_n != as.integer(target_n)) {
+        cli_abort("{.field target_n} must be a positive integer.")
     }
 
 

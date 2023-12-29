@@ -7,9 +7,11 @@
 downsample_matrix(mat, target_n, seed = NULL, remove_columns = FALSE)
 }
 \arguments{
-\item{mat}{The input matrix to be downsampled. Can be a matrix or sparse matrix (dgCMatrix). If the matrix contains NAs, the function will run significantly slower.}
+\item{mat}{An integer matrix to be downsampled. Can be a matrix or sparse matrix (dgCMatrix).
+If the matrix contains NAs, the function will run significantly slower. Values that are
+not integers will be coerced to integers using {.code floor()}.}
 
-\item{target_n}{The target number of samples to downsample to}
+\item{target_n}{The target number of samples to downsample to.}
 
 \item{seed}{The random seed for reproducibility (default is NULL)}
 
