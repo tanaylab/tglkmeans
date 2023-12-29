@@ -129,8 +129,8 @@ void DownsampleWorker::operator()(std::size_t begin, std::size_t end) {
 }
 
 DownsampleWorkerSparse::DownsampleWorkerSparse(const Rcpp::IntegerVector& i, const Rcpp::IntegerVector& p, const Rcpp::IntegerVector& x, 
-                                               Rcpp::IntegerVector& out_x, int nrows, int ncols, int samples, unsigned int random_seed)
-    : input_i(i), input_p(p), input_x(x), output_x(out_x), nrows(nrows), ncols(ncols), samples(samples), random_seed(random_seed) {}
+                                               Rcpp::IntegerVector& out_x, int ncols, int samples, unsigned int random_seed)
+    : input_i(i), input_p(p), input_x(x), output_x(out_x), ncols(ncols), samples(samples), random_seed(random_seed) {}
 
 void DownsampleWorkerSparse::operator()(std::size_t begin, std::size_t end) {
     for (std::size_t col = begin; col < end; ++col) {
