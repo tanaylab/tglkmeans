@@ -28,6 +28,7 @@
 downsample_matrix <- function(mat, target_n, seed = NULL, remove_columns = FALSE) {
     if (is.null(seed)) {
         seed <- sample(1:10000, 1)
+        cli::cli_alert_warning("No seed provided. Using {.val {seed}}.")
     } else if (!is.numeric(seed) || seed <= 0 || seed != as.integer(seed)) {
         cli_abort("{.field seed} must be a positive integer.")
     }
