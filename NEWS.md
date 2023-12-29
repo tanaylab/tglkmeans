@@ -1,3 +1,7 @@
+# tglkmeans 0.5.0
+
+* Added `dowsample_matrix` function to downsample the columns of a count matrix to a target number. 
+
 # tglkmeans 0.4.0
 
 * Default of `id_column` parameter was changed to `FALSE`. Note that this is a breaking change, and if you want to use an id column, you need to set it explicitly to `TRUE`.

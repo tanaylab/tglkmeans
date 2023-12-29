@@ -1,4 +1,4 @@
-#' Downsample a matrix to a target number of in each column
+#' Downsample the columns of a matrix to a target number
 #'
 #' @description This function takes a matrix and downsamples it to a target number of samples.
 #' It uses a random seed for reproducibility and allows for removing columns with
@@ -15,6 +15,10 @@
 #' @return The downsampled matrix
 #'
 #' @examples
+#' \dontshow{
+#' tglkmeans.set_parallel(1)
+#' }
+#'
 #' mat <- matrix(1:12, nrow = 4)
 #' downsample_matrix(mat, 2)
 #'

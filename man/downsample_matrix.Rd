@@ -2,7 +2,7 @@
 % Please edit documentation in R/downsample.R
 \name{downsample_matrix}
 \alias{downsample_matrix}
-\title{Downsample a matrix to a target number of in each column}
+\title{Downsample the columns of a matrix to a target number}
 \usage{
 downsample_matrix(
   mat,
@@ -34,6 +34,10 @@ It uses a random seed for reproducibility and allows for removing columns with
 small sums.
 }
 \examples{
+\dontshow{
+tglkmeans.set_parallel(1)
+}
+
 mat <- matrix(1:12, nrow = 4)
 downsample_matrix(mat, 2)
 
