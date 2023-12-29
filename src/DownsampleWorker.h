@@ -25,13 +25,12 @@ private:
     Rcpp::IntegerVector input_p;
     Rcpp::IntegerVector input_x;
     Rcpp::IntegerVector output_x;
-    int ncols;
     int samples;
     unsigned int random_seed;
 
 public:
     DownsampleWorkerSparse(const Rcpp::IntegerVector& i, const Rcpp::IntegerVector& p, const Rcpp::IntegerVector& x, 
-                           Rcpp::IntegerVector& out_x, int ncols, int samples, unsigned int random_seed);
+                           Rcpp::IntegerVector& out_x, int samples, unsigned int random_seed);
 
     // Parallel operator
     void operator()(std::size_t begin, std::size_t end) override;

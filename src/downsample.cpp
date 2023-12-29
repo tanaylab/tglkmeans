@@ -32,7 +32,7 @@ Rcpp::S4 rcpp_downsample_sparse(Rcpp::S4 matrix, int samples, unsigned int rando
     Rcpp::IntegerVector out_x(x.size());
 
     // Create and run the DownsampleWorkerSparse
-    DownsampleWorkerSparse worker(i, p, x, out_x, ncols, samples, random_seed);
+    DownsampleWorkerSparse worker(i, p, x, out_x, samples, random_seed);
     RcppParallel::parallelFor(0, ncols, worker);
 
     // Create a new dgCMatrix object for the output
