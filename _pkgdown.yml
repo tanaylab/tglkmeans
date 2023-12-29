@@ -27,6 +27,10 @@ reference:
 - contents:
   - TGL_kmeans
   - TGL_kmeans_tidy
+- title: Matrix
+  desc: matrix utility functions
+- contents: 
+  - downsample_matrix
 - title: misc
   desc: utility functions
 - contents: 
