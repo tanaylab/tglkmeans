@@ -180,3 +180,25 @@ test_that("downsample_matrix with invalid seed", {
     expect_error(downsample_matrix(mat, target_n, seed = -1))
     expect_error(downsample_matrix(mat, target_n, seed = "not a number"))
 })
+
+test_that("downsample_matrix correctly downsamples matrix using target_q", {
+    mat <- matrix(1:12, nrow = 4)
+    target_q <- 0.5
+    ds_mat <- downsample_matrix(mat, target_q = target_q, remove_columns = TRUE)
+    expect_true(all(colSums(ds_mat, na.rm = TRUE) == round(stats::quantile(colSums(mat), target_q))))
+
+    expect_warning(ds_mat <- downsample_matrix(mat, target_q = target_q, remove_columns = FALSE))
+    expect_true(all(mat >= ds_mat))
+})
+
+test_that("Cannot provide both target_n and target_q", {
+    mat <- matrix(1:12, nrow = 4)
+    target_n <- 2
+    target_q <- 0.5
+    expect_error(downsample_matrix(mat, target_n = target_n, target_q = target_q))
+})
+
+test_that("Fail when no target_n or target_q is provided", {
+    mat <- matrix(1:12, nrow = 4)
+    expect_error(downsample_matrix(mat))
+})
