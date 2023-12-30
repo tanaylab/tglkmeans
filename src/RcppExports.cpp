@@ -51,11 +51,39 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// downsample_matrix_cpp
+Rcpp::IntegerMatrix downsample_matrix_cpp(Rcpp::IntegerMatrix input, int samples, unsigned int random_seed);
+RcppExport SEXP _tglkmeans_downsample_matrix_cpp(SEXP inputSEXP, SEXP samplesSEXP, SEXP random_seedSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type input(inputSEXP);
+    Rcpp::traits::input_parameter< int >::type samples(samplesSEXP);
+    Rcpp::traits::input_parameter< unsigned int >::type random_seed(random_seedSEXP);
+    rcpp_result_gen = Rcpp::wrap(downsample_matrix_cpp(input, samples, random_seed));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rcpp_downsample_sparse
+Rcpp::S4 rcpp_downsample_sparse(Rcpp::S4 matrix, int samples, unsigned int random_seed);
+RcppExport SEXP _tglkmeans_rcpp_downsample_sparse(SEXP matrixSEXP, SEXP samplesSEXP, SEXP random_seedSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::S4 >::type matrix(matrixSEXP);
+    Rcpp::traits::input_parameter< int >::type samples(samplesSEXP);
+    Rcpp::traits::input_parameter< unsigned int >::type random_seed(random_seedSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpp_downsample_sparse(matrix, samples, random_seed));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_tglkmeans_reduce_coclust", (DL_FUNC) &_tglkmeans_reduce_coclust, 3},
     {"_tglkmeans_reduce_num_trials", (DL_FUNC) &_tglkmeans_reduce_num_trials, 2},
     {"_tglkmeans_TGL_kmeans_cpp", (DL_FUNC) &_tglkmeans_TGL_kmeans_cpp, 8},
+    {"_tglkmeans_downsample_matrix_cpp", (DL_FUNC) &_tglkmeans_downsample_matrix_cpp, 3},
+    {"_tglkmeans_rcpp_downsample_sparse", (DL_FUNC) &_tglkmeans_rcpp_downsample_sparse, 3},
     {NULL, NULL, 0}
 };
 

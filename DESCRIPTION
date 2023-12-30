@@ -1,6 +1,6 @@
 Package: tglkmeans
 Title: Efficient Implementation of K-Means++ Algorithm
-Version: 0.4.0
+Version: 0.5.0
 Authors@R: c(
     person("Aviezer", "Lifshitz", , "aviezer.lifshitz@weizmann.ac.il", role = c("aut", "cre")),
     person("Amos", "Tanay", role = "aut"),
@@ -30,6 +30,8 @@ Imports:
     future,
     ggplot2 (>= 2.2.0),
     magrittr,
+    Matrix,
+    methods,
     parallel (>= 3.3.2),
     plyr (>= 1.8.4),
     purrr (>= 0.2.0),
