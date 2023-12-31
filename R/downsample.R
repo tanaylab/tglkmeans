@@ -16,6 +16,7 @@
 #'
 #' @examples
 #' \dontshow{
+#' # this line is only for CRAN checks
 #' tglkmeans.set_parallel(1)
 #' }
 #'
@@ -43,7 +44,7 @@ downsample_matrix <- function(mat, target_n = NULL, target_q = NULL, seed = NULL
     sums <- colsums_matrix(mat)
     if (!is.null(target_q)) {
         target_n <- round(stats::quantile(sums, target_q))
-        cli::cli_alert_info("Using {.val {target_n}} as the target number.")
+        cli::cli_alert_info("Using {.val {target_n}} as the target number (the {.val {target_q}} quantile of the column sums).")
     }
 
     if (is.null(seed)) {

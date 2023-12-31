@@ -35,6 +35,7 @@ small sums.
 }
 \examples{
 \dontshow{
+# this line is only for CRAN checks
 tglkmeans.set_parallel(1)
 }
 

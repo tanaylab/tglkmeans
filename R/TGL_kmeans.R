@@ -31,6 +31,7 @@
 #'
 #' @examples
 #' \dontshow{
+#' # this line is only for CRAN checks
 #' tglkmeans.set_parallel(1)
 #' }
 #'
@@ -296,6 +297,7 @@ reorder_clusters <- function(km, func = "hclust") {
 #'
 #' @examples
 #' \dontshow{
+#' # this line is only for CRAN checks
 #' tglkmeans.set_parallel(1)
 #' }
 #'
