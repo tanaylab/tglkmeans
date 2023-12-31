@@ -114,50 +114,51 @@ not integers will be coerced to integers using .code floor().</p></dd>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \dontshow{</span></span></span>
+<span class="r-in"><span><span class="co"># this line is only for CRAN checks</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="tglkmeans.set_parallel.html">tglkmeans.set_parallel</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, nrow <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">downsample_matrix</span><span class="op">(</span><span class="va">mat</span>, <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> No seed provided. Using <span style="color: #0000BB;">2342</span>.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> No seed provided. Using <span style="color: #0000BB;">4390</span>.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    0    1    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    1    0    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    1    1    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    0    0    0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,]    1    0    0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,]    0    1    2</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Remove columns with small sums</span></span></span>
 <span class="r-in"><span><span class="fu">downsample_matrix</span><span class="op">(</span><span class="va">mat</span>, <span class="fl">12</span>, remove_columns <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> No seed provided. Using <span style="color: #0000BB;">7431</span>.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> No seed provided. Using <span style="color: #0000BB;">3515</span>.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Removed <span style="color: #0000BB;">1</span> columns with a sum smaller than <span style="color: #0000BB;">12</span>.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    2    3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    2    3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]    4    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]    4    4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    3    3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    3    4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]    2    3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]    4    2</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># sparse matrix</span></span></span>
 <span class="r-in"><span><span class="va">mat_sparse</span> <span class="op">&lt;-</span> <span class="fu">Matrix</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/Matrix.html" class="external-link">Matrix</a></span><span class="op">(</span><span class="va">mat</span>, sparse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">downsample_matrix</span><span class="op">(</span><span class="va">mat_sparse</span>, <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> No seed provided. Using <span style="color: #0000BB;">4040</span>.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> No seed provided. Using <span style="color: #0000BB;">8711</span>.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4 x 3 sparse Matrix of class "dgCMatrix"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1 0 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0 0 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 1 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0 1 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0 1 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 2 0 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0 1 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0 0 0</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># with a quantile</span></span></span>
 <span class="r-in"><span><span class="fu">downsample_matrix</span><span class="op">(</span><span class="va">mat</span>, target_q <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Using <span style="color: #0000BB;">26</span> as the target number.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> No seed provided. Using <span style="color: #0000BB;">5793</span>.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Using <span style="color: #0000BB;">26</span> as the target number (the <span style="color: #0000BB;">0.5</span> quantile of the column sums).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> No seed provided. Using <span style="color: #0000BB;">6126</span>.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span><span style="color: #0000BB;">1</span> columns have a sum smaller than <span style="color: #0000BB;">26</span>. These columns were not changed. To remove</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> them, set <span style="color: #00BB00;">remove_columns=TRUE</span>.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    1    5    5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    2    6    7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]    3    7   10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]    4    8    4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    2    6    8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]    3    7    8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]    4    8    5</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
