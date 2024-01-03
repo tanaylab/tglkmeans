@@ -1,3 +1,7 @@
+# tglkmeans 0.5.1
+
+* Fix: `cluster` slot ids were corrupted when data was a tibble and `id_column` was `TRUE`.
+
 # tglkmeans 0.5.0
 
 * Added `dowsample_matrix` function to downsample the columns of a count matrix to a target number. 

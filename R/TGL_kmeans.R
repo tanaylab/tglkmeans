@@ -89,6 +89,10 @@ TGL_kmeans_tidy <- function(df,
         cli_abort("{.field df} must be a matrix or a data frame")
     }
 
+    if (tibble::is_tibble(df)) {
+        df <- as.data.frame(df)
+    }
+
     # Extract IDs if necessary
     ids <- as.character(1:nrow(df))
     id_column_name <- "id"
