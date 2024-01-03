@@ -56,6 +56,10 @@ test_that("Use rownames if exists", {
 
     res <- TGL_kmeans_tidy(data, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 60427)
     clustering_ok(data, res, nclust, ndims, order = FALSE)
+    expect_true(all(rownames(data) == res$cluster$id))
+
+    res <- TGL_kmeans(data, 30, id_column = FALSE, metric = "euclid", verbose = FALSE, seed = 60427)
+    expect_true(all(rownames(data) == names(res$cluster)))
 })
 
 test_that("Dot not fail when rownames do not exist", {

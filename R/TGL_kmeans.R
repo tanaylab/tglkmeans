@@ -94,8 +94,12 @@ TGL_kmeans_tidy <- function(df,
     }
 
     # Extract IDs if necessary
-    ids <- as.character(1:nrow(df))
+    ids <- as.character(seq_len(nrow(df)))
     id_column_name <- "id"
+    if (!is.null(rownames(df))) {
+        ids <- rownames(df)
+    }
+
     if (id_column) {
         ids <- as.character(df[, 1])
         id_column_name <- colnames(df)[1]
