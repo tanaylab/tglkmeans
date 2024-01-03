@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tglkmeans</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1</span>
       </span>
     </div>
 
@@ -72,7 +72,7 @@
 <span>  <span class="va">k</span>,</span>
 <span>  metric <span class="op">=</span> <span class="st">"euclid"</span>,</span>
 <span>  max_iter <span class="op">=</span> <span class="fl">40</span>,</span>
-<span>  min_delta <span class="op">=</span> <span class="fl">0.0001</span>,</span>
+<span>  min_delta <span class="op">=</span> <span class="fl">1e-04</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  keep_log <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  id_column <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -195,44 +195,44 @@ backwards compatibility, as from version 0.4.0 onwards the default random number
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          V1        V2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.8053238 0.9552457</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 1.1282194 1.5099009</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.6416544 0.9679171</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.6934008 1.1111648</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 1.4426120 1.2679538</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.2329951 0.8886249</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1.3936741 0.6836509</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 1.1546021 0.9207228</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 1.1250576 1.1600568</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 1.3739748 0.8601014</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.6213057 1.3143442</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.7785946 1.0157445</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># cluster</span></span></span>
 <span class="r-in"><span><span class="va">km</span> <span class="op">&lt;-</span> <span class="fu">TGL_kmeans_tidy</span><span class="op">(</span><span class="va">d</span>, k <span class="op">=</span> <span class="fl">5</span>, <span class="st">"euclid"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> will generate seeds</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> generating seeds</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> at seed 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 99 to 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 93 to 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> at seed 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> done update min distance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> seed range 350 450</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 467 dist was 2.8922</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 467 to 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 452 dist was 3.17757</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 452 to 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> at seed 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> done update min distance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> seed range 300 400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 279 dist was 1.19131</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 279 to 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 266 dist was 1.19893</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 266 to 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> at seed 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> done update min distance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> seed range 250 350</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 196 dist was 0.642156</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 196 to 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 315 dist was 0.736958</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 315 to 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> at seed 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> done update min distance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> seed range 200 300</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 301 dist was 0.609156</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 301 to 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 145 dist was 0.607064</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 145 to 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> reassign after init</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> iter 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> iter 1 changed 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iter 1 changed 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> iter 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> iter 2 changed 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iter 2 changed 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> iter 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> iter 3 changed 0</span>
 <span class="r-in"><span><span class="va">km</span></span></span>
@@ -240,11 +240,11 @@ backwards compatibility, as from version 0.4.0 onwards the default random number
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   clust    V1    V2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 2.04   1.97</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2 3.98   4.02</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3 2.96   2.97</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     4 0.993  1.01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     5 4.98   5.03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1  5.02  5.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2  1.94  1.97</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3  4.02  4.05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     4  1.00  1.06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     5  2.98  2.99</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $cluster</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 500 × 2</span></span>
@@ -266,10 +266,10 @@ backwards compatibility, as from version 0.4.0 onwards the default random number
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   clust     n</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1    99</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2   101</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3    99</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     4   102</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1    97</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2   100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3   105</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     4    99</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     5    99</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
