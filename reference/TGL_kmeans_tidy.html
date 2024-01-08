@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tglkmeans</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2</span>
       </span>
     </div>
 
@@ -195,83 +195,81 @@ backwards compatibility, as from version 0.4.0 onwards the default random number
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          V1        V2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.7701559 1.2230385</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.9423539 0.5988677</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.4654101 1.3255938</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.9360507 0.9964752</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.9222179 1.3844773</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 1.3233792 1.3261731</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6960762 1.7337997</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 1.2928608 1.3022893</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 1.6172906 1.5610518</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.7978578 0.8127575</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 1.0407262 1.2378756</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.9099258 0.6110421</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># cluster</span></span></span>
 <span class="r-in"><span><span class="va">km</span> <span class="op">&lt;-</span> <span class="fu">TGL_kmeans_tidy</span><span class="op">(</span><span class="va">d</span>, k <span class="op">=</span> <span class="fl">5</span>, <span class="st">"euclid"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> will generate seeds</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> generating seeds</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> at seed 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 66 to 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 280 to 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> at seed 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> done update min distance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> seed range 350 450</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 498 dist was 2.6764</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 498 to 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 497 dist was 1.66861</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 497 to 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> at seed 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> done update min distance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> seed range 300 400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 275 dist was 1.32951</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 275 to 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 96 dist was 1.10462</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 96 to 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> at seed 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> done update min distance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> seed range 250 350</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 395 dist was 0.680096</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 395 to 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 399 dist was 0.695452</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 399 to 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> at seed 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> done update min distance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> seed range 200 300</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 137 dist was 0.651612</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 137 to 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 184 dist was 0.558005</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 184 to 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> reassign after init</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> iter 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> iter 1 changed 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iter 1 changed 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> iter 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> iter 2 changed 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iter 2 changed 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> iter 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> iter 3 changed 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> iter 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> iter 4 changed 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iter 3 changed 0</span>
 <span class="r-in"><span><span class="va">km</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $centers</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   clust    V1    V2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 1.87   2.04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2 0.993  1.02</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3 2.97   3.02</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     4 5.04   4.99</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     5 3.98   3.98</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1  2.95 3.01 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2  5.06 5.06 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3  1.96 1.95 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     4  1.01 0.982</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     5  4.04 3.98 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $cluster</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 500 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    id    clust</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 1         2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 2         2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 3         2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 4         2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 5         2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 6         2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 7         2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 8         2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 9         2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 10        2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 1         4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 2         4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 3         3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 4         4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 5         4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 6         4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 7         4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 8         4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 9         4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 10        4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 490 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $size</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   clust     n</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1   102</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2    98</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3   100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     4   100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1    98</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2   100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3   103</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     4    99</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     5   100</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
