@@ -15,11 +15,11 @@ downsample_matrix(
 \arguments{
 \item{mat}{An integer matrix to be downsampled. Can be a matrix or sparse matrix (dgCMatrix).
 If the matrix contains NAs, the function will run significantly slower. Values that are
-not integers will be coerced to integers using {.code floor()}.}
+not integers will be coerced to integers using \code{floor()}.}
 
 \item{target_n}{The target number of samples to downsample to.}
 
-\item{target_q}{A target quantile of sums to downsample to. Only one of {.field target_n} or {.field target_q} can be provided.}
+\item{target_q}{A target quantile of sums to downsample to. Only one of 'target_n' or 'target_q' can be provided.}
 
 \item{seed}{The random seed for reproducibility (default is NULL)}
 

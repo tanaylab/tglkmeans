@@ -6,9 +6,9 @@
 #'
 #' @param mat An integer matrix to be downsampled. Can be a matrix or sparse matrix (dgCMatrix).
 #' If the matrix contains NAs, the function will run significantly slower. Values that are
-#' not integers will be coerced to integers using {.code floor()}.
+#' not integers will be coerced to integers using \code{floor()}.
 #' @param target_n The target number of samples to downsample to.
-#' @param target_q A target quantile of sums to downsample to. Only one of {.field target_n} or {.field target_q} can be provided.
+#' @param target_q A target quantile of sums to downsample to. Only one of 'target_n' or 'target_q' can be provided.
 #' @param seed The random seed for reproducibility (default is NULL)
 #' @param remove_columns Logical indicating whether to remove columns with small sums (default is FALSE)
 #'

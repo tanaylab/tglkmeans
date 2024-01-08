@@ -1,3 +1,7 @@
+# tglkmeans 0.5.2
+
+* Fixed docs. 
+
 # tglkmeans 0.5.1
 
 * Fix: `cluster` slot ids were corrupted when data was a tibble and `id_column` was `TRUE`.
