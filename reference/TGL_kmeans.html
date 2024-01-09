@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tglkmeans</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.4</span>
       </span>
     </div>
 
@@ -72,7 +72,7 @@
 <span>  <span class="va">k</span>,</span>
 <span>  metric <span class="op">=</span> <span class="st">"euclid"</span>,</span>
 <span>  max_iter <span class="op">=</span> <span class="fl">40</span>,</span>
-<span>  min_delta <span class="op">=</span> <span class="fl">1e-04</span>,</span>
+<span>  min_delta <span class="op">=</span> <span class="fl">0.0001</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  keep_log <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  id_column <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -187,65 +187,61 @@ backwards compatibility, as from version 0.4.0 onwards the default random number
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          V1        V2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1.1189872 0.8057282</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 1.5005949 0.3747977</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.6705805 0.9713484</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 1.4941063 1.1648132</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 1.1608370 1.2154534</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.6418494 1.0074384</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1.0143482 0.8276487</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.6559774 1.1968992</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.8970467 0.8168822</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.6852282 0.8496327</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.9226718 1.1126166</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 1.0738792 1.2792527</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># cluster</span></span></span>
 <span class="r-in"><span><span class="va">km</span> <span class="op">&lt;-</span> <span class="fu">TGL_kmeans</span><span class="op">(</span><span class="va">d</span>, k <span class="op">=</span> <span class="fl">5</span>, <span class="st">"euclid"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> will generate seeds</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> generating seeds</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> at seed 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 261 to 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 5 to 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> at seed 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> done update min distance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> seed range 350 450</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 1 dist was 1.59084</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 1 to 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 491 dist was 2.88857</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 491 to 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> at seed 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> done update min distance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> seed range 300 400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 469 dist was 1.5007</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 469 to 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 236 dist was 1.33548</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 236 to 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> at seed 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> done update min distance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> seed range 250 350</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 149 dist was 0.720121</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 149 to 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 101 dist was 0.672413</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 101 to 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> at seed 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> done update min distance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> seed range 200 300</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 281 dist was 0.557311</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 281 to 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 362 dist was 0.677528</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 362 to 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> reassign after init</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> iter 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> iter 1 changed 38</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iter 1 changed 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> iter 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> iter 2 changed 51</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iter 2 changed 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> iter 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> iter 3 changed 19</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> iter 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> iter 4 changed 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> iter 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> iter 5 changed 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iter 3 changed 0</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">km</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cluster" "centers" "size"   </span>
 <span class="r-in"><span><span class="va">km</span><span class="op">$</span><span class="va">centers</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            V1        V2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 2.995393 3.0218246</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 3.975644 4.0247335</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 5.008832 5.0330610</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.973187 0.9716452</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 2.034065 1.9904876</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             V1        V2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.9765525 0.9818391</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 4.9374547 4.9968014</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 4.0273089 4.0239348</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 3.0398190 2.9870985</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 2.0016978 1.9386230</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">km</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 2 3 4 5 6 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 4 4 4 4 4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 1 1 1 1 </span>
 <span class="r-in"><span><span class="va">km</span><span class="op">$</span><span class="va">size</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1   2   3   4   5 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  99  99 100  96 106 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  99 100  97 103 101 </span>
 </code></pre></div>
     </div>
   </div>
