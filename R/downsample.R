@@ -77,6 +77,9 @@ downsample_matrix <- function(mat, target_n = NULL, target_q = NULL, seed = NULL
         ds_mat <- downsample_matrix_cpp(mat, target_n, seed)
     }
 
+    rownames(ds_mat) <- rownames(mat)
+    colnames(ds_mat) <- colnames(mat)
+
     small_cols <- sums < target_n
     if (any(small_cols)) {
         if (remove_columns) {

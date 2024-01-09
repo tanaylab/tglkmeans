@@ -202,3 +202,43 @@ test_that("Fail when no target_n or target_q is provided", {
     mat <- matrix(1:12, nrow = 4)
     expect_error(downsample_matrix(mat))
 })
+
+test_that("rownames and colnames are preserved", {
+    mat <- matrix(1:12, nrow = 4)
+    rownames(mat) <- letters[1:4]
+    colnames(mat) <- LETTERS[1:3]
+    target_n <- 2
+    ds_mat <- downsample_matrix(mat, target_n)
+    expect_equal(rownames(ds_mat), rownames(mat))
+    expect_equal(colnames(ds_mat), colnames(mat))
+})
+
+test_that("rownames and colnames are preserved when remove_columns is TRUE", {
+    mat <- matrix(1:12, nrow = 4)
+    rownames(mat) <- letters[1:4]
+    colnames(mat) <- LETTERS[1:3]
+    target_n <- 20
+    ds_mat <- downsample_matrix(mat, target_n, remove_columns = TRUE)
+    expect_equal(rownames(ds_mat), rownames(mat))
+    expect_equal(colnames(ds_mat), colnames(mat)[2:3])
+})
+
+test_that("rownames and colnames are preserved with a single column", {
+    mat <- matrix(1:12, nrow = 4)
+    rownames(mat) <- letters[1:4]
+    colnames(mat) <- LETTERS[1:3]
+    target_n <- 2
+    ds_mat <- downsample_matrix(mat[, 1, drop = FALSE], target_n)
+    expect_equal(rownames(ds_mat), rownames(mat))
+    expect_equal(colnames(ds_mat), colnames(mat)[1])
+})
+
+test_that("rownames and colnames are preserved with a single row", {
+    mat <- matrix(1:12, nrow = 4)
+    rownames(mat) <- letters[1:4]
+    colnames(mat) <- LETTERS[1:3]
+    target_n <- 2
+    expect_warning(ds_mat <- downsample_matrix(mat[1, , drop = FALSE], target_n))
+    expect_equal(rownames(ds_mat), rownames(mat)[1])
+    expect_equal(colnames(ds_mat), colnames(mat))
+})

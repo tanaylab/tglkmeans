@@ -1,3 +1,7 @@
+# tglkmeans 0.5.3
+
+* Fix: colnames and rownames were removed in `downsample_matrix` function.
+
 # tglkmeans 0.5.2
 
 * Fixed docs. 
