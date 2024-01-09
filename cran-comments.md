@@ -2,9 +2,9 @@
 
 0 errors | 0 warnings | 1 note
 
-* Fixed documentation problems from previous submission.
-* The requirement for GNU make is due to the use of RcppParallel (which requires GNU make).
-* This is a unix only package since it is using the package tgstat which is not available on windows.
+* This version limit the numebr of threads on CRAN tests (fixes debian note "Running R code in ‘testthat.R’ had CPU time 3.3 times elapsed time").
+
+
 
 
 
