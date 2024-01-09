@@ -1,5 +1,3 @@
-library(dplyr)
-library(tglkmeans)
 set.seed(60427)
 
 clustering_ok <- function(data, res, nclust, ndims, order = TRUE) {

@@ -2,7 +2,7 @@
 
 0 errors | 0 warnings | 1 note
 
-* This version limit the numebr of threads on CRAN tests (fixes debian note "Running R code in ‘testthat.R’ had CPU time 3.3 times elapsed time").
+* Fixed usage of more than 2 cores in tests.
 
 
 

@@ -1,3 +1,7 @@
+# tglkmeans 0.5.4
+
+* Fixed usage of more than 2 cores when testing on CRAN. 
+
 # tglkmeans 0.5.3
 
 * Fix: colnames and rownames were removed in `downsample_matrix` function.
