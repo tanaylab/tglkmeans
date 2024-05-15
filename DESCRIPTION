@@ -1,6 +1,6 @@
 Package: tglkmeans
 Title: Efficient Implementation of K-Means++ Algorithm
-Version: 0.5.4
+Version: 0.5.5
 Authors@R: c(
     person("Aviezer", "Lifshitz", , "aviezer.lifshitz@weizmann.ac.il", role = c("aut", "cre")),
     person("Amos", "Tanay", role = "aut"),
@@ -26,6 +26,7 @@ Depends:
 Imports: 
     cli,
     doFuture,
+    doRNG,
     dplyr (>= 0.5.0),
     future,
     ggplot2 (>= 2.2.0),
@@ -56,5 +57,5 @@ Config/testthat/parallel: false
 Encoding: UTF-8
 NeedsCompilation: yes
 OS_type: unix
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 SystemRequirements: GNU make

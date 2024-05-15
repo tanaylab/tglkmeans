@@ -215,6 +215,7 @@ TGL_kmeans_tidy <- function(df,
 
 add_data_to_km_object <- function(df, cluster, ids, id_column_name) {
     df %>%
+        as.data.frame() %>%
         # add the ids at id_column_name
         mutate(!!id_column_name := as.character(ids)) %>%
         left_join(cluster, by = id_column_name) %>%

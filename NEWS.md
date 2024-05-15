@@ -1,3 +1,7 @@
+# tglkmeans 0.5.5 
+
+* Fix: clustering crashed when `hclust_intra_clusters` was TRUE and input was a matrix. 
+
 # tglkmeans 0.5.4
 
 * Fixed usage of more than 2 cores when testing on CRAN. 
