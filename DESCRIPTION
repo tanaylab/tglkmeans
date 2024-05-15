@@ -26,6 +26,7 @@ Depends:
 Imports: 
     cli,
     doFuture,
+    doRNG,
     dplyr (>= 0.5.0),
     future,
     ggplot2 (>= 2.2.0),
