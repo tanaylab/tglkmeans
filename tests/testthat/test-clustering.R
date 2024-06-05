@@ -125,9 +125,9 @@ test_that("hclust intra cluster works", {
     nclust <- 30
     ndims <- 5
     data <- simulate_data(n = 200, sd = 0.3, dims = 5, nclust = nclust, frac_na = 0.05)
-    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", id_column = TRUE, verbose = FALSE, hclust_intra_clusters = TRUE, parallel = FALSE, seed = 60427)
+    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, metric = "euclid", id_column = TRUE, verbose = FALSE, hclust_intra_clusters = TRUE, seed = 60427)
     clustering_ok(data, res, nclust, ndims, order = TRUE)
-    res_non_tidy <- TGL_kmeans(data %>% select(id, starts_with("V")), nclust, metric = "euclid", id_column = TRUE, verbose = FALSE, hclust_intra_clusters = TRUE, parallel = FALSE, , seed = 60427)
+    res_non_tidy <- TGL_kmeans(data %>% select(id, starts_with("V")), nclust, metric = "euclid", id_column = TRUE, verbose = FALSE, hclust_intra_clusters = TRUE, seed = 60427)
 
     expect_equal(res_non_tidy$order, res$order$order)
 })

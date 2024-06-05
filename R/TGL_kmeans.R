@@ -15,7 +15,6 @@
 #' @param add_to_data return also the original data frame with an extra 'clust' column with the cluster ids ('id' is the first column)
 #' @param hclust_intra_clusters run hierarchical clustering within each cluster and return an ordering of the observations.
 #' @param seed seed for the c++ random number generator
-#' @param parallel cluster every cluster parallelly (if hclust_intra_clusters is true)
 #' @param use_cpp_random use c++ random number generator instead of R's. This should be used for only for
 #' backwards compatibility, as from version 0.4.0 onwards the default random number generator was changed o R.
 #'
@@ -65,7 +64,6 @@ TGL_kmeans_tidy <- function(df,
                             add_to_data = FALSE,
                             hclust_intra_clusters = FALSE,
                             seed = NULL,
-                            parallel = getOption("tglkmeans.parallel"),
                             use_cpp_random = FALSE) {
     if (!is.null(seed)) {
         set.seed(seed)
@@ -207,7 +205,7 @@ TGL_kmeans_tidy <- function(df,
         }
         full_data <- full_data %>%
             select(clust, !!id_column_name, everything())
-        km$order <- hclust_every_cluster(km, full_data, parallel = parallel)
+        km$order <- hclust_every_cluster(km, full_data, parallel = FALSE)
     }
 
     return(km)
@@ -341,7 +339,6 @@ TGL_kmeans <- function(df,
                        reorder_func = "hclust",
                        hclust_intra_clusters = FALSE,
                        seed = NULL,
-                       parallel = getOption("tglkmeans.parallel"),
                        use_cpp_random = FALSE) {
     res <- TGL_kmeans_tidy(
         df = df,
@@ -355,7 +352,6 @@ TGL_kmeans <- function(df,
         reorder_func = reorder_func,
         seed = seed,
         hclust_intra_clusters = hclust_intra_clusters,
-        parallel = parallel,
         use_cpp_random = use_cpp_random
     )
 

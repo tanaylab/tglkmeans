@@ -1,3 +1,7 @@
+# tglkmeans 0.5.6
+
+* Removed parallelization for `hclust_intra_clusters` - it was causing hangs in some systems. The `parallel` parameter was removed from `TGL_kmeans` and `TGL_kmeans_tidy`. 
+
 # tglkmeans 0.5.5 
 
 * Fix: clustering crashed when `hclust_intra_clusters` was TRUE and input was a matrix. 
