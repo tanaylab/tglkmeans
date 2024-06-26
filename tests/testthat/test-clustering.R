@@ -234,6 +234,23 @@ test_that("clustering with NA is reasonable (high dim): euclid", {
     })
 })
 
+# A single column data
+test_that("clustering works with a single column data", {
+    data <- simulate_data(n = 100, sd = 0.3, nclust = 30, frac_na = NULL)
+    res <- TGL_kmeans_tidy(data %>% select(id, V1), 30, metric = "euclid", id_column = TRUE, verbose = FALSE, seed = 60427)
+    expect_equal(nrow(data), nrow(res$clust))
+    expect_true(all(data$id %in% res$cluster$id))
+    expect_equal(30, nrow(res$centers))
+    expect_equal(1, ncol(res$centers) - 1)
+    expect_equal(30, length(unique(res$clust$clust)))
+    expect_equal(30, length(unique(res$size$clust)))
+    expect_true(all(res$center$clust %in% res$cluster$clust))
+    expect_true(all(res$cluster$clust %in% res$center$clust))
+    expect_true(all(res$size$clust %in% res$center$clust))
+    expect_true(all(res$scenter$clust %in% res$size$clust))
+    expect_equal(nrow(data), sum(res$size$n))
+})
+
 # Data simulation:
 test_that("true_clust column is not added when add_true_clust is FALSE", {
     data <- simulate_data(n = 100, sd = 0.3, nclust = 30, frac_na = NULL, add_true_clust = FALSE)

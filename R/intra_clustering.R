@@ -1,4 +1,4 @@
-hclust_every_cluster <- function(km, df, parallel = TRUE) {    
+hclust_every_cluster <- function(km, df, parallel = TRUE) {
     all_hc <- df %>%
         plyr::dlply(plyr::.(clust), function(x) {
             ids <- x$id

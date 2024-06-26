@@ -1,3 +1,7 @@
+# tglkmeans 0.5.7 
+
+* Bug fix: crashed on some machines when `id_column=TRUE` and data had a single column.
+
 # tglkmeans 0.5.6
 
 * Removed parallelization for `hclust_intra_clusters` - it was causing hangs in some systems. The `parallel` parameter was removed from `TGL_kmeans` and `TGL_kmeans_tidy`. 

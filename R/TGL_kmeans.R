@@ -101,7 +101,7 @@ TGL_kmeans_tidy <- function(df,
     if (id_column) {
         ids <- as.character(df[, 1])
         id_column_name <- colnames(df)[1]
-        df <- df[, -1]
+        df <- df[, -1, drop = FALSE]
     }
 
     mat <- df
@@ -254,7 +254,8 @@ reorder_clusters <- function(km, func = "hclust") {
 
     if (identical(func, "hclust") ||
         identical(func, hclust)) {
-        if (min(apply(km$centers[, -1], 1, var, na.rm = TRUE), na.rm = TRUE) == 0) {
+        vars <- apply(km$centers[, -1], 1, var, na.rm = TRUE)
+        if (!all(is.na(vars)) && min(vars, na.rm = TRUE) == 0) {
             cli_warn("standard deviation of kmeans center is 0")
         } else {
             cm <- km$centers[, -1] %>%
