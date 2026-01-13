@@ -1,3 +1,7 @@
+# tglkmeans 0.5.8
+
+* Fix: Registered "id" as a global variable to maintain compatibility with future versions of dplyr (addressing the removal of `dplyr::id()`).
+
 # tglkmeans 0.5.7 
 
 * Bug fix: crashed on some machines when `id_column=TRUE` and data had a single column.
