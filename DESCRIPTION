@@ -57,4 +57,3 @@ Encoding: UTF-8
 NeedsCompilation: yes
 OS_type: unix
 RoxygenNote: 7.3.1
-SystemRequirements: GNU make

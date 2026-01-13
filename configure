@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Get RcppParallel libs
+RCPP_PARALLEL_LIBS=`${R_HOME}/bin/Rscript -e "cat(RcppParallel::RcppParallelLibs())"`
+
+# Substitute in Makevars
+sed -e "s|@RCPP_PARALLEL_LIBS@|${RCPP_PARALLEL_LIBS}|g" src/Makevars.in > src/Makevars
+
+exit 0
