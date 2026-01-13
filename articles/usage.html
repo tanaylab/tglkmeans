@@ -83,7 +83,7 @@
                         <h4 data-toc-skip class="author">Aviezer
 Lifshitz</h4>
             
-            <h4 data-toc-skip class="date">2025-01-20</h4>
+            <h4 data-toc-skip class="date">2026-01-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/tanaylab/tglkmeans/blob/master/vignettes/usage.Rmd" class="external-link"><code>vignettes/usage.Rmd</code></a></small>
       <div class="hidden name"><code>usage.Rmd</code></div>
@@ -607,7 +607,7 @@ with sd of 0.3:</p>
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">V1</span>, y <span class="op">=</span> <span class="va">V2</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">true_clust</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">scale_color_discrete</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"true cluster"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="usage_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+<p><img src="usage_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="700"></p>
 <p>Now we can cluster it using kmeans++:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">$</span><span class="va">id</span></span>
@@ -710,7 +710,7 @@ used only in this vignette):</p>
 <span>    <span class="fu">scale_color_discrete</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"cluster"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">scale_shape_discrete</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"true cluster"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">geom_point</span><span class="op">(</span>data <span class="op">=</span> <span class="va">km</span><span class="op">$</span><span class="va">centers</span>, size <span class="op">=</span> <span class="fl">7</span>, color <span class="op">=</span> <span class="st">"black"</span>, shape <span class="op">=</span> <span class="st">"X"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="usage_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
+<p><img src="usage_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level2">
 <h2 id="custom-cluster-ordering">Custom cluster ordering<a class="anchor" aria-label="anchor" href="#custom-cluster-ordering"></a>
@@ -1265,7 +1265,7 @@ dimension is not missing. for example:</p>
 <span>    <span class="fu">geom_point</span><span class="op">(</span>data <span class="op">=</span> <span class="va">km</span><span class="op">$</span><span class="va">centers</span>, size <span class="op">=</span> <span class="fl">7</span>, color <span class="op">=</span> <span class="st">"black"</span>, shape <span class="op">=</span> <span class="st">"X"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning: Removed 100 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">## (`geom_point()`).</span></span></code></pre>
-<p><img src="usage_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
+<p><img src="usage_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level2">
 <h2 id="high-dimensions">High dimensions<a class="anchor" aria-label="anchor" href="#high-dimensions"></a>
@@ -1337,7 +1337,7 @@ kmeans.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>
