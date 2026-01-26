@@ -15,7 +15,7 @@ using namespace std;
 
 class KMeansCenterBase {
 public:
-    virtual float dist(const vector<float> &v) = 0;
+    virtual float dist(const vector<float> &v) const = 0;
 
     virtual void vote(const vector<float> &v, float wgt) = 0;
 

@@ -19,7 +19,7 @@ public:
     KMeansCenterMeanPearson(int dim) :
             KMeansCenterMean(dim) {}
 
-    virtual float dist(const vector<float> &v);
+    virtual float dist(const vector<float> &v) const;
 
     virtual void update_center_stats();
 };

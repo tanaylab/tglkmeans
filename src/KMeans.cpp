@@ -198,8 +198,10 @@ void KMeans::reassign() {
     // Initialize the ReassignWorker with data, centers, and assignments
     ReassignWorker worker(m_data, m_centers, m_assignment);
     
-    // Perform parallel computation for reassignment
-    RcppParallel::parallelFor(0, m_data.size(), worker);
+    // Use parallelReduce instead of parallelFor to properly merge votes across threads.
+    // parallelFor copies the worker for each chunk but never merges results back,
+    // which causes votes to be lost. parallelReduce calls join() to merge results.
+    RcppParallel::parallelReduce(0, m_data.size(), worker);
 
     // Apply accumulated votes to the centers
     worker.apply_votes();

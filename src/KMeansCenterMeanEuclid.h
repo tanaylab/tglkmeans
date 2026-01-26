@@ -13,7 +13,7 @@ public:
     KMeansCenterMeanEuclid(int dim) :
             KMeansCenterMean(dim)
     {}
-    virtual float dist(const vector<float> &v);
+    virtual float dist(const vector<float> &v) const;
 };
 
 

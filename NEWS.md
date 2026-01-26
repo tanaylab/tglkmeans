@@ -2,6 +2,7 @@
 
 * Parallelized k-means initialization.
 * Fix k-means seeding crash when data contains all-NA rows.
+* Fix race condition and vote merging bugs in parallel workers
 
 # tglkmeans 0.5.8
 

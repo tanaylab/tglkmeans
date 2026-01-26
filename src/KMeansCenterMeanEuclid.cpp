@@ -7,7 +7,7 @@
 #include "KMeansCenterMeanEuclid.h"
 
 
-float KMeansCenterMeanEuclid::dist(const vector<float> &x) {
+float KMeansCenterMeanEuclid::dist(const vector<float> &x) const {
     vector<float>::const_iterator x_i = x.begin();
     float dist2 = 0;
     float n = 0;

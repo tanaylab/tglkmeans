@@ -5,7 +5,7 @@
 #include <cmath>
 #include "KMeansCenterMeanPearson.h"
 
-float KMeansCenterMeanPearson::dist(const vector<float> &x)
+float KMeansCenterMeanPearson::dist(const vector<float> &x) const
 {
     vector<float>::const_iterator x_i = x.begin();
     float cov2 = 0;

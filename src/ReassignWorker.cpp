@@ -1,9 +1,21 @@
 #include "ReassignWorker.h"
 
+// Primary constructor
 ReassignWorker::ReassignWorker(const std::vector<std::vector<float>>& data,
                                std::vector<KMeansCenterBase*>& centers,
                                std::vector<int>& assignment)
-    : data(data), centers(centers), assignment(assignment), changes(0) {
+    : data(data), centers(centers), assignment(assignment) {
+    votes.resize(centers.size());
+    for (auto& v : votes) {
+        v.resize(data.size(), 0);
+    }
+    changes.resize(data.size(), 0);
+}
+
+// Split constructor for parallelReduce
+// Creates a new worker with its own vote/change storage that will be merged later
+ReassignWorker::ReassignWorker(const ReassignWorker& other, RcppParallel::Split)
+    : data(other.data), centers(other.centers), assignment(other.assignment) {
     votes.resize(centers.size());
     for (auto& v : votes) {
         v.resize(data.size(), 0);
@@ -38,6 +50,23 @@ void ReassignWorker::operator()(std::size_t begin, std::size_t end) {
             assignment[i] = best_id_i;
             changes[i]++;
         }
+    }
+}
+
+// Join results from another worker into this one
+// Called by parallelReduce to merge results from different chunks
+void ReassignWorker::join(const ReassignWorker& other) {
+    // Merge votes: since each data point is processed by exactly one chunk,
+    // we can simply add the votes (one will be 0, the other will be 0 or 1)
+    for (size_t i = 0; i < votes.size(); i++) {
+        for (size_t j = 0; j < votes[i].size(); j++) {
+            votes[i][j] += other.votes[i][j];
+        }
+    }
+    
+    // Merge change counts
+    for (size_t i = 0; i < changes.size(); i++) {
+        changes[i] += other.changes[i];
     }
 }
 
