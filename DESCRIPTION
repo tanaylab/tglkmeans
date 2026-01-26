@@ -1,6 +1,6 @@
 Package: tglkmeans
 Title: Efficient Implementation of K-Means++ Algorithm
-Version: 0.5.9
+Version: 0.6.0
 Authors@R: c(
     person("Aviezer", "Lifshitz", , "aviezer.lifshitz@weizmann.ac.il", role = c("aut", "cre")),
     person("Amos", "Tanay", role = "aut"),
@@ -56,4 +56,4 @@ Config/testthat/parallel: false
 Encoding: UTF-8
 NeedsCompilation: yes
 OS_type: unix
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.3

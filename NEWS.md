@@ -1,5 +1,6 @@
-# tglkmeans 0.5.9
+# tglkmeans 0.6.0
 
+* Parallelized k-means initialization.
 * Fix k-means seeding crash when data contains all-NA rows.
 
 # tglkmeans 0.5.8

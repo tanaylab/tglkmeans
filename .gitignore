@@ -10,3 +10,6 @@ README.html
 src/symbols.rds
 work
 .vscode
+AGENTS.md
+tests/testthat/regression/
+.claude

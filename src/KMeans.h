@@ -33,7 +33,7 @@ public:
 
     void cluster(int max_iter, float min_delta_assign);
 
-    void update_min_distance(int max_k);
+    void update_min_distance(int center_idx);
 
     void add_new_core(int seed_i, int center_i);
 

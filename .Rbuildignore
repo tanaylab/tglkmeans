@@ -19,3 +19,7 @@
 ^work$
 ^\.vscode$
 ^src/Makevars$
+^AGENTS.md$
+^tests/testthat/regression$
+^tests/testthat/regression/.*\.rds$
+^\.claude$

@@ -11,21 +11,17 @@ using namespace std;
 class UpdateMinDistanceWorker : public RcppParallel::Worker {
 private:
     const vector<vector<float>>& data;
-    vector<KMeansCenterBase*>& centers;
+    KMeansCenterBase* new_center;
     vector<pair<float, int>>& min_dist;
     const vector<int>& assignment;
-    const int& cur_k;
 
 public:
-    UpdateMinDistanceWorker(const vector<vector<float>>& data, 
-                            vector<KMeansCenterBase*>& centers, 
-                            vector<pair<float, int>>& min_dist, 
-                            const vector<int>& assignment,
-                            const int& cur_k);
+    UpdateMinDistanceWorker(const vector<vector<float>>& data,
+                            KMeansCenterBase* new_center,
+                            vector<pair<float, int>>& min_dist,
+                            const vector<int>& assignment);
 
     void operator()(std::size_t begin, std::size_t end);
-
-    void prepare_min_dist(vector<pair<float, int>>& min_dist);
 };
 
 #endif // UPDATEMINDISTANCEWORKER_H
