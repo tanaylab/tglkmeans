@@ -52,6 +52,8 @@ public:
     vector<int> report_assignment_to_vector();
 
     float random_fraction();
+
+    bool is_valid_seed(int index);
 };
 
 

@@ -1,3 +1,7 @@
+# tglkmeans 0.5.9
+
+* Fix k-means seeding crash when data contains all-NA rows.
+
 # tglkmeans 0.5.8
 
 * Fix: Registered "id" as a global variable to maintain compatibility with future versions of dplyr (addressing the removal of `dplyr::id()`).

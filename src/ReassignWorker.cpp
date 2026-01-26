@@ -26,7 +26,8 @@ void ReassignWorker::operator()(std::size_t begin, std::size_t end) {
         }
 
         if (best_id_i == -1) {
-            throw std::logic_error("No valid center found for data point.");
+            // Data point has all missing values - assign to cluster 0 arbitrarily
+            best_id_i = 0;
         }
 
         // Accumulate vote

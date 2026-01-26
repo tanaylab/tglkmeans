@@ -10,7 +10,8 @@ UpdateMinDistanceWorker::UpdateMinDistanceWorker(const vector<vector<float>>& da
 void UpdateMinDistanceWorker::operator()(std::size_t begin, std::size_t end) {
     for (std::size_t i = begin; i < end; ++i) {
         if (assignment[i] != -1) {
-            min_dist[i] = std::make_pair(REAL_MAX, i);
+            // Use -REAL_MAX sentinel for assigned points (below any valid distance including negative correlations)
+            min_dist[i] = std::make_pair(-REAL_MAX, i);
             continue;
         }
         float best_dist = REAL_MAX;
@@ -27,6 +28,8 @@ void UpdateMinDistanceWorker::operator()(std::size_t begin, std::size_t end) {
 }
 
 void UpdateMinDistanceWorker::prepare_min_dist(vector<pair<float, int>>& min_dist) {
-    // remove REAL_MAX elements from min_dist
-    min_dist.erase(std::remove_if(min_dist.begin(), min_dist.end(), [](const std::pair<float, int>& p) { return p.first == REAL_MAX; }), min_dist.end());
+    // Remove assigned points (marked with -REAL_MAX), but keep points with valid distances
+    // Note: distances can be negative for correlation metrics, so we use -REAL_MAX as sentinel
+    min_dist.erase(std::remove_if(min_dist.begin(), min_dist.end(),
+        [](const std::pair<float, int>& p) { return p.first == -REAL_MAX; }), min_dist.end());
 }

@@ -25,6 +25,14 @@ float KMeans::random_fraction() {
     }
 }
 
+bool KMeans::is_valid_seed(int index) {
+    // Check if a data point has at least one non-missing value
+    for (const auto& val : m_data[index]) {
+        if (val != REAL_MAX) return true;
+    }
+    return false;
+}
+
 void KMeans::cluster(int max_iter, float min_assign_change_fraction) {
     Rcpp::Rcout << "will generate seeds" << endl;
     generate_seeds();
@@ -55,12 +63,24 @@ void KMeans::generate_seeds() {
         //select next seed by sampling
         int seed_i = -1;
         if (i == 0) {
-            // select the first seed randomly
-            seed_i = random_fraction() * m_data.size();
+            // select the first seed randomly, skipping all-NA points
+            int attempts = 0;
+            do {
+                seed_i = random_fraction() * m_data.size();
+                attempts++;
+            } while (!is_valid_seed(seed_i) && attempts < (int)m_data.size());
+            if (!is_valid_seed(seed_i)) {
+                throw std::logic_error("No valid seed point found - all data points have missing values");
+            }
         } else {
             update_min_distance(i);
             Rcpp::Rcout << "done update min distance" << endl;
-            
+
+            // Safety check: ensure we have candidates to select from
+            if (m_min_dist.empty()) {
+                throw std::logic_error("No valid candidates for seed selection - data may have too many missing values");
+            }
+
             //select from 1/k of the data which is in the 1-1/2k quantile of the min distance
             int to_i = int(m_min_dist.size() * (1 - 1 / (2 * m_k)));
             int from_i = to_i - int(m_data.size() / m_k);
@@ -69,9 +89,28 @@ void KMeans::generate_seeds() {
                 from_i = 0;
             }
 
-            int rnd_i = from_i + int(random_fraction() * (to_i - from_i));
-            seed_i = m_min_dist[rnd_i].second;
-            Rcpp::Rcout << "picked up " << seed_i << " dist was " << m_min_dist[rnd_i].first << endl;
+            // Try to find a valid seed (skip all-NA points)
+            int attempts = 0;
+            do {
+                int rnd_i = from_i + int(random_fraction() * (to_i - from_i));
+                seed_i = m_min_dist[rnd_i].second;
+                attempts++;
+            } while (!is_valid_seed(seed_i) && attempts < (to_i - from_i + 1));
+
+            // If no valid seed in quantile range, scan entire m_min_dist
+            if (!is_valid_seed(seed_i)) {
+                seed_i = -1;
+                for (size_t j = 0; j < m_min_dist.size(); j++) {
+                    if (is_valid_seed(m_min_dist[j].second)) {
+                        seed_i = m_min_dist[j].second;
+                        break;
+                    }
+                }
+                if (seed_i == -1) {
+                    throw std::logic_error("No valid seed candidates - too many all-NA rows in data");
+                }
+            }
+            Rcpp::Rcout << "picked up " << seed_i << endl;
         }
 
         add_new_core(seed_i, i);
@@ -110,9 +149,12 @@ void KMeans::add_new_core(int seed_i, int center_i) {
     sort(m_core_dist.begin(), m_core_dist.end());
 
     int to_add_n = int(m_data.size() / (2 * m_k));
+    if (to_add_n < 1) {
+        to_add_n = 1;  // Ensure at least 1 point per cluster during seeding
+    }
     int count = 0;
     m_centers[center_i]->reset_votes();
-    for (auto i = m_core_dist.begin(); count < to_add_n; i++) {
+    for (auto i = m_core_dist.begin(); count < to_add_n && i != m_core_dist.end(); i++) {
         m_centers[center_i]->vote(m_data[i->second], 1);
         m_assignment[i->second] = center_i;
         count++;
