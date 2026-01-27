@@ -9,7 +9,8 @@
 #' @param min_delta minimal change in assignments (fraction out of all observations) to continue iterating
 #' @param verbose display algorithm messages
 #' @param keep_log keep algorithm messages in 'log' field
-#' @param id_column \code{df}'s first column contains the observation id
+#' @param id_column \code{df}'s first column contains the observation id. If not set and the first
+#' column is character or factor, it will be automatically used as the ID column (with a warning).
 #' @param reorder_func function to reorder the clusters. operates on each center and orders by the result. e.g. \code{reorder_func = mean} would calculate the mean of each center and then would reorder the clusters accordingly. If \code{reorder_func = hclust} the centers would be ordered by hclust of the euclidean distance of the correlation matrix, i.e. \code{hclust(dist(cor(t(centers))))}
 #' if NULL, no reordering would be done.
 #' @param add_to_data return also the original data frame with an extra 'clust' column with the cluster ids ('id' is the first column)
@@ -91,6 +92,20 @@ TGL_kmeans_tidy <- function(df,
         df <- as.data.frame(df)
     }
 
+    # Auto-detect character/factor first column as ID
+    first_col_is_id_like <- is.data.frame(df) &&
+        ncol(df) > 1 &&
+        (is.character(df[[1]]) || is.factor(df[[1]]))
+
+    if (first_col_is_id_like && missing(id_column)) {
+        cli_warn(c(
+            "First column ({.field {colnames(df)[1]}}) is character/factor.",
+            "i" = "Assuming it contains row IDs.",
+            "i" = "Set {.field id_column=TRUE} to suppress this warning, or {.field id_column=FALSE} if this column should be treated as data."
+        ))
+        id_column <- TRUE
+    }
+
     # Extract IDs if necessary
     ids <- as.character(seq_len(nrow(df)))
     id_column_name <- "id"
@@ -109,9 +124,6 @@ TGL_kmeans_tidy <- function(df,
     # make sure that the input is numeric
     mat <- as.matrix(mat)
     if (!is.numeric(mat)) {
-        if (any(!is.numeric(mat[, 1])) && missing(id_column) && !id_column) {
-            cli_abort("{.field df} must be numeric. Note that the default of {.field id_column} was changed to FALSE in version {.field 0.4.0}. If you want to use the first column as ids, please set {.field id_column=TRUE}")
-        }
         cli_abort("{.field df} must be numeric.")
     }
 
@@ -341,7 +353,8 @@ TGL_kmeans <- function(df,
                        hclust_intra_clusters = FALSE,
                        seed = NULL,
                        use_cpp_random = FALSE) {
-    res <- TGL_kmeans_tidy(
+    # Build args list, only including id_column if explicitly set
+    args <- list(
         df = df,
         k = k,
         metric = metric,
@@ -349,22 +362,22 @@ TGL_kmeans <- function(df,
         min_delta = min_delta,
         verbose = verbose,
         keep_log = keep_log,
-        id_column = id_column,
         reorder_func = reorder_func,
         seed = seed,
         hclust_intra_clusters = hclust_intra_clusters,
         use_cpp_random = use_cpp_random
     )
+    if (!missing(id_column)) {
+        args$id_column <- id_column
+    }
+    res <- do.call(TGL_kmeans_tidy, args)
 
 
     km <- list()
 
     km$cluster <- res$cluster$clust
-    if (id_column) {
-        names(km$cluster) <- res$cluster[[colnames(df)[1]]]
-    } else {
-        names(km$cluster) <- res$cluster$id
-    }
+    # Use the first column of res$cluster (which contains the IDs)
+    names(km$cluster) <- res$cluster[[1]]
 
     km$centers <- as.matrix(res$centers[, -1])
 

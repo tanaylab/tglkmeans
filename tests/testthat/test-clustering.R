@@ -261,3 +261,75 @@ test_that("and error is thrown when number of observations is less than number o
     expect_error(TGL_kmeans(data.frame(id = 1:10, V1 = rnorm(10)), 30, metric = "euclid", verbose = FALSE, seed = 60427))
     expect_error(TGL_kmeans(data.frame(id = numeric(0))))
 })
+
+# Auto-detection of ID column:
+test_that("Auto-detect character first column as ID with warning", {
+    data <- data.frame(
+        sample_id = paste0("sample_", 1:100),
+        V1 = rnorm(100),
+        V2 = rnorm(100)
+    )
+    # Should warn about auto-detection
+    expect_warning(
+        res <- TGL_kmeans_tidy(data, k = 5, seed = 60427),
+        "character/factor"
+    )
+    # IDs should be the sample_id column
+    expect_equal(res$cluster$sample_id, data$sample_id)
+})
+
+test_that("Auto-detect factor first column as ID with warning", {
+    data <- data.frame(
+        sample_id = factor(paste0("sample_", 1:100)),
+        V1 = rnorm(100),
+        V2 = rnorm(100)
+    )
+    # Should warn about auto-detection
+    expect_warning(
+        res <- TGL_kmeans_tidy(data, k = 5, seed = 60427),
+        "character/factor"
+    )
+    # IDs should be the sample_id column (converted to character)
+    expect_equal(res$cluster$sample_id, as.character(data$sample_id))
+})
+
+test_that("No warning when id_column=TRUE is set explicitly", {
+    data <- data.frame(
+        sample_id = paste0("sample_", 1:100),
+        V1 = rnorm(100),
+        V2 = rnorm(100)
+    )
+    # Should not warn when explicitly set
+    expect_no_warning(
+        res <- TGL_kmeans_tidy(data, k = 5, id_column = TRUE, seed = 60427)
+    )
+    expect_equal(res$cluster$sample_id, data$sample_id)
+})
+
+test_that("Error when id_column=FALSE is set explicitly with character first column", {
+    data <- data.frame(
+        sample_id = paste0("sample_", 1:100),
+        V1 = rnorm(100),
+        V2 = rnorm(100)
+    )
+    # Should error when user explicitly says FALSE but data is non-numeric
+    expect_error(
+        TGL_kmeans_tidy(data, k = 5, id_column = FALSE, seed = 60427),
+        "numeric"
+    )
+})
+
+test_that("TGL_kmeans also auto-detects character first column", {
+    data <- data.frame(
+        sample_id = paste0("sample_", 1:100),
+        V1 = rnorm(100),
+        V2 = rnorm(100)
+    )
+    # Should warn about auto-detection
+    expect_warning(
+        res <- TGL_kmeans(data, k = 5, seed = 60427),
+        "character/factor"
+    )
+    # Names should be the sample_id values
+    expect_equal(names(res$cluster), data$sample_id)
+})

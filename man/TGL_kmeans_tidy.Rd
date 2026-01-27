@@ -37,7 +37,8 @@ otherwise the rownames are used.}
 
 \item{keep_log}{keep algorithm messages in 'log' field}
 
-\item{id_column}{\code{df}'s first column contains the observation id}
+\item{id_column}{\code{df}'s first column contains the observation id. If not set and the first
+column is character or factor, it will be automatically used as the ID column (with a warning).}
 
 \item{reorder_func}{function to reorder the clusters. operates on each center and orders by the result. e.g. \code{reorder_func = mean} would calculate the mean of each center and then would reorder the clusters accordingly. If \code{reorder_func = hclust} the centers would be ordered by hclust of the euclidean distance of the correlation matrix, i.e. \code{hclust(dist(cor(t(centers))))}
 if NULL, no reordering would be done.}
