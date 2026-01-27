@@ -84,8 +84,8 @@ void KMeans::generate_seeds() {
             valid_dist.reserve(m_min_dist.size());
 
             for (const auto& p : m_min_dist) {
-                // Filter: unassigned AND has valid distance (not sentinel values)
-                if (p.first != -REAL_MAX && p.first != REAL_MAX) {
+                // Filter: unassigned. Keep REAL_MAX distances so rows with no overlap remain candidates.
+                if (p.first != -REAL_MAX) {
                     valid_dist.push_back(p);
                 }
             }
