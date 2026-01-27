@@ -118,7 +118,8 @@ otherwise the rownames are used.</p></dd>
 
 
 <dt id="arg-id-column">id_column<a class="anchor" aria-label="anchor" href="#arg-id-column"></a></dt>
-<dd><p><code>df</code>'s first column contains the observation id</p></dd>
+<dd><p><code>df</code>'s first column contains the observation id. If not set and the first
+column is character or factor, it will be automatically used as the ID column (with a warning).</p></dd>
 
 
 <dt id="arg-reorder-func">reorder_func<a class="anchor" aria-label="anchor" href="#arg-reorder-func"></a></dt>
