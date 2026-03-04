@@ -1,38 +1,16 @@
 # tglkmeans 0.6.0
 
-## New features
-
 * Added `predict_tgl_kmeans()` function to assign new observations to existing k-means cluster centers (#5).
-* Auto-detect character/factor first column as ID column.
 * Exported `match_clusters()` and `test_clustering()` functions.
-
-## Bug fixes
-
-* Fixed memory leak in C++ k-means core — center objects are now managed with `std::unique_ptr`.
-* Fixed Pearson distance sign bug — distance is now properly negated (consistent with Spearman) so that highly correlated observations are placed in the same cluster.
-* Fixed `km$clust` typo that silently broke cluster size reporting.
-* Fixed uninitialized `new_order` variable when all features have zero variance.
-* Fixed `detectCores()` returning `NA` on some systems, which crashed package load.
-* Fixed k-means seeding crash when `k` is large relative to data size.
-* Fixed race condition and vote merging bugs in parallel workers.
-* Fixed division-by-zero guard in Pearson center statistics.
-* Fixed downsample per-column seed to ensure distinct randomization per column.
-* Fixed assert condition in `DownsampleWorker.cpp` for non-power-of-two input sizes.
-* Added bounds clamp for first seed selection in k-means initialization.
-
-## Improvements
-
+* Auto-detect character/factor first column as ID column.
 * Parallelized k-means initialization.
-* Added `override` keyword to all C++ virtual method overrides (fixes macOS compiler warnings).
-* Changed `REAL_MAX` from `#define` to `constexpr float` for type safety.
-* Added virtual destructor to `KMeansCenterBase`.
-* Removed `using namespace std` from all header files.
-* Removed `plyr` dependency — replaced with `dplyr`/`purrr` equivalents.
-* Moved `ggplot2` from Imports to Suggests.
-* Replaced deprecated `purrr::map_dfr()` with `purrr::map() |> purrr::list_rbind()`.
-* Replaced deprecated `dplyr::top_n()` with `dplyr::slice_max()`.
-* Updated GitHub Actions to v4, removed legacy `.travis.yml`.
-* Fixed documentation typos and improved `@return` tags for CRAN compliance.
+* Fix: Pearson distance was not negated, causing incorrect cluster assignments when using `metric = "pearson"`.
+* Fix: memory leak in k-means core.
+* Fix: k-means seeding crash when `k` is large relative to data size.
+* Fix: race condition in parallel workers.
+* Fix: package failed to load on machines where `detectCores()` returns `NA`.
+* Fix: `downsample_matrix` used identical random seed for all columns.
+* Removed `plyr` dependency. Moved `ggplot2` from Imports to Suggests.
 
 # tglkmeans 0.5.8
 
