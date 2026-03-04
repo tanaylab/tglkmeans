@@ -27,6 +27,12 @@ reference:
 - contents:
   - TGL_kmeans
   - TGL_kmeans_tidy
+  - predict_tgl_kmeans
+- title: Evaluation
+  desc: evaluate clustering results
+- contents:
+  - match_clusters
+  - test_clustering
 - title: Matrix
   desc: matrix utility functions
 - contents: 
