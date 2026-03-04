@@ -276,13 +276,13 @@ reorder_clusters <- function(km, func = "hclust") {
         } else {
             cm <- km$centers[, -1] %>%
                 t() %>%
-                cor(use = "pairwise.complete.obs")
+                tgs_cor(pairwise.complete.obs = TRUE)
 
             # we set NA's to zero in order for hclust not to fail when NA's are present in the dist object
             cm[is.na(cm)] <- 0
 
             centers_hc <- cm %>%
-                dist() %>%
+                tgs_dist() %>%
                 stats::hclust("ward.D2")
 
             new_order <- centers_hc$order
@@ -485,22 +485,27 @@ predict_tgl_kmeans <- function(object, newdata, id_column = FALSE, ...) {
     }
 
     # Compute distances and assign clusters
-    assigned_clusts <- integer(nrow(mat))
-    for (i in seq_len(nrow(mat))) {
-        x <- mat[i, ]
-        dists <- numeric(nrow(center_mat))
-        for (j in seq_len(nrow(center_mat))) {
-            center <- center_mat[j, ]
-            if (metric == "euclid") {
-                dists[j] <- sqrt(sum((x - center)^2, na.rm = TRUE))
-            } else if (metric == "pearson") {
-                dists[j] <- -cor(x, center, use = "pairwise.complete.obs")
-            } else if (metric == "spearman") {
-                dists[j] <- -cor(x, center, method = "spearman", use = "pairwise.complete.obs")
-            }
-        }
-        assigned_clusts[i] <- center_clusts[which.min(dists)]
+    n_obs <- nrow(mat)
+    n_centers <- nrow(center_mat)
+
+    if (metric == "euclid") {
+        # Combine observations and centers, compute full distance matrix, extract subblock
+        combined <- rbind(mat, center_mat)
+        dist_mat <- as.matrix(tgs_dist(combined))
+        # Rows 1:n_obs vs columns (n_obs+1):(n_obs+n_centers)
+        obs_center_dists <- dist_mat[seq_len(n_obs), n_obs + seq_len(n_centers), drop = FALSE]
+    } else {
+        # For pearson/spearman: columns are variables in tgs_cor, so transpose and combine
+        combined <- cbind(t(mat), t(center_mat))
+        cor_mat <- tgs_cor(combined,
+            pairwise.complete.obs = TRUE,
+            spearman = (metric == "spearman")
+        )
+        # Extract n_obs x n_centers subblock and negate (distance = -correlation)
+        obs_center_dists <- -cor_mat[seq_len(n_obs), n_obs + seq_len(n_centers), drop = FALSE]
     }
+
+    assigned_clusts <- center_clusts[apply(obs_center_dists, 1, which.min)]
 
     tibble(id = ids, clust = assigned_clusts)
 }
