@@ -6,20 +6,18 @@
 #include "KMeansCenterBase.h"
 #include <vector>
 
-using namespace std;
-
 class UpdateMinDistanceWorker : public RcppParallel::Worker {
 private:
-    const vector<vector<float>>& data;
+    const std::vector<std::vector<float>>& data;
     KMeansCenterBase* new_center;
-    vector<pair<float, int>>& min_dist;
-    const vector<int>& assignment;
+    std::vector<std::pair<float, int>>& min_dist;
+    const std::vector<int>& assignment;
 
 public:
-    UpdateMinDistanceWorker(const vector<vector<float>>& data,
+    UpdateMinDistanceWorker(const std::vector<std::vector<float>>& data,
                             KMeansCenterBase* new_center,
-                            vector<pair<float, int>>& min_dist,
-                            const vector<int>& assignment);
+                            std::vector<std::pair<float, int>>& min_dist,
+                            const std::vector<int>& assignment);
 
     void operator()(std::size_t begin, std::size_t end);
 };

@@ -10,7 +10,7 @@ tglkmeans.set_parallel(thread_num)
 \item{thread_num}{number of threads. use '1' for non parallel behavior}
 }
 \value{
-None
+No return value, called for side effects.
 }
 \description{
 Set parallel threads

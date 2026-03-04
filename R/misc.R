@@ -2,7 +2,7 @@
 #'
 #' @param thread_num number of threads. use '1' for non parallel behavior
 #'
-#' @return None
+#' @return No return value, called for side effects.
 #'
 #' @examples
 #' \donttest{

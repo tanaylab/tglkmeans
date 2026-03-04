@@ -6,6 +6,8 @@
 #include <cmath>
 #include "KMeansCenterMeanEuclid.h"
 
+using namespace std;
+
 
 float KMeansCenterMeanEuclid::dist(const vector<float> &x) const {
     vector<float>::const_iterator x_i = x.begin();

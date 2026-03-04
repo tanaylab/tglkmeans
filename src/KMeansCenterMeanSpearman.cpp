@@ -7,6 +7,8 @@
 #include "IndirectSort.h"
 #include "Ranking.h"
 
+using namespace std;
+
 // Pre-calculate center ranks when center is updated
 void KMeansCenterMeanSpearman::update_center_stats()
 {

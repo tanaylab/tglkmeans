@@ -1,6 +1,7 @@
 hclust_every_cluster <- function(km, df, parallel = TRUE) {
     all_hc <- df %>%
-        plyr::dlply(plyr::.(clust), function(x) {
+        dplyr::group_split(clust) %>%
+        purrr::map(function(x) {
             ids <- x$id
             dist <- as.matrix(x[, -1:-2]) %>%
                 t() %>%
@@ -13,8 +14,8 @@ hclust_every_cluster <- function(km, df, parallel = TRUE) {
 
             hc <- hclust(dist, method = "ward.D2")
             return(tibble(clust = x$clust[1], id = ids, intra_clust_order = hc$order))
-        }, .parallel = parallel) %>%
-        purrr::map_df(~.x)
+        }) %>%
+        purrr::list_rbind()
 
     res <- df %>%
         select(id, clust) %>%

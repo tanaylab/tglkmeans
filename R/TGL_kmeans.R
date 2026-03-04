@@ -3,7 +3,7 @@
 #' @param df a data frame or a matrix. Each row is a single observation and each column is a dimension.
 #' the first column can contain id for each observation (if id_column is TRUE),
 #' otherwise the rownames are used.
-#' @param k number of clusters. Note that in some cases the algorithm might return less clusters than k.
+#' @param k number of clusters. Note that in some cases the algorithm might return fewer clusters than k.
 #' @param metric distance metric for kmeans++ seeding. can be 'euclid', 'pearson' or 'spearman'
 #' @param max_iter maximal number of iterations
 #' @param min_delta minimal change in assignments (fraction out of all observations) to continue iterating
@@ -17,7 +17,7 @@
 #' @param hclust_intra_clusters run hierarchical clustering within each cluster and return an ordering of the observations.
 #' @param seed seed for the c++ random number generator
 #' @param use_cpp_random use c++ random number generator instead of R's. This should be used for only for
-#' backwards compatibility, as from version 0.4.0 onwards the default random number generator was changed o R.
+#' backwards compatibility, as from version 0.4.0 onwards the default random number generator was changed to R.
 #'
 #' @return list with the following components:
 #' \describe{
@@ -25,7 +25,7 @@
 #'   \item{centers:}{tibble with `clust` column and the cluster centers.}
 #'   \item{size:}{tibble with `clust` column and `n` column with the number of points in each cluster.}
 #'   \item{data:}{tibble with `clust` column the original data frame.}
-#'   \item{log:}{messages from the algorithm run (only if \code{id_column = FALSE}).}
+#'   \item{log:}{messages from the algorithm run (only if \code{keep_log = TRUE}).}
 #'   \item{order:}{tibble with 'id' column, 'clust' column, 'order' column with a new ordering if the observations and 'intra_clust_order' column with the order within each cluster. (only if hclust_intra_clusters = TRUE)}
 #' }
 #'
@@ -135,7 +135,7 @@ TGL_kmeans_tidy <- function(df,
         cli_abort("number of observations ({.val {nrow(mat)}} must be greater than k ({.val {k}})")
     }
 
-    # Thorw an error if there are rows that do not contain any value
+    # Throw an error if there are rows that do not contain any value
     n_not_missing <- rowSums(!is.na(mat))
     if (any(n_not_missing == 0)) {
         all_nas <- which(n_not_missing == 0)
@@ -220,6 +220,9 @@ TGL_kmeans_tidy <- function(df,
         km$order <- hclust_every_cluster(km, full_data, parallel = FALSE)
     }
 
+    km$metric <- metric
+    class(km) <- c("tgl_kmeans", class(km))
+
     return(km)
 }
 
@@ -269,6 +272,7 @@ reorder_clusters <- function(km, func = "hclust") {
         vars <- apply(km$centers[, -1], 1, var, na.rm = TRUE)
         if (!all(is.na(vars)) && min(vars, na.rm = TRUE) == 0) {
             cli_warn("standard deviation of kmeans center is 0")
+            return(km)
         } else {
             cm <- km$centers[, -1] %>%
                 t() %>%
@@ -311,7 +315,7 @@ reorder_clusters <- function(km, func = "hclust") {
 #'   \item{cluster:}{A vector of integers (from ‘1:k’) indicating the cluster to which each point is allocated.}
 #'   \item{centers:}{A matrix of cluster centers.}
 #'   \item{size:}{The number of points in each cluster.}
-#'   \item{log:}{messages from the algorithm run (only if \code{id_column == TRUE}).}
+#'   \item{log:}{messages from the algorithm run (only if \code{keep_log = TRUE}).}
 #'   \item{order:}{A vector of integers with the new ordering if the observations. (only if hclust_intra_clusters = TRUE)}
 #' }
 #'
@@ -381,7 +385,7 @@ TGL_kmeans <- function(df,
 
     km$centers <- as.matrix(res$centers[, -1])
 
-    km$size <- tapply(km$clust, km$clust, length)
+    km$size <- tapply(km$cluster, km$cluster, length)
 
     if (keep_log) {
         if (verbose) {
@@ -396,4 +400,107 @@ TGL_kmeans <- function(df,
     }
 
     return(km)
+}
+
+
+#' Predict cluster assignments for new data
+#'
+#' Project new observations onto existing k-means cluster centers.
+#'
+#' @param object A tgl_kmeans result from \code{\link{TGL_kmeans_tidy}}
+#' @param newdata A matrix or data frame of new observations. Must have the same
+#'   features (columns) as the data used to create the k-means model. If the first
+#'   column contains observation IDs (character/factor), it will be used as the id column.
+#' @param id_column Does \code{newdata}'s first column contain observation IDs?
+#'   If \code{TRUE}, the first column is used as IDs. If \code{FALSE} (default),
+#'   row numbers are used as IDs.
+#' @param ... Additional arguments (currently unused)
+#'
+#' @return A tibble with columns: \code{id} (observation identifier) and \code{clust}
+#'   (assigned cluster).
+#'
+#' @details
+#' For each observation in \code{newdata}, the function computes the distance to every
+#' cluster center and assigns the observation to the nearest center. The distance metric
+#' used is the same one that was used when creating the k-means model (\code{"euclid"},
+#' \code{"pearson"}, or \code{"spearman"}).
+#'
+#' Distance formulas:
+#' \itemize{
+#'   \item \code{euclid}: \code{sqrt(sum((x - center)^2, na.rm = TRUE))}
+#'   \item \code{pearson}: \code{-cor(x, center, use = "pairwise.complete.obs")}
+#'   \item \code{spearman}: \code{-cor(x, center, method = "spearman", use = "pairwise.complete.obs")}
+#' }
+#'
+#' @examples
+#' \dontshow{
+#' # this line is only for CRAN checks
+#' tglkmeans.set_parallel(1)
+#' }
+#'
+#' # create 5 clusters normally distributed around 1:5
+#' data <- simulate_data(n = 100, sd = 0.3, nclust = 5, dims = 10)
+#' km <- TGL_kmeans_tidy(data[, -1], k = 5, id_column = FALSE, seed = 60427)
+#' new_data <- simulate_data(n = 10, sd = 0.3, nclust = 5, dims = 10)
+#' predictions <- predict_tgl_kmeans(km, new_data[, -1])
+#' predictions
+#'
+#' @export
+predict_tgl_kmeans <- function(object, newdata, id_column = FALSE, ...) {
+    if (!inherits(object, "tgl_kmeans")) {
+        cli_abort("{.field object} must be a tgl_kmeans object (result of {.fun TGL_kmeans_tidy})")
+    }
+
+    if (!is.matrix(newdata) && !is.data.frame(newdata)) {
+        cli_abort("{.field newdata} must be a matrix or a data frame")
+    }
+
+    if (tibble::is_tibble(newdata)) {
+        newdata <- as.data.frame(newdata)
+    }
+
+    # Extract IDs
+    ids <- as.character(seq_len(nrow(newdata)))
+    if (id_column) {
+        ids <- as.character(newdata[, 1])
+        newdata <- newdata[, -1, drop = FALSE]
+    }
+
+    mat <- as.matrix(newdata)
+    if (!is.numeric(mat)) {
+        cli_abort("{.field newdata} must be numeric (after removing the id column, if present)")
+    }
+
+    # Extract center matrix (remove clust column)
+    center_clusts <- object$centers$clust
+    center_mat <- as.matrix(object$centers[, -1])
+
+    metric <- object$metric
+
+    # Validate that feature dimensions match
+    if (ncol(mat) != ncol(center_mat)) {
+        cli_abort(
+            "Number of features in {.field newdata} ({.val {ncol(mat)}}) does not match the number of features in the cluster centers ({.val {ncol(center_mat)}})"
+        )
+    }
+
+    # Compute distances and assign clusters
+    assigned_clusts <- integer(nrow(mat))
+    for (i in seq_len(nrow(mat))) {
+        x <- mat[i, ]
+        dists <- numeric(nrow(center_mat))
+        for (j in seq_len(nrow(center_mat))) {
+            center <- center_mat[j, ]
+            if (metric == "euclid") {
+                dists[j] <- sqrt(sum((x - center)^2, na.rm = TRUE))
+            } else if (metric == "pearson") {
+                dists[j] <- -cor(x, center, use = "pairwise.complete.obs")
+            } else if (metric == "spearman") {
+                dists[j] <- -cor(x, center, method = "spearman", use = "pairwise.complete.obs")
+            }
+        }
+        assigned_clusts[i] <- center_clusts[which.min(dists)]
+    }
+
+    tibble(id = ids, clust = assigned_clusts)
 }

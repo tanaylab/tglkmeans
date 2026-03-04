@@ -7,21 +7,19 @@
 
 #include "KMeansCenterBase.h"
 
-using namespace std;
-
 class KMeans {
 protected:
 
     int m_k;
 
-    vector<KMeansCenterBase *> m_centers;
+    std::vector<KMeansCenterBase *> m_centers;
 
-    vector<int> m_assignment;
+    std::vector<int> m_assignment;
 
-    vector <pair<float, int>> m_min_dist;
-    vector <pair<float, int>> m_core_dist;
+    std::vector<std::pair<float, int>> m_min_dist;
+    std::vector<std::pair<float, int>> m_core_dist;
 
-    const vector <vector<float>> &m_data;
+    const std::vector<std::vector<float>> &m_data;
 
     float m_changes;
 
@@ -29,7 +27,7 @@ protected:
 
 public:
 
-    KMeans(const vector <vector<float>> &data, int k, vector<KMeansCenterBase *> &centers, const bool& use_cpp_random);
+    KMeans(const std::vector<std::vector<float>> &data, int k, std::vector<KMeansCenterBase *> &centers, const bool& use_cpp_random);
 
     void cluster(int max_iter, float min_delta_assign);
 
@@ -43,13 +41,13 @@ public:
 
     void reassign();
 
-    void report_centers(ostream &center_tab);
+    void report_centers(std::ostream &center_tab);
 
-    void report_centers_to_vector(vector<vector<float > >& centers);
+    void report_centers_to_vector(std::vector<std::vector<float>> &centers);
 
-    void report_assignment(vector <string> &row_names, ostream &assign_tab);
+    void report_assignment(std::vector<std::string> &row_names, std::ostream &assign_tab);
 
-    vector<int> report_assignment_to_vector();
+    std::vector<int> report_assignment_to_vector();
 
     float random_fraction();
 

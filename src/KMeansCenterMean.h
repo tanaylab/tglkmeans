@@ -12,10 +12,10 @@ class KMeansCenterMean : public KMeansCenterBase {
 
 protected:
 
-    vector<float> m_center;
+    std::vector<float> m_center;
 
-    vector<float> m_votes;
-    vector<float> m_tot_wgt;
+    std::vector<float> m_votes;
+    std::vector<float> m_tot_wgt;
 
 public:
 
@@ -24,16 +24,16 @@ public:
             m_votes(dim, 0),
             m_tot_wgt(dim, 0) {}
 
-    virtual void init(vector<float> &cent);
+    virtual void init(std::vector<float> &cent);
 
-    virtual void vote(const vector<float> &v, float wgt);
+    virtual void vote(const std::vector<float> &v, float wgt) override;
 
-    virtual void reset_votes();  //tot = 0, votes = 0
-    virtual void init_to_votes(); //center = votes/tot
+    virtual void reset_votes() override;  //tot = 0, votes = 0
+    virtual void init_to_votes() override; //center = votes/tot
     virtual void update_center_stats();
 
-    virtual void report(ostream &out);
-    virtual vector<float> report_vector();
+    virtual void report(std::ostream &out) override;
+    virtual std::vector<float> report_vector() override;
 };
 
 

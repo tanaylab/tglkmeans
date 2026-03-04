@@ -23,3 +23,4 @@
 ^tests/testthat/regression$
 ^tests/testthat/regression/.*\.rds$
 ^\.claude$
+^conda-recipe$

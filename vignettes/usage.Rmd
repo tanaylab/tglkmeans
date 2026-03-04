@@ -73,10 +73,10 @@ km$cluster
 km$size
 ```
 
-We can now check our clustering performance - fraction of observations that were classified correctly (Note that `match_clusters` function is internal to the package and is used only in this vignette):
+We can now check our clustering performance - fraction of observations that were classified correctly:
 
 ```{r}
-d <- tglkmeans:::match_clusters(data, km, 5)
+d <- tglkmeans::match_clusters(data, km, 5)
 sum(d$true_clust == d$new_clust, na.rm = TRUE) / sum(!is.na(d$new_clust))
 ```
 
@@ -119,7 +119,7 @@ km <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")),
     metric = "euclid",
     verbose = FALSE
 )
-d <- tglkmeans:::match_clusters(data, km, 5)
+d <- tglkmeans::match_clusters(data, km, 5)
 sum(d$true_clust == d$new_clust, na.rm = TRUE) / sum(!is.na(d$new_clust))
 ```
 and plotting the results (without the NA's) we get:
@@ -148,7 +148,7 @@ km <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")),
 Note that here we supplied `id_column = TRUE` to indicate that the first column is the id column.
 
 ```{r}
-d <- tglkmeans:::match_clusters(data, km, 30)
+d <- tglkmeans::match_clusters(data, km, 30)
 sum(d$true_clust == d$new_clust, na.rm = TRUE) / sum(!is.na(d$new_clust))
 ```
 ## Comparison with R vanilla kmeans 
@@ -158,7 +158,7 @@ Let's compare it to R vanilla kmeans:
 km_standard <- kmeans(data %>% select(starts_with("V")), 30)
 km_standard$clust <- tibble(id = 1:nrow(data), clust = km_standard$cluster)
 
-d <- tglkmeans:::match_clusters(data, km_standard, 30)
+d <- tglkmeans::match_clusters(data, km_standard, 30)
 sum(d$true_clust == d$new_clust, na.rm = TRUE) / sum(!is.na(d$new_clust))
 ```
 We can see that kmeans++ clusters significantly better than R vanilla kmeans.
