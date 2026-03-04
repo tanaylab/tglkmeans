@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tglkmeans</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.1</span>
       </span>
     </div>
 
@@ -95,7 +95,7 @@ otherwise the rownames are used.</p></dd>
 
 
 <dt id="arg-k">k<a class="anchor" aria-label="anchor" href="#arg-k"></a></dt>
-<dd><p>number of clusters. Note that in some cases the algorithm might return less clusters than k.</p></dd>
+<dd><p>number of clusters. Note that in some cases the algorithm might return fewer clusters than k.</p></dd>
 
 
 <dt id="arg-metric">metric<a class="anchor" aria-label="anchor" href="#arg-metric"></a></dt>
@@ -142,7 +142,7 @@ if NULL, no reordering would be done.</p></dd>
 
 <dt id="arg-use-cpp-random">use_cpp_random<a class="anchor" aria-label="anchor" href="#arg-use-cpp-random"></a></dt>
 <dd><p>use c++ random number generator instead of R's. This should be used for only for
-backwards compatibility, as from version 0.4.0 onwards the default random number generator was changed o R.</p></dd>
+backwards compatibility, as from version 0.4.0 onwards the default random number generator was changed to R.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -160,7 +160,7 @@ backwards compatibility, as from version 0.4.0 onwards the default random number
 <dd><p>tibble with `clust` column the original data frame.</p></dd>
 
   <dt>log:</dt>
-<dd><p>messages from the algorithm run (only if <code>id_column = FALSE</code>).</p></dd>
+<dd><p>messages from the algorithm run (only if <code>keep_log = TRUE</code>).</p></dd>
 
   <dt>order:</dt>
 <dd><p>tibble with 'id' column, 'clust' column, 'order' column with a new ordering if the observations and 'intra_clust_order' column with the order within each cluster. (only if hclust_intra_clusters = TRUE)</p></dd>
@@ -264,6 +264,11 @@ backwards compatibility, as from version 0.4.0 onwards the default random number
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     4    99</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     5   100</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $metric</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "euclid"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tgl_kmeans" "list"      </span>
 </code></pre></div>
     </div>
   </div>

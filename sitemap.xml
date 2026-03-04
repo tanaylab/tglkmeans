@@ -11,8 +11,11 @@
 <url><loc>/reference/TGL_kmeans_tidy.html</loc></url>
 <url><loc>/reference/downsample_matrix.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/match_clusters.html</loc></url>
 <url><loc>/reference/pipe.html</loc></url>
+<url><loc>/reference/predict_tgl_kmeans.html</loc></url>
 <url><loc>/reference/simulate_data.html</loc></url>
+<url><loc>/reference/test_clustering.html</loc></url>
 <url><loc>/reference/tglkmeans-package.html</loc></url>
 <url><loc>/reference/tglkmeans.set_parallel.html</loc></url>
 </urlset>

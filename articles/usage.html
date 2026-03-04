@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tglkmeans</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.1</span>
       </span>
     </div>
 
@@ -649,7 +649,7 @@ with sd of 0.3:</p>
 <p>The returned list contains 3 fields:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">km</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "centers" "cluster" "size"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "centers" "cluster" "size"    "metric"</span></span></code></pre>
 <p><code>km$centers</code> contains a tibble with <code>clust</code>
 column and the cluster centers:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -696,11 +696,9 @@ and <code>n</code> column with the number of points in each cluster:</p>
 <span><span class="co">## <span style="color: #BCBCBC;">4</span>     4   101</span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">5</span>     5    99</span></span></code></pre>
 <p>We can now check our clustering performance - fraction of
-observations that were classified correctly (Note that
-<code>match_clusters</code> function is internal to the package and is
-used only in this vignette):</p>
+observations that were classified correctly:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">tglkmeans</span><span class="fu">:::</span><span class="fu">match_clusters</span><span class="op">(</span><span class="va">data</span>, <span class="va">km</span>, <span class="fl">5</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">tglkmeans</span><span class="fu">::</span><span class="fu"><a href="../reference/match_clusters.html">match_clusters</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">km</span>, <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">true_clust</span> <span class="op">==</span> <span class="va">d</span><span class="op">$</span><span class="va">new_clust</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">new_clust</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 0.97</span></span></code></pre>
 <p>And plot the results:</p>
@@ -1253,7 +1251,7 @@ dimension is not missing. for example:</p>
 <span>    metric <span class="op">=</span> <span class="st">"euclid"</span>,</span>
 <span>    verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">tglkmeans</span><span class="fu">:::</span><span class="fu">match_clusters</span><span class="op">(</span><span class="va">data</span>, <span class="va">km</span>, <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">tglkmeans</span><span class="fu">::</span><span class="fu"><a href="../reference/match_clusters.html">match_clusters</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">km</span>, <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">true_clust</span> <span class="op">==</span> <span class="va">d</span><span class="op">$</span><span class="va">new_clust</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">new_clust</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 0.98</span></span></code></pre>
 <p>and plotting the results (without the NA’s) we get:</p>
@@ -1282,7 +1280,7 @@ dimension is not missing. for example:</p>
 <p>Note that here we supplied <code>id_column = TRUE</code> to indicate
 that the first column is the id column.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">tglkmeans</span><span class="fu">:::</span><span class="fu">match_clusters</span><span class="op">(</span><span class="va">data</span>, <span class="va">km</span>, <span class="fl">30</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">tglkmeans</span><span class="fu">::</span><span class="fu"><a href="../reference/match_clusters.html">match_clusters</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">km</span>, <span class="fl">30</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">true_clust</span> <span class="op">==</span> <span class="va">d</span><span class="op">$</span><span class="va">new_clust</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">new_clust</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 1</span></span></code></pre>
 </div>
@@ -1294,7 +1292,7 @@ that the first column is the id column.</p>
 <code class="sourceCode R"><span><span class="va">km_standard</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/kmeans.html" class="external-link">kmeans</a></span><span class="op">(</span><span class="va">data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"V"</span><span class="op">)</span><span class="op">)</span>, <span class="fl">30</span><span class="op">)</span></span>
 <span><span class="va">km_standard</span><span class="op">$</span><span class="va">clust</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>, clust <span class="op">=</span> <span class="va">km_standard</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">tglkmeans</span><span class="fu">:::</span><span class="fu">match_clusters</span><span class="op">(</span><span class="va">data</span>, <span class="va">km_standard</span>, <span class="fl">30</span><span class="op">)</span></span>
+<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">tglkmeans</span><span class="fu">::</span><span class="fu"><a href="../reference/match_clusters.html">match_clusters</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">km_standard</span>, <span class="fl">30</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">true_clust</span> <span class="op">==</span> <span class="va">d</span><span class="op">$</span><span class="va">new_clust</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">new_clust</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 0.7142857</span></span></code></pre>
 <p>We can see that kmeans++ clusters significantly better than R vanilla
