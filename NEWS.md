@@ -1,4 +1,4 @@
-# tglkmeans 0.6.0
+# tglkmeans 0.6.1
 
 * Added `predict_tgl_kmeans()` function to assign new observations to existing k-means cluster centers (#5).
 * Exported `match_clusters()` and `test_clustering()` functions.
