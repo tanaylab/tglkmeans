@@ -10,6 +10,8 @@
 #include "Random.h"
 #include <Rcpp.h>
 
+using namespace std;
+
 KMeans::KMeans(const vector<vector<float>> &data, int k, vector<KMeansCenterBase *> &centers, const bool& use_cpp_random) :
         m_k(k),
         m_centers(centers),
@@ -73,6 +75,7 @@ void KMeans::generate_seeds() {
             int attempts = 0;
             do {
                 seed_i = random_fraction() * m_data.size();
+                if (seed_i >= (int)m_data.size()) seed_i = m_data.size() - 1;
                 attempts++;
             } while (!is_valid_seed(seed_i) && attempts < (int)m_data.size());
             if (!is_valid_seed(seed_i)) {

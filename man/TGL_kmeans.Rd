@@ -24,7 +24,7 @@ TGL_kmeans(
 the first column can contain id for each observation (if id_column is TRUE),
 otherwise the rownames are used.}
 
-\item{k}{number of clusters. Note that in some cases the algorithm might return less clusters than k.}
+\item{k}{number of clusters. Note that in some cases the algorithm might return fewer clusters than k.}
 
 \item{metric}{distance metric for kmeans++ seeding. can be 'euclid', 'pearson' or 'spearman'}
 
@@ -47,7 +47,7 @@ if NULL, no reordering would be done.}
 \item{seed}{seed for the c++ random number generator}
 
 \item{use_cpp_random}{use c++ random number generator instead of R's. This should be used for only for
-backwards compatibility, as from version 0.4.0 onwards the default random number generator was changed o R.}
+backwards compatibility, as from version 0.4.0 onwards the default random number generator was changed to R.}
 }
 \value{
 list with the following components:
@@ -55,7 +55,7 @@ list with the following components:
   \item{cluster:}{A vector of integers (from ‘1:k’) indicating the cluster to which each point is allocated.}
   \item{centers:}{A matrix of cluster centers.}
   \item{size:}{The number of points in each cluster.}
-  \item{log:}{messages from the algorithm run (only if \code{id_column == TRUE}).}
+  \item{log:}{messages from the algorithm run (only if \code{keep_log = TRUE}).}
   \item{order:}{A vector of integers with the new ordering if the observations. (only if hclust_intra_clusters = TRUE)}
 }
 }

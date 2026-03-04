@@ -4,6 +4,8 @@
 
 #include "KMeansCenterBase.h"
 
+using namespace std;
+
 void KMeansCenterBase::report_meta_data_header(ostream &out)
 {
     //do nothing by default

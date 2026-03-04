@@ -9,27 +9,27 @@
 #include <iostream>
 #include <string>
 #include <limits>
-#define REAL_MAX std::numeric_limits<float>::max()
-
-using namespace std;
+constexpr float REAL_MAX = std::numeric_limits<float>::max();
 
 class KMeansCenterBase {
 public:
-    virtual float dist(const vector<float> &v) const = 0;
+    virtual ~KMeansCenterBase() = default;
 
-    virtual void vote(const vector<float> &v, float wgt) = 0;
+    virtual float dist(const std::vector<float> &v) const = 0;
+
+    virtual void vote(const std::vector<float> &v, float wgt) = 0;
 
     virtual void reset_votes() = 0;
 
     virtual void init_to_votes() = 0;
 
-    virtual void report_meta_data_header(ostream &out);
+    virtual void report_meta_data_header(std::ostream &out);
 
-    virtual void report_meta_data(ostream &out, const vector<float> &v);
+    virtual void report_meta_data(std::ostream &out, const std::vector<float> &v);
 
-    virtual void report(ostream &out) = 0;
+    virtual void report(std::ostream &out) = 0;
 
-    virtual vector<float> report_vector() = 0;
+    virtual std::vector<float> report_vector() = 0;
 };
 
 

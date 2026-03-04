@@ -2,6 +2,8 @@
 #include "Ranking.h"
 #include "IndirectSort.h"
 
+using namespace std;
+
 float spearman(const vector<float> &v1, const vector<float> &v2,
 				vector<float> &rank1, vector<float> &rank2,
 				double &pv)

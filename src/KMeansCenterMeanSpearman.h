@@ -12,16 +12,16 @@ class KMeansCenterMeanSpearman : public KMeansCenterMean {
 protected:
     // Cached center ranks for performance optimization
     // These are pre-computed when center is updated and used when data has no missing values
-    vector<float> m_center_ranks;
+    std::vector<float> m_center_ranks;
     std::list<int> m_center_sorted_order;
-    
+
 public:
     KMeansCenterMeanSpearman(int dim) :
 		    KMeansCenterMean(dim),
             m_center_ranks(dim)
     {}
 
-    virtual float dist(const vector<float> &v) const;
+    virtual float dist(const std::vector<float> &v) const override;
     virtual void update_center_stats() override;
 };
 

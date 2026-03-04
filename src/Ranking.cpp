@@ -1,6 +1,8 @@
 #include "Ranking.h"
+#include "KMeansCenterBase.h"
 #include <limits>
-#define REAL_MAX std::numeric_limits<float>::max()
+
+using namespace std;
 
 void mid_ranking(vector<float> &ranks, const list<int> &order, 
 						const vector<float> &vals)

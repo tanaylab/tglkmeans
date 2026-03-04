@@ -5,6 +5,8 @@
 #include <limits>
 #include "KMeansCenterMean.h"
 
+using namespace std;
+
 void KMeansCenterMean::init(vector<float> &cent) {
     m_center = cent;
     m_votes.resize(m_center.size());

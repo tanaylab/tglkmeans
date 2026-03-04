@@ -19,9 +19,9 @@ public:
     KMeansCenterMeanPearson(int dim) :
             KMeansCenterMean(dim) {}
 
-    virtual float dist(const vector<float> &v) const;
+    virtual float dist(const std::vector<float> &v) const override;
 
-    virtual void update_center_stats();
+    virtual void update_center_stats() override;
 };
 
 

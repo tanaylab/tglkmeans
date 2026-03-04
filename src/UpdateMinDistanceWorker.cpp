@@ -1,5 +1,7 @@
 #include "UpdateMinDistanceWorker.h"
 
+using namespace std;
+
 UpdateMinDistanceWorker::UpdateMinDistanceWorker(const vector<vector<float>>& data,
                                                  KMeansCenterBase* new_center,
                                                  vector<pair<float, int>>& min_dist,

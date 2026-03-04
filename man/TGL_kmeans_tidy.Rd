@@ -25,7 +25,7 @@ TGL_kmeans_tidy(
 the first column can contain id for each observation (if id_column is TRUE),
 otherwise the rownames are used.}
 
-\item{k}{number of clusters. Note that in some cases the algorithm might return less clusters than k.}
+\item{k}{number of clusters. Note that in some cases the algorithm might return fewer clusters than k.}
 
 \item{metric}{distance metric for kmeans++ seeding. can be 'euclid', 'pearson' or 'spearman'}
 
@@ -50,7 +50,7 @@ if NULL, no reordering would be done.}
 \item{seed}{seed for the c++ random number generator}
 
 \item{use_cpp_random}{use c++ random number generator instead of R's. This should be used for only for
-backwards compatibility, as from version 0.4.0 onwards the default random number generator was changed o R.}
+backwards compatibility, as from version 0.4.0 onwards the default random number generator was changed to R.}
 }
 \value{
 list with the following components:
@@ -59,7 +59,7 @@ list with the following components:
   \item{centers:}{tibble with `clust` column and the cluster centers.}
   \item{size:}{tibble with `clust` column and `n` column with the number of points in each cluster.}
   \item{data:}{tibble with `clust` column the original data frame.}
-  \item{log:}{messages from the algorithm run (only if \code{id_column = FALSE}).}
+  \item{log:}{messages from the algorithm run (only if \code{keep_log = TRUE}).}
   \item{order:}{tibble with 'id' column, 'clust' column, 'order' column with a new ordering if the observations and 'intra_clust_order' column with the order within each cluster. (only if hclust_intra_clusters = TRUE)}
 }
 }

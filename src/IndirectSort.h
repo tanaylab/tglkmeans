@@ -3,15 +3,14 @@
 
 
 #include <vector>
-using namespace std;
 
 template<class T>
 class IndirectSort {
 
 protected:
-	const vector<T> &m_vals;
+	const std::vector<T> &m_vals;
 public:
-	IndirectSort(const vector<T> &vals) :
+	IndirectSort(const std::vector<T> &vals) :
 		m_vals(vals)
 	{}
 

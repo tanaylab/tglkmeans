@@ -20,9 +20,10 @@
 #'
 #' @export
 simulate_data <- function(n = 100, sd = 0.3, nclust = 30, dims = 2, frac_na = NULL, add_true_clust = TRUE, id_column = TRUE) {
-    data <- purrr::map_dfr(1:nclust, ~
+    data <- purrr::map(1:nclust, ~
         as.data.frame(matrix(rnorm(n * dims, mean = .x, sd = sd), ncol = dims)) %>%
             mutate(true_clust = .x)) %>%
+        purrr::list_rbind() %>%
         as_tibble() %>%
         mutate(id = 1:n()) %>%
         select(id, everything(), true_clust)
@@ -42,17 +43,38 @@ simulate_data <- function(n = 100, sd = 0.3, nclust = 30, dims = 2, frac_na = NU
     return(as.data.frame(data))
 }
 
+#' Match clusters to true clusters
+#'
+#' @param data data frame with 'id' and 'true_clust' columns
+#' @param res result from TGL_kmeans_tidy (must have a 'clust' tibble with 'id' and 'clust' columns)
+#' @param nclust number of clusters
+#'
+#' @return data frame with matched clusters
+#'
+#' @export
 match_clusters <- function(data, res, nclust) {
     d <- data %>% left_join(res$clust %>% mutate(id = as.numeric(as.character(id))), by = "id")
     clust_map <- d %>%
         group_by(clust, true_clust) %>%
         summarise(n = n()) %>%
-        top_n(1, n) %>%
+        slice_max(n, n = 1) %>%
         ungroup()
     d <- d %>% left_join(clust_map %>% select(new_clust = true_clust, clust), by = "clust")
     return(d)
 }
 
+#' Test clustering performance
+#'
+#' @param n number of observations per cluster
+#' @param sd standard deviation
+#' @param nclust number of clusters
+#' @param dims number of dimensions
+#' @param method distance metric
+#' @param frac_na fraction of NA values
+#'
+#' @return fraction of correctly classified observations
+#'
+#' @export
 test_clustering <- function(n, sd, nclust, dims = 2, method = "euclid", frac_na = NULL) {
     data <- simulate_data(n = n, sd = sd, nclust = nclust, dims = dims)
     res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")), nclust, method, id_column = TRUE, verbose = FALSE)

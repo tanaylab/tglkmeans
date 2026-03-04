@@ -5,6 +5,7 @@
 // [[Rcpp::plugins("cpp11")]]
 
 #include <Rcpp.h>
+#include <memory>
 #include "KMeans.h"
 #include "Random.h"
 #include "KMeansCenterMeanEuclid.h"
@@ -58,22 +59,27 @@ List TGL_kmeans_cpp(const StringVector& ids, DataFrame& mat, const int& k, const
     vector<vector<float> > data = as<vector<vector<float> > >(mat);
 
     int dim = data[0].size();
-    vector<KMeansCenterBase *> centers(k);
+    vector<unique_ptr<KMeansCenterBase>> owned_centers(k);
 
     if (metric == "euclid") {
         for (int i = 0; i < k; i++) {
-            centers[i] = new KMeansCenterMeanEuclid(dim);
+            owned_centers[i] = make_unique<KMeansCenterMeanEuclid>(dim);
         }
     } else if (metric == "pearson") {
         for (int i = 0; i < k; i++) {
-            centers[i] = new KMeansCenterMeanPearson(dim);
+            owned_centers[i] = make_unique<KMeansCenterMeanPearson>(dim);
         }
     } else if (metric == "spearman") {
         for (int i = 0; i < k; i++) {
-            centers[i] = new KMeansCenterMeanSpearman(dim);
+            owned_centers[i] = make_unique<KMeansCenterMeanSpearman>(dim);
         }
     } else {
         stop("possible metrics are 'euclid', 'pearson' and 'spearman'");
+    }
+
+    vector<KMeansCenterBase *> centers(k);
+    for (int i = 0; i < k; i++) {
+        centers[i] = owned_centers[i].get();
     }
 
     KMeans kmeans(data, k, centers, use_cpp_random);

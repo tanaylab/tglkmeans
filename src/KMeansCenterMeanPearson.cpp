@@ -5,6 +5,8 @@
 #include <cmath>
 #include "KMeansCenterMeanPearson.h"
 
+using namespace std;
+
 float KMeansCenterMeanPearson::dist(const vector<float> &x) const
 {
     vector<float>::const_iterator x_i = x.begin();
@@ -22,7 +24,7 @@ float KMeansCenterMeanPearson::dist(const vector<float> &x) const
         x_i++;
     }
     if(n == 0) {
-        return(0);
+        return(REAL_MAX);
     }
     x_e /= n;
     float cov = cov2/n - x_e * m_center_e;
@@ -31,7 +33,7 @@ float KMeansCenterMeanPearson::dist(const vector<float> &x) const
     if(x_v == 0) {
         return(0);
     }
-    return(cov/sqrt(m_center_v * x_v));
+    return(-cov/sqrt(m_center_v * x_v));
 }
 
 void KMeansCenterMeanPearson::update_center_stats()
@@ -45,6 +47,11 @@ void KMeansCenterMeanPearson::update_center_stats()
             c_e2 += (*c_i)*(*c_i);
             n++;
         }
+    }
+    if (n == 0) {
+        m_center_e = 0;
+        m_center_v = 0;
+        return;
     }
     m_center_e = c_e/n;
     m_center_v = c_e2/n - m_center_e*m_center_e;
