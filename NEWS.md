@@ -1,3 +1,7 @@
+# tglkmeans 0.6.2
+
+* Fix: `predict_tgl_kmeans()` crashed with `'from' contains NAs` / `NAs introduced by coercion to integer range` on inputs of ~46K rows or more. The one-shot `as.matrix(tgs_dist(.))` overflowed integer indexing inside `stats:::as.matrix.dist`. The prediction now processes observations in chunks (#21).
+
 # tglkmeans 0.6.1
 
 * Added `predict_tgl_kmeans()` function to assign new observations to existing k-means cluster centers (#5).
