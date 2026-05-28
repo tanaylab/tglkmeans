@@ -488,21 +488,41 @@ predict_tgl_kmeans <- function(object, newdata, id_column = FALSE, ...) {
     n_obs <- nrow(mat)
     n_centers <- nrow(center_mat)
 
-    if (metric == "euclid") {
-        # Combine observations and centers, compute full distance matrix, extract subblock
-        combined <- rbind(mat, center_mat)
-        dist_mat <- as.matrix(tgs_dist(combined))
-        # Rows 1:n_obs vs columns (n_obs+1):(n_obs+n_centers)
-        obs_center_dists <- dist_mat[seq_len(n_obs), n_obs + seq_len(n_centers), drop = FALSE]
-    } else {
-        # For pearson/spearman: columns are variables in tgs_cor, so transpose and combine
-        combined <- cbind(t(mat), t(center_mat))
-        cor_mat <- tgs_cor(combined,
-            pairwise.complete.obs = TRUE,
-            spearman = (metric == "spearman")
-        )
-        # Extract n_obs x n_centers subblock and negate (distance = -correlation)
-        obs_center_dists <- -cor_mat[seq_len(n_obs), n_obs + seq_len(n_centers), drop = FALSE]
+    # Process observations in chunks. The previous one-shot approach built a
+    # full (n_obs + n_centers)^2 distance/correlation matrix; for n_obs above
+    # ~46340, length(df) in stats:::as.matrix.dist overflows integer range and
+    # the call dies with "NAs introduced by coercion to integer range" (issue
+    # #21). Chunking also bounds peak memory.
+    chunk_size <- 10000L
+    obs_center_dists <- matrix(NA_real_, n_obs, n_centers)
+
+    if (n_obs > 0L) {
+        for (start in seq.int(1L, n_obs, by = chunk_size)) {
+            end <- min(start + chunk_size - 1L, n_obs)
+            chunk <- mat[start:end, , drop = FALSE]
+            n_chunk <- nrow(chunk)
+
+            if (metric == "euclid") {
+                combined <- rbind(chunk, center_mat)
+                dist_mat <- as.matrix(tgs_dist(combined))
+                obs_center_dists[start:end, ] <- dist_mat[
+                    seq_len(n_chunk),
+                    n_chunk + seq_len(n_centers),
+                    drop = FALSE
+                ]
+            } else {
+                combined <- cbind(t(chunk), t(center_mat))
+                cor_mat <- tgs_cor(combined,
+                    pairwise.complete.obs = TRUE,
+                    spearman = (metric == "spearman")
+                )
+                obs_center_dists[start:end, ] <- -cor_mat[
+                    seq_len(n_chunk),
+                    n_chunk + seq_len(n_centers),
+                    drop = FALSE
+                ]
+            }
+        }
     }
 
     assigned_clusts <- center_clusts[apply(obs_center_dists, 1, which.min)]

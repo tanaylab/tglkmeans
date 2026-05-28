@@ -333,3 +333,59 @@ test_that("TGL_kmeans also auto-detects character first column", {
     # Names should be the sample_id values
     expect_equal(names(res$cluster), data$sample_id)
 })
+
+# predict_tgl_kmeans:
+test_that("predict_tgl_kmeans recovers training cluster assignments (euclid)", {
+    data <- simulate_data(n = 200, sd = 0.3, dims = 5, nclust = 5, frac_na = NULL)
+    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")),
+        k = 5, id_column = TRUE, metric = "euclid", verbose = FALSE, seed = 60427
+    )
+    pred <- predict_tgl_kmeans(res, data %>% select(starts_with("V")))
+    expect_equal(nrow(pred), nrow(data))
+    expect_setequal(colnames(pred), c("id", "clust"))
+    expect_true(all(pred$clust %in% res$centers$clust))
+    expect_equal(pred$clust, res$cluster$clust)
+})
+
+test_that("predict_tgl_kmeans pearson/spearman round-trip", {
+    data <- simulate_data(n = 200, sd = 0.3, dims = 10, nclust = 5, frac_na = NULL)
+    for (m in c("pearson", "spearman")) {
+        res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")),
+            k = 5, id_column = TRUE, metric = m, verbose = FALSE, seed = 60427
+        )
+        pred <- predict_tgl_kmeans(res, data %>% select(starts_with("V")))
+        expect_equal(nrow(pred), nrow(data))
+        expect_true(all(pred$clust %in% res$centers$clust))
+    }
+})
+
+# Issue #21: as.matrix(tgs_dist(.)) in predict overflowed integer range once
+# the combined size exceeded ~46340 rows. Verify large inputs no longer crash
+# and that chunked results agree with a brute-force per-center computation
+# on a tractable subset.
+test_that("predict_tgl_kmeans handles input larger than as.matrix.dist int limit (#21)", {
+    skip_on_cran()
+    set.seed(60427)
+    nclust <- 5
+    train <- simulate_data(n = 200, sd = 0.3, dims = 4, nclust = nclust, frac_na = NULL)
+    res <- TGL_kmeans_tidy(train %>% select(id, starts_with("V")),
+        k = nclust, id_column = TRUE, metric = "euclid", verbose = FALSE, seed = 60427
+    )
+
+    # Trigger the old code path: combined size = 50000 + nclust > 46340.
+    big <- matrix(rnorm(50000 * 4), nrow = 50000, ncol = 4)
+    colnames(big) <- paste0("V", seq_len(4))
+    expect_no_error(pred <- predict_tgl_kmeans(res, big))
+    expect_equal(nrow(pred), nrow(big))
+    expect_true(all(pred$clust %in% res$centers$clust))
+
+    # Cross-check chunked result against a brute-force per-row nearest-center
+    # assignment on a small subset (tgs_dist's NA-aware Euclidean reduces to
+    # the plain Euclidean when no NAs are present).
+    subset <- big[1:500, , drop = FALSE]
+    centers <- as.matrix(res$centers[, -1])
+    brute <- apply(subset, 1, function(x) {
+        which.min(sqrt(rowSums(sweep(centers, 2, x, "-")^2)))
+    })
+    expect_equal(pred$clust[1:500], res$centers$clust[brute])
+})
