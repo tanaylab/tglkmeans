@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tglkmeans</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.2</span>
       </span>
     </div>
 
@@ -62,7 +62,11 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.6.1" id="tglkmeans-061">tglkmeans 0.6.1<a class="anchor" aria-label="anchor" href="#tglkmeans-061"></a></h2>
+<h2 class="page-header" data-toc-text="0.6.2" id="tglkmeans-062">tglkmeans 0.6.2<a class="anchor" aria-label="anchor" href="#tglkmeans-062"></a></h2>
+<ul><li>Fix: <code><a href="../reference/predict_tgl_kmeans.html">predict_tgl_kmeans()</a></code> crashed with <code>'from' contains NAs</code> / <code>NAs introduced by coercion to integer range</code> on inputs of ~46K rows or more. The one-shot <code>as.matrix(tgs_dist(.))</code> overflowed integer indexing inside <code>stats:::as.matrix.dist</code>. The prediction now processes observations in chunks (<a href="https://github.com/tanaylab/tglkmeans/issues/21" class="external-link">#21</a>).</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.6.1" id="tglkmeans-061">tglkmeans 0.6.1<small>2026-03-04</small><a class="anchor" aria-label="anchor" href="#tglkmeans-061"></a></h2>
 <ul><li>Added <code><a href="../reference/predict_tgl_kmeans.html">predict_tgl_kmeans()</a></code> function to assign new observations to existing k-means cluster centers (<a href="https://github.com/tanaylab/tglkmeans/issues/5" class="external-link">#5</a>).</li>
 <li>Exported <code><a href="../reference/match_clusters.html">match_clusters()</a></code> and <code><a href="../reference/test_clustering.html">test_clustering()</a></code> functions.</li>
 <li>Auto-detect character/factor first column as ID column.</li>
