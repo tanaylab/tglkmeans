@@ -32,9 +32,10 @@ cluster center and assigns the observation to the nearest center. The distance m
 used is the same one that was used when creating the k-means model (\code{"euclid"},
 \code{"pearson"}, or \code{"spearman"}).
 
-Distance formulas:
+Distance formulas (matching the training implementation; \code{n} is the number
+of dimensions present in both \code{x} and \code{center}):
 \itemize{
-  \item \code{euclid}: \code{sqrt(sum((x - center)^2, na.rm = TRUE))}
+  \item \code{euclid}: \code{sqrt(sum((x - center)^2, na.rm = TRUE)) / n}
   \item \code{pearson}: \code{-cor(x, center, use = "pairwise.complete.obs")}
   \item \code{spearman}: \code{-cor(x, center, method = "spearman", use = "pairwise.complete.obs")}
 }

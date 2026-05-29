@@ -425,9 +425,10 @@ TGL_kmeans <- function(df,
 #' used is the same one that was used when creating the k-means model (\code{"euclid"},
 #' \code{"pearson"}, or \code{"spearman"}).
 #'
-#' Distance formulas:
+#' Distance formulas (matching the training implementation; \code{n} is the number
+#' of dimensions present in both \code{x} and \code{center}):
 #' \itemize{
-#'   \item \code{euclid}: \code{sqrt(sum((x - center)^2, na.rm = TRUE))}
+#'   \item \code{euclid}: \code{sqrt(sum((x - center)^2, na.rm = TRUE)) / n}
 #'   \item \code{pearson}: \code{-cor(x, center, use = "pairwise.complete.obs")}
 #'   \item \code{spearman}: \code{-cor(x, center, method = "spearman", use = "pairwise.complete.obs")}
 #' }
@@ -488,36 +489,36 @@ predict_tgl_kmeans <- function(object, newdata, id_column = FALSE, ...) {
     n_obs <- nrow(mat)
     n_centers <- nrow(center_mat)
 
-    # Process observations in chunks. The previous one-shot approach built a
-    # full (n_obs + n_centers)^2 distance/correlation matrix; for n_obs above
-    # ~46340, length(df) in stats:::as.matrix.dist overflows integer range and
-    # the call dies with "NAs introduced by coercion to integer range" (issue
-    # #21). Chunking also bounds peak memory.
-    #
-    # Only the obs x centers block of each chunk's matrix is used; the
-    # chunk x chunk block is computed and discarded. Since every obs-to-center
-    # distance/correlation is pairwise (independent of the other observations in
-    # the chunk), the result does not depend on chunk_size - so we keep the
-    # chunk modest to limit that wasted O(chunk^2) work while still doing few
-    # tgs calls.
-    chunk_size <- 1000L
     obs_center_dists <- matrix(NA_real_, n_obs, n_centers)
 
     if (n_obs > 0L) {
-        for (start in seq.int(1L, n_obs, by = chunk_size)) {
-            end <- min(start + chunk_size - 1L, n_obs)
-            chunk <- mat[start:end, , drop = FALSE]
-            n_chunk <- nrow(chunk)
+        if (metric == "euclid") {
+            # Reproduce the training Euclidean distance exactly: sqrt(sum_sq)/n
+            # over the dimensions present in BOTH the observation and the center
+            # (see KMeansCenterMeanEuclid::dist). tgs_dist's plain Euclidean
+            # disagrees once a center has a missing dimension, so n differs
+            # across centers. Computed directly per center (n_centers is small),
+            # which also avoids the O(n_obs^2) distance matrix entirely.
+            for (j in seq_len(n_centers)) {
+                sq <- sweep(mat, 2, center_mat[j, ], "-")^2
+                n_overlap <- rowSums(!is.na(sq))
+                sum_sq <- rowSums(sq, na.rm = TRUE)
+                obs_center_dists[, j] <- ifelse(n_overlap > 0, sqrt(sum_sq) / n_overlap, Inf)
+            }
+        } else {
+            # Pearson / Spearman via tgs_cor, in chunks. The previous one-shot
+            # approach built a full (n_obs + n_centers)^2 correlation matrix; for
+            # n_obs above ~46340, length(df) in stats:::as.matrix.dist overflows
+            # integer range (issue #21). Only the obs x centers block of each
+            # chunk is used; the chunk x chunk block is computed and discarded.
+            # Each obs-to-center correlation is pairwise (independent of the other
+            # observations in the chunk), so the result is chunk_size-independent.
+            chunk_size <- 1000L
+            for (start in seq.int(1L, n_obs, by = chunk_size)) {
+                end <- min(start + chunk_size - 1L, n_obs)
+                chunk <- mat[start:end, , drop = FALSE]
+                n_chunk <- nrow(chunk)
 
-            if (metric == "euclid") {
-                combined <- rbind(chunk, center_mat)
-                dist_mat <- as.matrix(tgs_dist(combined))
-                obs_center_dists[start:end, ] <- dist_mat[
-                    seq_len(n_chunk),
-                    n_chunk + seq_len(n_centers),
-                    drop = FALSE
-                ]
-            } else {
                 combined <- cbind(t(chunk), t(center_mat))
                 cor_mat <- tgs_cor(combined,
                     pairwise.complete.obs = TRUE,

@@ -24,7 +24,7 @@ float KMeansCenterMeanPearson::dist(const vector<float> &x) const
     float x_e = 0;
     int n = 0;
     for(vector<float>::const_iterator c_i = m_center.begin(); c_i != m_center.end(); c_i++) {
-        if(!isnan(*x_i) && *x_i != REAL_MAX && *c_i != REAL_MAX) {
+        if(*x_i != REAL_MAX && *c_i != REAL_MAX) {
             cov2 += (*c_i) * (*x_i);
             x_v2 += (*x_i) * (*x_i);
             x_e += (*x_i);

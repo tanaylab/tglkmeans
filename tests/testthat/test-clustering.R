@@ -390,6 +390,55 @@ test_that("predict_tgl_kmeans pearson/spearman round-trip", {
     }
 })
 
+# Bug #2: the training Euclidean distance is sqrt(sum_sq)/n where n is the number
+# of dimensions present in BOTH the point and the center. predict must use the
+# same metric. It used to call tgs_dist (a plain Euclidean), which disagrees once
+# a center has a missing dimension so that n differs across centers. Here center 1
+# is missing V2, so for x = (2, 3):
+#   d(x, center1) = sqrt((2-0)^2) / 1          = 2.00
+#   d(x, center2) = sqrt((2-0)^2 + (3-0)^2) / 2 = 1.80  <- nearer under the training metric
+# A plain Euclidean would instead pick center 1 (2.00 < 3.61).
+test_that("predict_tgl_kmeans euclid uses the training metric when a center has NA (#2)", {
+    object <- structure(
+        list(
+            centers = tibble::tibble(clust = c(1L, 2L), V1 = c(0, 0), V2 = c(NA, 0)),
+            metric = "euclid"
+        ),
+        class = "tgl_kmeans"
+    )
+    newdata <- matrix(c(2, 3), nrow = 1, dimnames = list(NULL, c("V1", "V2")))
+    pred <- predict_tgl_kmeans(object, newdata)
+    expect_equal(pred$clust, 2L)
+})
+
+# Bug #1: cond_mid_ranking tested the wrong missing sentinel (-REAL_MAX) while NAs
+# are encoded as +REAL_MAX, so Spearman never excluded missing values - it ranked
+# them as the largest value. The final training assignment is argmin distance to
+# the centers, so every observation's assigned center must be (up to numerical
+# tolerance) the nearest under an independent pairwise-complete Spearman computed
+# in R. With the bug, observations with NAs are assigned to a center that is not
+# actually nearest once missing values are properly dropped.
+test_that("TGL_kmeans spearman excludes missing values (#1)", {
+    data <- simulate_data(n = 200, sd = 0.3, dims = 10, nclust = 5, frac_na = 0.1)
+    res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")),
+        k = 5, id_column = TRUE, metric = "spearman", verbose = FALSE, seed = 60427
+    )
+    mat <- as.matrix(data %>% select(starts_with("V")))
+    centers <- as.matrix(res$centers[, -1])
+    # pairwise-complete Spearman distance (-cor) from each observation to each center
+    D <- matrix(NA_real_, nrow(mat), nrow(centers))
+    for (j in seq_len(nrow(centers))) {
+        D[, j] <- -suppressWarnings(apply(mat, 1, function(x) {
+            stats::cor(x, centers[j, ], method = "spearman", use = "pairwise.complete.obs")
+        }))
+    }
+    train_col <- match(res$cluster$clust, res$centers$clust)
+    row_min <- apply(D, 1, min, na.rm = TRUE)
+    train_dist <- D[cbind(seq_len(nrow(D)), train_col)]
+    # the assigned center is the nearest one (ties from float-vs-double allowed)
+    expect_true(all(train_dist - row_min < 1e-4, na.rm = TRUE))
+})
+
 # Issue #21: as.matrix(tgs_dist(.)) in predict overflowed integer range once
 # the combined size exceeded ~46340 rows. Verify large inputs no longer crash
 # and that chunked results agree with a brute-force per-center computation

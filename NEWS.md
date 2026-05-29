@@ -1,5 +1,16 @@
 # tglkmeans 0.6.3
 
+* Fix: `metric = "spearman"` ignored missing values. Ranking tested the wrong
+  missing-value sentinel, so `NA`s were ranked as the largest value and included
+  in the rank correlation instead of being dropped. Spearman now excludes missing
+  values pairwise, matching `euclid`/`pearson`. Clustering results for Spearman on
+  data with `NA`s change (and are now correct); results on complete data are
+  unchanged.
+* Fix: `predict_tgl_kmeans()` with `metric = "euclid"` used a plain Euclidean
+  distance, which disagreed with the training metric `sqrt(sum_sq) / n` when a
+  cluster center had a missing dimension. Prediction now reproduces the training
+  distance exactly. Predictions on data whose centers have no missing dimensions
+  are unchanged.
 * Performance: removed the dense `k x n` per-thread vote matrix in the
   reassignment step. Memory and per-iteration work no longer scale with the
   number of clusters; cluster assignments are unchanged.

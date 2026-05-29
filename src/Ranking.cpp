@@ -8,6 +8,12 @@ using namespace std;
 // missing if either `vals` or the paired `noz_vals` is missing there. Tied
 // values all receive the average of their ranks, so the result is independent
 // of the order of equal elements in `order` (hence a non-stable sort is fine).
+//
+// Two distinct sentinels are in play: missing *input* data is +REAL_MAX (set by
+// replace_na in TGLkmeans.cpp, matching every other distance metric), while a
+// missing *output* rank is flagged with -REAL_MAX (safe because real ranks are
+// always positive). spearman() relies on the latter to skip missing positions.
+// (A prior version tested inputs against -REAL_MAX and so never excluded NAs.)
 void cond_mid_ranking(vector<float> &ranks,
 		const vector<int> &order, const
 		vector<float> &vals, const vector<float> &noz_vals)
@@ -16,7 +22,7 @@ void cond_mid_ranking(vector<float> &ranks,
 	float ecount = 0;
 	vector<int>::const_iterator i = order.begin();
 	while(i != order.end()
-	&& (vals[*i] == -REAL_MAX || noz_vals[*i] == -REAL_MAX)) {
+	&& (vals[*i] == REAL_MAX || noz_vals[*i] == REAL_MAX)) {
 		ranks[*i] = -REAL_MAX;
 		i++;
 	}
@@ -25,7 +31,7 @@ void cond_mid_ranking(vector<float> &ranks,
 		prev_val = vals[*i];
 	}
 	while(i != order.end()) {
-		if(vals[*i] == -REAL_MAX || noz_vals[*i] == -REAL_MAX) {
+		if(vals[*i] == REAL_MAX || noz_vals[*i] == REAL_MAX) {
 			ranks[*i] = -REAL_MAX;
 			i++;
 			continue;
@@ -39,8 +45,8 @@ void cond_mid_ranking(vector<float> &ranks,
 					do {
 						j--;
 					} while(j != order.begin()
-					&& (vals[*j] == -REAL_MAX
-					|| noz_vals[*j] == -REAL_MAX));
+					&& (vals[*j] == REAL_MAX
+					|| noz_vals[*j] == REAL_MAX));
 					ranks[*j] = mean_count;
 				}
 			}
@@ -56,7 +62,7 @@ void cond_mid_ranking(vector<float> &ranks,
 	if(ecount > 1) {
 		float mean_count = count + (ecount-1)/2;
 		vector<int>::const_reverse_iterator j = order.rbegin();
-		while(vals[*j] == -REAL_MAX || noz_vals[*j] == -REAL_MAX) {
+		while(vals[*j] == REAL_MAX || noz_vals[*j] == REAL_MAX) {
 			j++;
 		}
 		for(int k = 0; k < ecount; k++) {
@@ -64,8 +70,8 @@ void cond_mid_ranking(vector<float> &ranks,
 			do {
 				j++;
 			} while(j != order.rend()
-			&& (vals[*j] == -REAL_MAX
-			|| noz_vals[*j] == -REAL_MAX));
+			&& (vals[*j] == REAL_MAX
+			|| noz_vals[*j] == REAL_MAX));
 		}
 		count += ecount;
 	}
