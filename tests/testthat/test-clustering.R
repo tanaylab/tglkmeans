@@ -132,6 +132,37 @@ test_that("hclust intra cluster works", {
     expect_equal(res_non_tidy$order, res$order$order)
 })
 
+test_that("hclust_every_cluster orders observations by dendrogram leaf order", {
+    set.seed(42)
+    nclust <- 3
+    ndims <- 10
+    npc <- 8
+    df <- purrr::map(1:nclust, function(cl) {
+        m <- matrix(rnorm(npc * ndims, mean = cl), ncol = ndims)
+        tibble::as_tibble(m, .name_repair = ~ paste0("V", seq_along(.x))) %>%
+            mutate(clust = cl, id = as.character((cl - 1) * npc + 1:npc))
+    }) %>%
+        purrr::list_rbind() %>%
+        select(clust, id, everything())
+
+    res <- hclust_every_cluster(km = NULL, df = df, parallel = FALSE)
+
+    for (cl in unique(df$clust)) {
+        x <- df[df$clust == cl, ]
+        dmat <- as.matrix(x[, -1:-2]) %>%
+            t() %>%
+            tgs_cor(pairwise.complete.obs = TRUE, spearman = TRUE) %>%
+            tgs_dist()
+        hc <- stats::hclust(dmat, method = "ward.D2")
+        # Within a cluster, sorting by intra_clust_order must reproduce the
+        # dendrogram leaf order (ids[hc$order]).
+        expected_ids <- x$id[hc$order]
+        got <- res[res$clust == cl, ]
+        got_ids <- got$id[order(got$intra_clust_order)]
+        expect_equal(got_ids, expected_ids)
+    }
+})
+
 test_that("add_to_data works", {
     nclust <- 30
     ndims <- 5

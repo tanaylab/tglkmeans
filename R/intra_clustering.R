@@ -13,7 +13,10 @@ hclust_every_cluster <- function(km, df, parallel = TRUE) {
             }
 
             hc <- hclust(dist, method = "ward.D2")
-            return(tibble(clust = x$clust[1], id = ids, intra_clust_order = hc$order))
+            # hc$order maps dendrogram position -> observation; we need the
+            # inverse (observation -> position) so that arranging by
+            # intra_clust_order reproduces the dendrogram leaf order.
+            return(tibble(clust = x$clust[1], id = ids, intra_clust_order = order(hc$order)))
         }) %>%
         purrr::list_rbind()
 
