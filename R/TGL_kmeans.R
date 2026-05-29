@@ -493,7 +493,14 @@ predict_tgl_kmeans <- function(object, newdata, id_column = FALSE, ...) {
     # ~46340, length(df) in stats:::as.matrix.dist overflows integer range and
     # the call dies with "NAs introduced by coercion to integer range" (issue
     # #21). Chunking also bounds peak memory.
-    chunk_size <- 10000L
+    #
+    # Only the obs x centers block of each chunk's matrix is used; the
+    # chunk x chunk block is computed and discarded. Since every obs-to-center
+    # distance/correlation is pairwise (independent of the other observations in
+    # the chunk), the result does not depend on chunk_size - so we keep the
+    # chunk modest to limit that wasted O(chunk^2) work while still doing few
+    # tgs calls.
+    chunk_size <- 1000L
     obs_center_dists <- matrix(NA_real_, n_obs, n_centers)
 
     if (n_obs > 0L) {
