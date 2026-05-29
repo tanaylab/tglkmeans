@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <cassert>
 #include <random>
-#include <cstdint>
 #include <Rcpp.h>
 #include <RcppParallel.h>
 #include "DownsampleWorker.h"
@@ -11,24 +10,6 @@ typedef float float32_t;
 typedef double float64_t;
 typedef unsigned char uint8_t;
 typedef unsigned int uint_t;
-
-// Derive a per-column seed from the base seed and the column index.
-//
-// Previously each column used (random_seed + col), which feeds std::minstd_rand
-// a run of consecutive seeds; an LCG started from adjacent seeds produces
-// correlated low-order output, biasing the per-column downsampling. A SplitMix
-// avalanche decorrelates adjacent columns while staying deterministic for a
-// given (random_seed, col). The result is mapped into [1, 2^31-2] so it is a
-// valid, non-degenerate minstd_rand seed.
-static uint_t
-column_seed(uint_t random_seed, std::size_t col) {
-    uint64_t z = (uint64_t(random_seed) << 32) ^ uint64_t(col);
-    z += 0x9E3779B97F4A7C15ULL;
-    z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9ULL;
-    z = (z ^ (z >> 27)) * 0x94D049BB133111EBULL;
-    z = z ^ (z >> 31);
-    return uint_t(z % 2147483646ULL) + 1u;
-}
 
 static size_t
 ceil_power_of_two(const size_t size) {
@@ -141,7 +122,7 @@ void DownsampleWorker::operator()(std::size_t begin, std::size_t end) {
         std::vector<int> input_vec(input_matrix.column(col).begin(), input_matrix.column(col).end());
         std::vector<int> output_vec(input_vec.size(), 0);
 
-        downsample_slice(input_vec, output_vec, samples, column_seed(random_seed, col));
+        downsample_slice(input_vec, output_vec, samples, random_seed + col);
 
         std::copy(output_vec.begin(), output_vec.end(), output_matrix.column(col).begin());
     }
@@ -161,7 +142,7 @@ void DownsampleWorkerSparse::operator()(std::size_t begin, std::size_t end) {
 
         std::vector<int> output_vec(input_vec.size(), 0);
 
-        downsample_slice(input_vec, output_vec, samples, column_seed(random_seed, col));
+        downsample_slice(input_vec, output_vec, samples, random_seed + col);
 
         // Store results in the output sparse matrix
         for (int idx = input_p[col], out_idx = 0; idx < input_p[col + 1]; ++idx, ++out_idx) {
