@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tglkmeans</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.3</span>
       </span>
     </div>
 
@@ -79,7 +79,9 @@
 
 
 <dt id="arg-res">res<a class="anchor" aria-label="anchor" href="#arg-res"></a></dt>
-<dd><p>result from TGL_kmeans_tidy (must have a 'clust' tibble with 'id' and 'clust' columns)</p></dd>
+<dd><p>a clustering result that has a 'clust' tibble with 'id' and 'clust' columns
+(e.g. attach <code>res$clust &lt;- tibble(id = ..., clust = ...)</code> to a <code><a href="https://rdrr.io/r/stats/kmeans.html" class="external-link">stats::kmeans</a></code> result;
+for <code><a href="TGL_kmeans_tidy.html">TGL_kmeans_tidy</a></code> output the 'cluster' tibble is matched by partial name)</p></dd>
 
 
 <dt id="arg-nclust">nclust<a class="anchor" aria-label="anchor" href="#arg-nclust"></a></dt>

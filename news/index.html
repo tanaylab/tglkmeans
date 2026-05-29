@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tglkmeans</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.3</span>
       </span>
     </div>
 
@@ -61,6 +61,16 @@
       <small>Source: <a href="https://github.com/tanaylab/tglkmeans/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.6.3" id="tglkmeans-063">tglkmeans 0.6.3<a class="anchor" aria-label="anchor" href="#tglkmeans-063"></a></h2>
+<ul><li>Performance: removed the dense <code>k x n</code> per-thread vote matrix in the reassignment step. Memory and per-iteration work no longer scale with the number of clusters; cluster assignments are unchanged.</li>
+<li>Performance: <code>metric = "spearman"</code> no longer computes a discarded p-value on every point-to-center comparison, and uses a contiguous sort buffer instead of a linked list. Results are unchanged.</li>
+<li>Performance: <code><a href="../reference/predict_tgl_kmeans.html">predict_tgl_kmeans()</a></code> uses smaller internal chunks, cutting redundant distance/correlation computation on large inputs. Results are unchanged.</li>
+<li>Fix: <code>hclust_intra_clusters = TRUE</code> returned a scrambled within-cluster ordering. The <code>order</code>/<code>intra_clust_order</code> columns now follow the hclust dendrogram leaf order as documented.</li>
+<li>Fix: <code><a href="../reference/match_clusters.html">match_clusters()</a></code> now reads <code>res$cluster</code> explicitly instead of relying on <code>$</code> partial matching.</li>
+<li>Change: <code><a href="../reference/downsample_matrix.html">downsample_matrix()</a></code> now derives per-column RNG seeds via a hash of the base seed and column index rather than <code>seed + column</code>, removing cross-column correlation from consecutive LCG seeds. Output is still fully deterministic for a given seed, but differs from previous versions.</li>
+<li>Removed unused internal code (<code>reduce_coclust</code>/<code>reduce_num_trials</code> and dead rank-sum / incomplete-beta helpers).</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.6.2" id="tglkmeans-062">tglkmeans 0.6.2<a class="anchor" aria-label="anchor" href="#tglkmeans-062"></a></h2>
 <ul><li>Fix: <code><a href="../reference/predict_tgl_kmeans.html">predict_tgl_kmeans()</a></code> crashed with <code>'from' contains NAs</code> / <code>NAs introduced by coercion to integer range</code> on inputs of ~46K rows or more. The one-shot <code>as.matrix(tgs_dist(.))</code> overflowed integer indexing inside <code>stats:::as.matrix.dist</code>. The prediction now processes observations in chunks (<a href="https://github.com/tanaylab/tglkmeans/issues/21" class="external-link">#21</a>).</li>
