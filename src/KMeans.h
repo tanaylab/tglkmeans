@@ -21,6 +21,9 @@ protected:
 
     const std::vector<std::vector<float>> &m_data;
 
+    // Intentionally float, not an integer count: cluster() tests convergence
+    // with m_changes / m_assignment.size(). As an int this would be integer
+    // division and always evaluate to 0, so the loop would stop after one pass.
     float m_changes;
 
     bool m_use_cpp_random;
