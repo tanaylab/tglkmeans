@@ -105,7 +105,8 @@ row numbers are used as IDs.</p></dd>
 cluster center and assigns the observation to the nearest center. The distance metric
 used is the same one that was used when creating the k-means model (<code>"euclid"</code>,
 <code>"pearson"</code>, or <code>"spearman"</code>).</p>
-<p>Distance formulas:</p><ul><li><p><code>euclid</code>: <code>sqrt(sum((x - center)^2, na.rm = TRUE))</code></p></li>
+<p>Distance formulas (matching the training implementation; <code>n</code> is the number
+of dimensions present in both <code>x</code> and <code>center</code>):</p><ul><li><p><code>euclid</code>: <code>sqrt(sum((x - center)^2, na.rm = TRUE)) / n</code></p></li>
 <li><p><code>pearson</code>: <code>-cor(x, center, use = "pairwise.complete.obs")</code></p></li>
 <li><p><code>spearman</code>: <code>-cor(x, center, method = "spearman", use = "pairwise.complete.obs")</code></p></li>
 </ul></div>
