@@ -7,6 +7,15 @@
 
 using namespace std;
 
+// Negated Pearson correlation between x and the center.
+//
+// For speed, the center's mean (m_center_e) and variance (m_center_v) are
+// precomputed once over all non-missing center positions (update_center_stats)
+// rather than recomputed over the x/center overlap on every call. When x has no
+// missing values this is exact Pearson; when x has missing values the center
+// moments are a (close) approximation over a slightly larger support than the
+// overlap. Recomputing them per pair would make this O(dim) extra work on the
+// hottest loop, so the approximation is intentional.
 float KMeansCenterMeanPearson::dist(const vector<float> &x) const
 {
     vector<float>::const_iterator x_i = x.begin();

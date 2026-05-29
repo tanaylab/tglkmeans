@@ -1,27 +1,17 @@
 #include "ReassignWorker.h"
+#include <limits>
 
 // Primary constructor
 ReassignWorker::ReassignWorker(const std::vector<std::vector<float>>& data,
                                std::vector<KMeansCenterBase*>& centers,
                                std::vector<int>& assignment)
-    : data(data), centers(centers), assignment(assignment) {
-    votes.resize(centers.size());
-    for (auto& v : votes) {
-        v.resize(data.size(), 0);
-    }
-    changes.resize(data.size(), 0);
-}
+    : data(data), centers(centers), assignment(assignment), changes(0) {}
 
-// Split constructor for parallelReduce
-// Creates a new worker with its own vote/change storage that will be merged later
+// Split constructor for parallelReduce.
+// data/centers/assignment are shared by reference; only the change counter is
+// per-chunk and merged back via join().
 ReassignWorker::ReassignWorker(const ReassignWorker& other, RcppParallel::Split)
-    : data(other.data), centers(other.centers), assignment(other.assignment) {
-    votes.resize(centers.size());
-    for (auto& v : votes) {
-        v.resize(data.size(), 0);
-    }
-    changes.resize(data.size(), 0);
-}
+    : data(other.data), centers(other.centers), assignment(other.assignment), changes(0) {}
 
 void ReassignWorker::operator()(std::size_t begin, std::size_t end) {
     for (std::size_t i = begin; i < end; i++) {
@@ -42,40 +32,24 @@ void ReassignWorker::operator()(std::size_t begin, std::size_t end) {
             best_id_i = 0;
         }
 
-        // Accumulate vote
-        votes[best_id_i][i] = 1;
-
-        // Track changes in assignments
+        // Each index is owned by a single chunk, so this write is race-free.
         if (assignment[i] != best_id_i) {
             assignment[i] = best_id_i;
-            changes[i]++;
+            changes++;
         }
     }
 }
 
-// Join results from another worker into this one
-// Called by parallelReduce to merge results from different chunks
+// Merge change counts from another chunk (called by parallelReduce)
 void ReassignWorker::join(const ReassignWorker& other) {
-    // Merge votes: since each data point is processed by exactly one chunk,
-    // we can simply add the votes (one will be 0, the other will be 0 or 1)
-    for (size_t i = 0; i < votes.size(); i++) {
-        for (size_t j = 0; j < votes[i].size(); j++) {
-            votes[i][j] += other.votes[i][j];
-        }
-    }
-    
-    // Merge change counts
-    for (size_t i = 0; i < changes.size(); i++) {
-        changes[i] += other.changes[i];
-    }
+    changes += other.changes;
 }
 
 void ReassignWorker::apply_votes() {
-    for (size_t i = 0; i < centers.size(); i++) {
-        for (size_t j = 0; j < data.size(); j++) {
-            if (votes[i][j] > 0) {
-                centers[i]->vote(data[j], votes[i][j]);
-            }
-        }
+    // Single O(N) pass in ascending index order. Each center therefore receives
+    // its members in the same order a serial implementation would use, so the
+    // accumulated means are identical regardless of how the range was split.
+    for (size_t j = 0; j < data.size(); j++) {
+        centers[assignment[j]]->vote(data[j], 1);
     }
 }

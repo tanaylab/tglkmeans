@@ -9,7 +9,9 @@ match_clusters(data, res, nclust)
 \arguments{
 \item{data}{data frame with 'id' and 'true_clust' columns}
 
-\item{res}{result from TGL_kmeans_tidy (must have a 'clust' tibble with 'id' and 'clust' columns)}
+\item{res}{a clustering result that has a 'clust' tibble with 'id' and 'clust' columns
+(e.g. attach \code{res$clust <- tibble(id = ..., clust = ...)} to a \code{stats::kmeans} result;
+for \code{\link{TGL_kmeans_tidy}} output the 'cluster' tibble is matched by partial name)}
 
 \item{nclust}{number of clusters}
 }

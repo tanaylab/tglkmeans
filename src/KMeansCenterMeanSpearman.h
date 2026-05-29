@@ -5,24 +5,15 @@
 #ifndef TGLKMEANS_KMEANSCENTERMEANSPEARMAN_H
 #define TGLKMEANS_KMEANSCENTERMEANSPEARMAN_H
 
-#include <list>
 #include "KMeansCenterMean.h"
 
 class KMeansCenterMeanSpearman : public KMeansCenterMean {
-protected:
-    // Cached center ranks for performance optimization
-    // These are pre-computed when center is updated and used when data has no missing values
-    std::vector<float> m_center_ranks;
-    std::list<int> m_center_sorted_order;
-
 public:
     KMeansCenterMeanSpearman(int dim) :
-		    KMeansCenterMean(dim),
-            m_center_ranks(dim)
+		    KMeansCenterMean(dim)
     {}
 
     virtual float dist(const std::vector<float> &v) const override;
-    virtual void update_center_stats() override;
 };
 
 
