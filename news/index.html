@@ -67,8 +67,6 @@
 <li>Performance: <code>metric = "spearman"</code> no longer computes a discarded p-value on every point-to-center comparison, and uses a contiguous sort buffer instead of a linked list. Results are unchanged.</li>
 <li>Performance: <code><a href="../reference/predict_tgl_kmeans.html">predict_tgl_kmeans()</a></code> uses smaller internal chunks, cutting redundant distance/correlation computation on large inputs. Results are unchanged.</li>
 <li>Fix: <code>hclust_intra_clusters = TRUE</code> returned a scrambled within-cluster ordering. The <code>order</code>/<code>intra_clust_order</code> columns now follow the hclust dendrogram leaf order as documented.</li>
-<li>Fix: <code><a href="../reference/match_clusters.html">match_clusters()</a></code> now reads <code>res$cluster</code> explicitly instead of relying on <code>$</code> partial matching.</li>
-<li>Change: <code><a href="../reference/downsample_matrix.html">downsample_matrix()</a></code> now derives per-column RNG seeds via a hash of the base seed and column index rather than <code>seed + column</code>, removing cross-column correlation from consecutive LCG seeds. Output is still fully deterministic for a given seed, but differs from previous versions.</li>
 <li>Removed unused internal code (<code>reduce_coclust</code>/<code>reduce_num_trials</code> and dead rank-sum / incomplete-beta helpers).</li>
 </ul></div>
     <div class="section level2">
