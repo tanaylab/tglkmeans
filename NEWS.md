@@ -12,12 +12,6 @@
 * Fix: `hclust_intra_clusters = TRUE` returned a scrambled within-cluster
   ordering. The `order`/`intra_clust_order` columns now follow the hclust
   dendrogram leaf order as documented.
-* Fix: `match_clusters()` now reads `res$cluster` explicitly instead of relying
-  on `$` partial matching.
-* Change: `downsample_matrix()` now derives per-column RNG seeds via a hash of
-  the base seed and column index rather than `seed + column`, removing
-  cross-column correlation from consecutive LCG seeds. Output is still fully
-  deterministic for a given seed, but differs from previous versions.
 * Removed unused internal code (`reduce_coclust`/`reduce_num_trials` and dead
   rank-sum / incomplete-beta helpers).
 
