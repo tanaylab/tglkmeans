@@ -1,24 +1,35 @@
 #include "AParamStat.h"
 #include "Ranking.h"
 #include "IndirectSort.h"
+#include <algorithm>
 
 using namespace std;
 
-float spearman(const vector<float> &v1, const vector<float> &v2,
-				vector<float> &rank1, vector<float> &rank2,
-				double &pv)
+// Spearman rank correlation between v1 and v2 over jointly non-missing
+// positions. The k-means hot path only needs the correlation, so (unlike the
+// historical version) no p-value is computed - dropping the per-call
+// incomplete-beta evaluation. Sorting buffers are thread_local to avoid
+// per-call allocation while remaining safe under RcppParallel (dist() is called
+// concurrently). std::sort is used instead of list::sort; tie handling in
+// cond_mid_ranking makes the result independent of the (unstable) tie order.
+float spearman(const vector<float> &v1, const vector<float> &v2)
 {
-	list<int> ids;
-	int max_i = v1.size();
+	static thread_local vector<int> order;
+	static thread_local vector<float> rank1;
+	static thread_local vector<float> rank2;
+
+	int max_i = (int)v1.size();
+	order.resize(max_i);
 	for(int i = 0; i < max_i; i++) {
-		ids.push_back(i);
+		order[i] = i;
 	}
-	ids.sort<IndirectSort<float> >(IndirectSort<float>(v1));
 	rank1.resize(v1.size());
-	cond_mid_ranking(rank1, ids, v1, v2);
-	ids.sort<IndirectSort<float> >(IndirectSort<float>(v2));
 	rank2.resize(v2.size());
-	cond_mid_ranking(rank2, ids, v2, v1);
+
+	std::sort(order.begin(), order.end(), IndirectSort<float>(v1));
+	cond_mid_ranking(rank1, order, v1, v2);
+	std::sort(order.begin(), order.end(), IndirectSort<float>(v2));
+	cond_mid_ranking(rank2, order, v2, v1);
 
 	vector<float>::iterator r1 = rank1.begin();
 	vector<float>::iterator r2 = rank2.begin();
@@ -31,7 +42,6 @@ float spearman(const vector<float> &v1, const vector<float> &v2,
 
 	while(r1 != max_r1) {
 		if(*r1 != -REAL_MAX) {
-//			Rcpp::Rcout << "r1 r2 " << *r1 << " " << *r2 << endl;
 			cov += (*r1) * (*r2);
 
 			e1 += (*r1);
@@ -45,7 +55,6 @@ float spearman(const vector<float> &v1, const vector<float> &v2,
 	}
 
 	if(num == 0) {
-		pv = 1;
 		return(0);
 	}
 
@@ -53,24 +62,12 @@ float spearman(const vector<float> &v1, const vector<float> &v2,
 	e2 /= num;
 	var1 = var1/num - e1*e1;
 	var2 = var2/num - e2*e2;
-	
+
 	if(var1 <= 0 || var2 <= 0) {
-		pv = 1;
 		return(0);
 	}
 
-	float cor = ((cov/num) - e1*e2)/sqrt(var1*var2);
-	if(num < 9) {
-		pv = 1;
-		return(cor);
-	}
-
-	float fac = (1.0 + cor)*(1.0 - cor);
-	float t = cor * sqrt((num - 2.0)/fac);
-	float df = num - 2.0;
-	pv = betai(0.5 * df, 0.5, df/(df+t*t));
-//	Rcpp::Rcout << "num " << num << " cor " << cor << " pv " << pv << endl;
-	return(cor);
+	return(((cov/num) - e1*e2)/sqrt(var1*var2));
 }
 
 float corr_pv(float cor, int num) 

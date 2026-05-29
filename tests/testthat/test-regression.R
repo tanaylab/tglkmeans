@@ -30,6 +30,14 @@ test_that("kmeans regression snapshots match", {
 
             result4 <- TGL_kmeans(df4, 30, id_column = TRUE, metric = "euclid", verbose = FALSE, seed = 789)
             expect_regression(result4, "kmeans_euclid_with_na", snapshot_dir)
+
+            # spearman snapshots guard the spearman distance refactor (no-NA and
+            # with-NA paths exercise cond_mid_ranking differently).
+            result5 <- TGL_kmeans(df1, 20, id_column = TRUE, metric = "spearman", verbose = FALSE, seed = 123)
+            expect_regression(result5, "kmeans_spearman_basic", snapshot_dir)
+
+            result6 <- TGL_kmeans(df4, 30, id_column = TRUE, metric = "spearman", verbose = FALSE, seed = 789)
+            expect_regression(result6, "kmeans_spearman_with_na", snapshot_dir)
         }
     )
 })

@@ -10,9 +10,7 @@
 
 float corr_pv(float corr, int n);
 
-float spearman(const std::vector<float> &v1, const std::vector<float> &v2,
-               std::vector<float> &rank1, std::vector<float> &rank2,
-               double &pv);
+float spearman(const std::vector<float> &v1, const std::vector<float> &v2);
 
 //Return a p-value for the wilcoxon rank sum test, T should support
 //a casting to pair<float, int> where the first param store the value
