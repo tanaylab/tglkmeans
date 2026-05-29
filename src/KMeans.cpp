@@ -37,28 +37,28 @@ bool KMeans::is_valid_seed(int index) {
 }
 
 void KMeans::cluster(int max_iter, float min_assign_change_fraction) {
-    Rcpp::Rcout << "will generate seeds" << endl;
+    Rcpp::Rcout << "will generate seeds" << "\n";
     generate_seeds();
 
     int iter = 0;
     m_changes = 0;
 
-    Rcpp::Rcout << "reassign after init" << endl;
+    Rcpp::Rcout << "reassign after init" << "\n";
     reassign();
 
     while (iter < max_iter && m_changes / m_assignment.size() > min_assign_change_fraction) {
-        Rcpp::Rcout << "iter " << iter << endl;
+        Rcpp::Rcout << "iter " << iter << "\n";
         m_changes = 0;
         update_centers();
         reassign();
         iter++;
-        Rcpp::Rcout << "iter " << iter << " changed " << m_changes << endl;
+        Rcpp::Rcout << "iter " << iter << " changed " << m_changes << "\n";
         Rcpp::checkUserInterrupt();
     }
 }
 
 void KMeans::generate_seeds() {
-    Rcpp::Rcout << "generating seeds" << endl;
+    Rcpp::Rcout << "generating seeds" << "\n";
 
     // Initialize m_min_dist ONCE - aligned with data indices
     m_min_dist.resize(m_data.size());
@@ -67,7 +67,7 @@ void KMeans::generate_seeds() {
     }
 
     for (int i = 0; i < m_k; i++) {
-        Rcpp::Rcout << "at seed " << i << endl;
+        Rcpp::Rcout << "at seed " << i << "\n";
 
         int seed_i = -1;
         if (i == 0) {
@@ -98,13 +98,13 @@ void KMeans::generate_seeds() {
             }
 
             sort(valid_dist.begin(), valid_dist.end());
-            Rcpp::Rcout << "done update min distance" << endl;
+            Rcpp::Rcout << "done update min distance" << "\n";
 
             // Select from 1/k of the data which is in the 1-1/2k quantile of the min distance
             // Note: Uses integer division (1 / (2 * m_k)) to match original behavior
             int to_i = int(valid_dist.size() * (1 - 1 / (2 * m_k)));
             int from_i = to_i - int(m_data.size() / m_k);
-            Rcpp::Rcout << "seed range " << from_i << " " << to_i << endl;
+            Rcpp::Rcout << "seed range " << from_i << " " << to_i << "\n";
             if (from_i < 0) {
                 from_i = 0;
             }
@@ -131,7 +131,7 @@ void KMeans::generate_seeds() {
                     throw std::logic_error("No valid seed candidates - too many all-NA rows in data");
                 }
             }
-            Rcpp::Rcout << "picked up " << seed_i << endl;
+            Rcpp::Rcout << "picked up " << seed_i << "\n";
         }
 
         // Add core (parallel)
@@ -155,7 +155,7 @@ void KMeans::update_min_distance(int center_idx) {
 
 
 void KMeans::add_new_core(int seed_i, int center_i) {
-    Rcpp::Rcout << "add new core from " << seed_i << " to " << center_i << endl;
+    Rcpp::Rcout << "add new core from " << seed_i << " to " << center_i << "\n";
 
     // Initialize center with seed
     m_centers[center_i]->reset_votes();
