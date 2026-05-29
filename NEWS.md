@@ -1,3 +1,26 @@
+# tglkmeans 0.6.3
+
+* Performance: removed the dense `k x n` per-thread vote matrix in the
+  reassignment step. Memory and per-iteration work no longer scale with the
+  number of clusters; cluster assignments are unchanged.
+* Performance: `metric = "spearman"` no longer computes a discarded p-value on
+  every point-to-center comparison, and uses a contiguous sort buffer instead
+  of a linked list. Results are unchanged.
+* Performance: `predict_tgl_kmeans()` uses smaller internal chunks, cutting
+  redundant distance/correlation computation on large inputs. Results are
+  unchanged.
+* Fix: `hclust_intra_clusters = TRUE` returned a scrambled within-cluster
+  ordering. The `order`/`intra_clust_order` columns now follow the hclust
+  dendrogram leaf order as documented.
+* Fix: `match_clusters()` now reads `res$cluster` explicitly instead of relying
+  on `$` partial matching.
+* Change: `downsample_matrix()` now derives per-column RNG seeds via a hash of
+  the base seed and column index rather than `seed + column`, removing
+  cross-column correlation from consecutive LCG seeds. Output is still fully
+  deterministic for a given seed, but differs from previous versions.
+* Removed unused internal code (`reduce_coclust`/`reduce_num_trials` and dead
+  rank-sum / incomplete-beta helpers).
+
 # tglkmeans 0.6.2
 
 * Fix: `predict_tgl_kmeans()` crashed with `'from' contains NAs` / `NAs introduced by coercion to integer range` on inputs of ~46K rows or more. The one-shot `as.matrix(tgs_dist(.))` overflowed integer indexing inside `stats:::as.matrix.dist`. The prediction now processes observations in chunks (#21).

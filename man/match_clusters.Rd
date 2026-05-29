@@ -9,7 +9,7 @@ match_clusters(data, res, nclust)
 \arguments{
 \item{data}{data frame with 'id' and 'true_clust' columns}
 
-\item{res}{result from TGL_kmeans_tidy (must have a 'clust' tibble with 'id' and 'clust' columns)}
+\item{res}{result from TGL_kmeans_tidy (must have a 'cluster' tibble with 'id' and 'clust' columns)}
 
 \item{nclust}{number of clusters}
 }
