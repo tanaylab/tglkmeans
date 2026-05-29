@@ -46,14 +46,16 @@ simulate_data <- function(n = 100, sd = 0.3, nclust = 30, dims = 2, frac_na = NU
 #' Match clusters to true clusters
 #'
 #' @param data data frame with 'id' and 'true_clust' columns
-#' @param res result from TGL_kmeans_tidy (must have a 'cluster' tibble with 'id' and 'clust' columns)
+#' @param res a clustering result that has a 'clust' tibble with 'id' and 'clust' columns
+#'   (e.g. attach \code{res$clust <- tibble(id = ..., clust = ...)} to a \code{stats::kmeans} result;
+#'   for \code{\link{TGL_kmeans_tidy}} output the 'cluster' tibble is matched by partial name)
 #' @param nclust number of clusters
 #'
 #' @return data frame with matched clusters
 #'
 #' @export
 match_clusters <- function(data, res, nclust) {
-    d <- data %>% left_join(res$cluster %>% mutate(id = as.numeric(as.character(id))), by = "id")
+    d <- data %>% left_join(res$clust %>% mutate(id = as.numeric(as.character(id))), by = "id")
     clust_map <- d %>%
         group_by(clust, true_clust) %>%
         summarise(n = n(), .groups = "drop") %>%
