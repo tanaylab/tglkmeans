@@ -34,11 +34,13 @@ jobs:
 
       - name: Install conda-build and anaconda-client
         run: |
-          # Install into base so the `conda build` subcommand is registered on
-          # the base conda executable. Newer conda (miniforge `latest`) no longer
-          # exposes `conda build` when conda-build lives only in the activated
-          # env, which broke the build with "invalid choice: 'build'".
-          conda install -n base -y conda-build anaconda-client
+          # conda-build must live in base so the `conda build` subcommand is
+          # registered on the base conda executable: newer conda (miniforge
+          # `latest`) no longer exposes `conda build` when conda-build is only in
+          # the activated env ("invalid choice: 'build'"). anaconda-client goes in
+          # the activated `build` env so the `anaconda` upload command is on PATH.
+          conda install -n base -y conda-build
+          conda install -y anaconda-client
 
       - name: Extract version
         id: version
