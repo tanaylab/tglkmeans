@@ -49,7 +49,7 @@ void real_max_to_na(DataFrame& df){
 }
 
 // [[Rcpp::export]]
-List TGL_kmeans_cpp(const StringVector& ids, DataFrame& mat, const int& k, const String& metric, const double& max_iter=40, const double& min_delta=0.0001, const bool& use_cpp_random=false, const int& seed=-1){
+List TGL_kmeans_cpp(const StringVector& ids, DataFrame& mat, const int& k, const String& metric, const double& max_iter=40, const double& min_delta=0.0001, const bool& use_cpp_random=false, const int& seed=-1, const bool& verbose=false){
 
     if (use_cpp_random){
         Random::seed(seed);
@@ -84,7 +84,7 @@ List TGL_kmeans_cpp(const StringVector& ids, DataFrame& mat, const int& k, const
 
     KMeans kmeans(data, k, centers, use_cpp_random);
 
-    kmeans.cluster(max_iter, min_delta);
+    kmeans.cluster(max_iter, min_delta, verbose);
 
     vector<vector<float> > centers_float;
     kmeans.report_centers_to_vector(centers_float);

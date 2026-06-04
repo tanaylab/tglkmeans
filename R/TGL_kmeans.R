@@ -142,8 +142,11 @@ TGL_kmeans_tidy <- function(df,
         cli_abort("The following rows contain only missing values: {.val {all_nas}}")
     }
 
-    if (verbose) {
-        km <- TGL_kmeans_cpp(
+    # The C++ engine only emits progress when verbose = TRUE. When the caller
+    # wants the messages captured into the log (keep_log) but not printed, run it
+    # with cpp verbose on and capture; otherwise run it silently with no capture.
+    run_cpp <- function(cpp_verbose) {
+        TGL_kmeans_cpp(
             ids = ids,
             mat = t(mat),
             k = k,
@@ -151,21 +154,17 @@ TGL_kmeans_tidy <- function(df,
             max_iter = max_iter,
             min_delta = min_delta,
             use_cpp_random = use_cpp_random,
-            seed = seed
+            seed = seed,
+            verbose = cpp_verbose
         )
+    }
+
+    if (verbose) {
+        km <- run_cpp(TRUE)
+    } else if (keep_log) {
+        log <- utils::capture.output(km <- run_cpp(TRUE))
     } else {
-        log <- utils::capture.output(
-            km <- TGL_kmeans_cpp(
-                ids = ids,
-                mat = t(mat),
-                k = k,
-                metric = metric,
-                max_iter = max_iter,
-                min_delta = min_delta,
-                use_cpp_random = use_cpp_random,
-                seed = seed
-            )
-        )
+        km <- run_cpp(FALSE)
     }
 
     # Processing the output
@@ -215,9 +214,12 @@ TGL_kmeans_tidy <- function(df,
         } else {
             full_data <- km$data
         }
+        # hclust_every_cluster expects the id column to be named "id"; the user's
+        # id column may carry any name (id_column = TRUE, or an auto-detected
+        # character first column), so normalize it here.
         full_data <- full_data %>%
-            select(clust, !!id_column_name, everything())
-        km$order <- hclust_every_cluster(km, full_data, parallel = FALSE)
+            select(clust, id = !!id_column_name, everything())
+        km$order <- hclust_every_cluster(km, full_data)
     }
 
     km$metric <- metric
@@ -533,7 +535,17 @@ predict_tgl_kmeans <- function(object, newdata, id_column = FALSE, ...) {
         }
     }
 
-    assigned_clusts <- center_clusts[apply(obs_center_dists, 1, which.min)]
+    # An observation with no usable overlap with any center has all-NA (pearson/
+    # spearman) or all-Inf (euclid) distances and cannot be assigned. Return NA
+    # for it rather than crashing (which.min would yield integer(0)) or silently
+    # picking the first center.
+    assigned_idx <- apply(obs_center_dists, 1, function(d) {
+        if (!any(is.finite(d))) {
+            return(NA_integer_)
+        }
+        which.min(d)
+    })
+    assigned_clusts <- center_clusts[assigned_idx]
 
     tibble(id = ids, clust = assigned_clusts)
 }

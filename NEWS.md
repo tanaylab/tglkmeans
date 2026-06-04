@@ -1,3 +1,18 @@
+# tglkmeans 0.6.4
+
+* Fix: `match_clusters()` mapped only one cluster (leaving the rest `NA`) unless
+  all per-cluster overlap counts tied; mapping is now per cluster.
+* Fix: `hclust_intra_clusters = TRUE` errored when the id column was not named
+  `"id"` (e.g. a named or auto-detected id column).
+* Fix: `predict_tgl_kmeans()` crashed (pearson/spearman) or silently used the
+  first center (euclid) for observations with no overlap; these now return `NA`.
+* Removed the unused `future`/`doFuture` dependency; the package no longer
+  overrides the user's `future` plan on load.
+* No longer prints internal debugging; `verbose = TRUE` shows concise
+  per-iteration progress. Default threads cap at 2 under `R CMD check`.
+* Performance: k-means++ seeding uses `nth_element` instead of a full sort per
+  seed. Cluster assignments are unchanged.
+
 # tglkmeans 0.6.3
 
 * Fix: `metric = "spearman"` ignored missing values. Ranking tested the wrong

@@ -36,29 +36,33 @@ bool KMeans::is_valid_seed(int index) {
     return false;
 }
 
-void KMeans::cluster(int max_iter, float min_assign_change_fraction) {
-    Rcpp::Rcout << "will generate seeds" << "\n";
+void KMeans::cluster(int max_iter, float min_assign_change_fraction, bool verbose) {
+    m_verbose = verbose;
+
     generate_seeds();
 
     int iter = 0;
     m_changes = 0;
 
-    Rcpp::Rcout << "reassign after init" << "\n";
     reassign();
 
     while (iter < max_iter && m_changes / m_assignment.size() > min_assign_change_fraction) {
-        Rcpp::Rcout << "iter " << iter << "\n";
         m_changes = 0;
         update_centers();
         reassign();
         iter++;
-        Rcpp::Rcout << "iter " << iter << " changed " << m_changes << "\n";
+        if (m_verbose) {
+            Rcpp::Rcout << "iteration " << iter << ": "
+                        << (long)m_changes << " reassignments\n";
+        }
         Rcpp::checkUserInterrupt();
     }
 }
 
 void KMeans::generate_seeds() {
-    Rcpp::Rcout << "generating seeds" << "\n";
+    if (m_verbose) {
+        Rcpp::Rcout << "generating " << m_k << " seeds\n";
+    }
 
     // Initialize m_min_dist ONCE - aligned with data indices
     m_min_dist.resize(m_data.size());
@@ -67,8 +71,6 @@ void KMeans::generate_seeds() {
     }
 
     for (int i = 0; i < m_k; i++) {
-        Rcpp::Rcout << "at seed " << i << "\n";
-
         int seed_i = -1;
         if (i == 0) {
             // First seed: random selection, skipping all-NA points
@@ -97,29 +99,34 @@ void KMeans::generate_seeds() {
                 throw std::logic_error("No valid candidates for seed selection - data may have too many missing values");
             }
 
-            sort(valid_dist.begin(), valid_dist.end());
-            Rcpp::Rcout << "done update min distance" << "\n";
-
             // Select from 1/k of the data which is in the 1-1/2k quantile of the min distance
             // Note: Uses integer division (1 / (2 * m_k)) to match original behavior
             int to_i = int(valid_dist.size() * (1 - 1 / (2 * m_k)));
             int from_i = to_i - int(m_data.size() / m_k);
-            Rcpp::Rcout << "seed range " << from_i << " " << to_i << "\n";
             if (from_i < 0) {
                 from_i = 0;
             }
 
-            // Try to find a valid seed (skip all-NA points)
+            // Try to find a valid seed (skip all-NA points). Only the element at
+            // the chosen random index is needed, so nth_element (O(n)) selects
+            // exactly that order statistic instead of a full sort (O(n log n)).
+            // The pair<float,int> comparator is a strict total order, so the
+            // element placed at rnd_i is identical to a fully sorted run - the
+            // selection and the number of RNG draws are unchanged.
             int attempts = 0;
             do {
                 int rnd_i = from_i + int(random_fraction() * (to_i - from_i));
                 if (rnd_i >= (int)valid_dist.size()) rnd_i = valid_dist.size() - 1;
+                std::nth_element(valid_dist.begin(), valid_dist.begin() + rnd_i, valid_dist.end());
                 seed_i = valid_dist[rnd_i].second;
                 attempts++;
             } while (!is_valid_seed(seed_i) && attempts < (to_i - from_i + 1));
 
-            // If no valid seed in quantile range, scan entire valid_dist
+            // If no valid seed in quantile range, scan entire valid_dist in
+            // sorted order. This rare fallback sorts to keep the choice identical
+            // to a sort-based run.
             if (!is_valid_seed(seed_i)) {
+                std::sort(valid_dist.begin(), valid_dist.end());
                 seed_i = -1;
                 for (const auto& p : valid_dist) {
                     if (is_valid_seed(p.second)) {
@@ -131,7 +138,6 @@ void KMeans::generate_seeds() {
                     throw std::logic_error("No valid seed candidates - too many all-NA rows in data");
                 }
             }
-            Rcpp::Rcout << "picked up " << seed_i << "\n";
         }
 
         // Add core (parallel)
@@ -155,8 +161,6 @@ void KMeans::update_min_distance(int center_idx) {
 
 
 void KMeans::add_new_core(int seed_i, int center_i) {
-    Rcpp::Rcout << "add new core from " << seed_i << " to " << center_i << "\n";
-
     // Initialize center with seed
     m_centers[center_i]->reset_votes();
     m_centers[center_i]->vote(m_data[seed_i], 1);

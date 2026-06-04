@@ -11,8 +11,8 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // TGL_kmeans_cpp
-List TGL_kmeans_cpp(const StringVector& ids, DataFrame& mat, const int& k, const String& metric, const double& max_iter, const double& min_delta, const bool& use_cpp_random, const int& seed);
-RcppExport SEXP _tglkmeans_TGL_kmeans_cpp(SEXP idsSEXP, SEXP matSEXP, SEXP kSEXP, SEXP metricSEXP, SEXP max_iterSEXP, SEXP min_deltaSEXP, SEXP use_cpp_randomSEXP, SEXP seedSEXP) {
+List TGL_kmeans_cpp(const StringVector& ids, DataFrame& mat, const int& k, const String& metric, const double& max_iter, const double& min_delta, const bool& use_cpp_random, const int& seed, const bool& verbose);
+RcppExport SEXP _tglkmeans_TGL_kmeans_cpp(SEXP idsSEXP, SEXP matSEXP, SEXP kSEXP, SEXP metricSEXP, SEXP max_iterSEXP, SEXP min_deltaSEXP, SEXP use_cpp_randomSEXP, SEXP seedSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -24,7 +24,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double& >::type min_delta(min_deltaSEXP);
     Rcpp::traits::input_parameter< const bool& >::type use_cpp_random(use_cpp_randomSEXP);
     Rcpp::traits::input_parameter< const int& >::type seed(seedSEXP);
-    rcpp_result_gen = Rcpp::wrap(TGL_kmeans_cpp(ids, mat, k, metric, max_iter, min_delta, use_cpp_random, seed));
+    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(TGL_kmeans_cpp(ids, mat, k, metric, max_iter, min_delta, use_cpp_random, seed, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -56,7 +57,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_tglkmeans_TGL_kmeans_cpp", (DL_FUNC) &_tglkmeans_TGL_kmeans_cpp, 8},
+    {"_tglkmeans_TGL_kmeans_cpp", (DL_FUNC) &_tglkmeans_TGL_kmeans_cpp, 9},
     {"_tglkmeans_downsample_matrix_cpp", (DL_FUNC) &_tglkmeans_downsample_matrix_cpp, 3},
     {"_tglkmeans_rcpp_downsample_sparse", (DL_FUNC) &_tglkmeans_rcpp_downsample_sparse, 3},
     {NULL, NULL, 0}

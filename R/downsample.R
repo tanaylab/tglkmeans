@@ -5,8 +5,9 @@
 #' small sums.
 #'
 #' @param mat An integer matrix to be downsampled. Can be a matrix or sparse matrix (dgCMatrix).
-#' If the matrix contains NAs, the function will run significantly slower. Values that are
-#' not integers will be coerced to integers using \code{floor()}.
+#' If the matrix contains NAs, the function will run significantly slower. Non-integer values
+#' are truncated to integers towards zero (as in \code{as.integer()}); for the non-negative
+#' counts this function expects, that is equivalent to \code{floor()}.
 #' @param target_n The target number of samples to downsample to.
 #' @param target_q A target quantile of sums to downsample to. Only one of 'target_n' or 'target_q' can be provided.
 #' @param seed The random seed for reproducibility (default is NULL)
