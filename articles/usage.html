@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tglkmeans</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.4</span>
       </span>
     </div>
 
@@ -83,7 +83,7 @@
                         <h4 data-toc-skip class="author">Aviezer
 Lifshitz</h4>
             
-            <h4 data-toc-skip class="date">2026-05-31</h4>
+            <h4 data-toc-skip class="date">2026-06-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/tanaylab/tglkmeans/blob/master/vignettes/usage.Rmd" class="external-link"><code>vignettes/usage.Rmd</code></a></small>
       <div class="hidden name"><code>usage.Rmd</code></div>
@@ -617,35 +617,9 @@ with sd of 0.3:</p>
 <span>    metric <span class="op">=</span> <span class="st">"euclid"</span>,</span>
 <span>    verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## will generate seeds</span></span>
-<span><span class="co">## generating seeds</span></span>
-<span><span class="co">## at seed 0</span></span>
-<span><span class="co">## add new core from 43 to 0</span></span>
-<span><span class="co">## at seed 1</span></span>
-<span><span class="co">## done update min distance</span></span>
-<span><span class="co">## seed range 350 450</span></span>
-<span><span class="co">## picked up 448</span></span>
-<span><span class="co">## add new core from 448 to 1</span></span>
-<span><span class="co">## at seed 2</span></span>
-<span><span class="co">## done update min distance</span></span>
-<span><span class="co">## seed range 300 400</span></span>
-<span><span class="co">## picked up 222</span></span>
-<span><span class="co">## add new core from 222 to 2</span></span>
-<span><span class="co">## at seed 3</span></span>
-<span><span class="co">## done update min distance</span></span>
-<span><span class="co">## seed range 250 350</span></span>
-<span><span class="co">## picked up 333</span></span>
-<span><span class="co">## add new core from 333 to 3</span></span>
-<span><span class="co">## at seed 4</span></span>
-<span><span class="co">## done update min distance</span></span>
-<span><span class="co">## seed range 200 300</span></span>
-<span><span class="co">## picked up 108</span></span>
-<span><span class="co">## add new core from 108 to 4</span></span>
-<span><span class="co">## reassign after init</span></span>
-<span><span class="co">## iter 0</span></span>
-<span><span class="co">## iter 1 changed 2</span></span>
-<span><span class="co">## iter 1</span></span>
-<span><span class="co">## iter 2 changed 0</span></span></code></pre>
+<pre><code><span><span class="co">## generating 5 seeds</span></span>
+<span><span class="co">## iteration 1: 2 reassignments</span></span>
+<span><span class="co">## iteration 2: 0 reassignments</span></span></code></pre>
 <p>The returned list contains 3 fields:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">km</span><span class="op">)</span></span></code></pre></div>
@@ -700,7 +674,7 @@ observations that were classified correctly:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">tglkmeans</span><span class="fu">::</span><span class="fu"><a href="../reference/match_clusters.html">match_clusters</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">km</span>, <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">true_clust</span> <span class="op">==</span> <span class="va">d</span><span class="op">$</span><span class="va">new_clust</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">new_clust</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.989899</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.97</span></span></code></pre>
 <p>And plot the results:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">V1</span>, y <span class="op">=</span> <span class="va">V2</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">new_clust</span><span class="op">)</span>, shape <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">true_clust</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1253,7 +1227,7 @@ dimension is not missing. for example:</p>
 <span><span class="op">)</span></span>
 <span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">tglkmeans</span><span class="fu">::</span><span class="fu"><a href="../reference/match_clusters.html">match_clusters</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">km</span>, <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">true_clust</span> <span class="op">==</span> <span class="va">d</span><span class="op">$</span><span class="va">new_clust</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">new_clust</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.9803922</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.98</span></span></code></pre>
 <p>and plotting the results (without the NA’s) we get:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">V1</span>, y <span class="op">=</span> <span class="va">V2</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">new_clust</span><span class="op">)</span>, shape <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">true_clust</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1294,7 +1268,7 @@ that the first column is the id column.</p>
 <span></span>
 <span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">tglkmeans</span><span class="fu">::</span><span class="fu"><a href="../reference/match_clusters.html">match_clusters</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">km_standard</span>, <span class="fl">30</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">true_clust</span> <span class="op">==</span> <span class="va">d</span><span class="op">$</span><span class="va">new_clust</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">new_clust</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.6842105</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.8333333</span></span></code></pre>
 <p>We can see that kmeans++ clusters significantly better than R vanilla
 kmeans.</p>
 </div>

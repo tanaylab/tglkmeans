@@ -19,7 +19,7 @@ small sums."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tglkmeans</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.4</span>
       </span>
     </div>
 
@@ -86,8 +86,9 @@ small sums.</p>
 
 <dl><dt id="arg-mat">mat<a class="anchor" aria-label="anchor" href="#arg-mat"></a></dt>
 <dd><p>An integer matrix to be downsampled. Can be a matrix or sparse matrix (dgCMatrix).
-If the matrix contains NAs, the function will run significantly slower. Values that are
-not integers will be coerced to integers using <code><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor()</a></code>.</p></dd>
+If the matrix contains NAs, the function will run significantly slower. Non-integer values
+are truncated to integers towards zero (as in <code><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer()</a></code>); for the non-negative
+counts this function expects, that is equivalent to <code><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor()</a></code>.</p></dd>
 
 
 <dt id="arg-target-n">target_n<a class="anchor" aria-label="anchor" href="#arg-target-n"></a></dt>

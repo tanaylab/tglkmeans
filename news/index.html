@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tglkmeans</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.4</span>
       </span>
     </div>
 
@@ -61,6 +61,15 @@
       <small>Source: <a href="https://github.com/tanaylab/tglkmeans/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.6.4" id="tglkmeans-064">tglkmeans 0.6.4<a class="anchor" aria-label="anchor" href="#tglkmeans-064"></a></h2>
+<ul><li>Fix: <code><a href="../reference/match_clusters.html">match_clusters()</a></code> mapped only one cluster (leaving the rest <code>NA</code>) unless all per-cluster overlap counts tied; mapping is now per cluster.</li>
+<li>Fix: <code>hclust_intra_clusters = TRUE</code> errored when the id column was not named <code>"id"</code> (e.g. a named or auto-detected id column).</li>
+<li>Fix: <code><a href="../reference/predict_tgl_kmeans.html">predict_tgl_kmeans()</a></code> crashed (pearson/spearman) or silently used the first center (euclid) for observations with no overlap; these now return <code>NA</code>.</li>
+<li>Removed the unused <code>future</code>/<code>doFuture</code> dependency; the package no longer overrides the user’s <code>future</code> plan on load.</li>
+<li>No longer prints internal debugging; <code>verbose = TRUE</code> shows concise per-iteration progress. Default threads cap at 2 under <code>R CMD check</code>.</li>
+<li>Performance: k-means++ seeding uses <code>nth_element</code> instead of a full sort per seed. Cluster assignments are unchanged.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.6.3" id="tglkmeans-063">tglkmeans 0.6.3<a class="anchor" aria-label="anchor" href="#tglkmeans-063"></a></h2>
 <ul><li>Fix: <code>metric = "spearman"</code> ignored missing values. Ranking tested the wrong missing-value sentinel, so <code>NA</code>s were ranked as the largest value and included in the rank correlation instead of being dropped. Spearman now excludes missing values pairwise, matching <code>euclid</code>/<code>pearson</code>. Clustering results for Spearman on data with <code>NA</code>s change (and are now correct); results on complete data are unchanged.</li>

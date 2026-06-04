@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tglkmeans</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.4</span>
       </span>
     </div>
 
@@ -188,35 +188,9 @@ backwards compatibility, as from version 0.4.0 onwards the default random number
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># cluster</span></span></span>
 <span class="r-in"><span><span class="va">km</span> <span class="op">&lt;-</span> <span class="fu">TGL_kmeans</span><span class="op">(</span><span class="va">d</span>, k <span class="op">=</span> <span class="fl">5</span>, <span class="st">"euclid"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> will generate seeds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> generating seeds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> at seed 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 184 to 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> at seed 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> done update min distance</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> seed range 350 450</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 446</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 446 to 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> at seed 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> done update min distance</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> seed range 300 400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 10 to 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> at seed 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> done update min distance</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> seed range 250 350</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 336</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 336 to 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> at seed 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> done update min distance</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> seed range 200 300</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> picked up 231</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> add new core from 231 to 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> reassign after init</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> iter 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> iter 1 changed 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> iter 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> iter 2 changed 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> generating 5 seeds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 1: 2 reassignments</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 2: 0 reassignments</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">km</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cluster" "centers" "size"   </span>
 <span class="r-in"><span><span class="va">km</span><span class="op">$</span><span class="va">centers</span></span></span>
