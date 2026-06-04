@@ -56,10 +56,14 @@ simulate_data <- function(n = 100, sd = 0.3, nclust = 30, dims = 2, frac_na = NU
 #' @export
 match_clusters <- function(data, res, nclust) {
     d <- data %>% left_join(res$clust %>% mutate(id = as.numeric(as.character(id))), by = "id")
+    # Map each found cluster to the true cluster it overlaps with most. slice_max
+    # is grouped by `clust` so every cluster gets its own best match; with_ties =
+    # FALSE keeps it to one row per cluster (otherwise a tie would duplicate the
+    # joined rows below).
     clust_map <- d %>%
-        group_by(clust, true_clust) %>%
-        summarise(n = n(), .groups = "drop") %>%
-        slice_max(n, n = 1) %>%
+        count(clust, true_clust) %>%
+        group_by(clust) %>%
+        slice_max(n, n = 1, with_ties = FALSE) %>%
         ungroup()
     d <- d %>% left_join(clust_map %>% select(new_clust = true_clust, clust), by = "clust")
     return(d)

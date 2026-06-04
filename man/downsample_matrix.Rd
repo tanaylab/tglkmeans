@@ -14,8 +14,9 @@ downsample_matrix(
 }
 \arguments{
 \item{mat}{An integer matrix to be downsampled. Can be a matrix or sparse matrix (dgCMatrix).
-If the matrix contains NAs, the function will run significantly slower. Values that are
-not integers will be coerced to integers using \code{floor()}.}
+If the matrix contains NAs, the function will run significantly slower. Non-integer values
+are truncated to integers towards zero (as in \code{as.integer()}); for the non-negative
+counts this function expects, that is equivalent to \code{floor()}.}
 
 \item{target_n}{The target number of samples to downsample to.}
 

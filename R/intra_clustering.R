@@ -1,4 +1,4 @@
-hclust_every_cluster <- function(km, df, parallel = TRUE) {
+hclust_every_cluster <- function(km, df) {
     all_hc <- df %>%
         dplyr::group_split(clust) %>%
         purrr::map(function(x) {

@@ -28,11 +28,15 @@ protected:
 
     bool m_use_cpp_random;
 
+    // When false the algorithm runs silently; when true it reports concise
+    // per-iteration progress to Rcout. Set at the start of cluster().
+    bool m_verbose = false;
+
 public:
 
     KMeans(const std::vector<std::vector<float>> &data, int k, std::vector<KMeansCenterBase *> &centers, const bool& use_cpp_random);
 
-    void cluster(int max_iter, float min_delta_assign);
+    void cluster(int max_iter, float min_delta_assign, bool verbose);
 
     void update_min_distance(int center_idx);
 

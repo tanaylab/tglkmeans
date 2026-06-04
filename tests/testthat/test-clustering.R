@@ -145,7 +145,7 @@ test_that("hclust_every_cluster orders observations by dendrogram leaf order", {
         purrr::list_rbind() %>%
         select(clust, id, everything())
 
-    res <- hclust_every_cluster(km = NULL, df = df, parallel = FALSE)
+    res <- hclust_every_cluster(km = NULL, df = df)
 
     for (cl in unique(df$clust)) {
         x <- df[df$clust == cl, ]
@@ -161,6 +161,25 @@ test_that("hclust_every_cluster orders observations by dendrogram leaf order", {
         got_ids <- got$id[order(got$intra_clust_order)]
         expect_equal(got_ids, expected_ids)
     }
+})
+
+test_that("hclust intra cluster works when the id column is not named 'id'", {
+    nclust <- 5
+    ndims <- 5
+    data <- simulate_data(n = 100, sd = 0.3, dims = ndims, nclust = nclust, frac_na = NULL)
+    # rename the id column to something other than "id" and feed it as id_column
+    df <- data %>%
+        select(id, starts_with("V")) %>%
+        rename(sample_id = id)
+
+    res <- TGL_kmeans_tidy(df, nclust,
+        metric = "euclid", id_column = TRUE, verbose = FALSE,
+        hclust_intra_clusters = TRUE, seed = 60427
+    )
+    expect_true(all(c("id", "clust", "order", "intra_clust_order") %in% colnames(res$order)))
+    expect_setequal(res$order$id, as.character(data$id))
+    expect_equal(nrow(res$order), nrow(data))
+    expect_false(any(is.na(res$order$order)))
 })
 
 test_that("add_to_data works", {
@@ -390,6 +409,39 @@ test_that("predict_tgl_kmeans pearson/spearman round-trip", {
     }
 })
 
+# predict's pearson/spearman path uses chunked tgs_cor. Cross-check that the
+# assignment for each observation is the nearest center under an independent
+# pairwise-complete correlation computed with stats::cor, including with NAs and
+# across a chunk boundary (chunk_size is 1000 internally).
+test_that("predict_tgl_kmeans pearson/spearman assignments match independent cor", {
+    data <- simulate_data(n = 1100, sd = 0.3, dims = 10, nclust = 4, frac_na = 0.1)
+    mat <- as.matrix(data %>% select(starts_with("V")))
+    for (m in c("pearson", "spearman")) {
+        res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")),
+            k = 4, id_column = TRUE, metric = m, verbose = FALSE, seed = 60427
+        )
+        centers <- as.matrix(res$centers[, -1])
+        pred <- predict_tgl_kmeans(res, mat)
+
+        cor_method <- m
+        D <- matrix(NA_real_, nrow(mat), nrow(centers))
+        for (j in seq_len(nrow(centers))) {
+            D[, j] <- -suppressWarnings(apply(mat, 1, function(x) {
+                stats::cor(x, centers[j, ], method = cor_method, use = "pairwise.complete.obs")
+            }))
+        }
+        nearest_col <- apply(D, 1, function(d) if (!any(is.finite(d))) NA_integer_ else which.min(d))
+        nearest_clust <- res$centers$clust[nearest_col]
+        # allow float-vs-double ties: the assigned distance must be within
+        # tolerance of the minimum independent distance
+        assigned_col <- match(pred$clust, res$centers$clust)
+        assigned_dist <- D[cbind(seq_len(nrow(D)), assigned_col)]
+        row_min <- apply(D, 1, min, na.rm = TRUE)
+        ok <- is.na(pred$clust) | (assigned_dist - row_min < 1e-4)
+        expect_true(all(ok, na.rm = TRUE))
+    }
+})
+
 # Bug #2: the training Euclidean distance is sqrt(sum_sq)/n where n is the number
 # of dimensions present in BOTH the point and the center. predict must use the
 # same metric. It used to call tgs_dist (a plain Euclidean), which disagrees once
@@ -468,4 +520,24 @@ test_that("predict_tgl_kmeans handles input larger than as.matrix.dist int limit
         which.min(sqrt(rowSums(sweep(centers, 2, x, "-")^2)))
     })
     expect_equal(pred$clust[1:500], res$centers$clust[brute])
+})
+
+# An observation with no usable overlap with any center (e.g. an all-NA row)
+# cannot be assigned. predict must not crash (pearson/spearman used to error with
+# "invalid subscript type 'list'") nor silently pick center 1 (euclid). It should
+# return NA for that observation and assign the rest normally.
+test_that("predict_tgl_kmeans returns NA for an all-NA observation (all metrics)", {
+    data <- simulate_data(n = 150, sd = 0.3, dims = 6, nclust = 3, frac_na = NULL)
+    for (m in c("euclid", "pearson", "spearman")) {
+        res <- TGL_kmeans_tidy(data %>% select(id, starts_with("V")),
+            k = 3, id_column = TRUE, metric = m, verbose = FALSE, seed = 60427
+        )
+        nd <- as.matrix(data %>% select(starts_with("V")))[1:5, , drop = FALSE]
+        nd[3, ] <- NA # an all-NA observation
+        expect_no_error(pred <- predict_tgl_kmeans(res, nd))
+        expect_equal(nrow(pred), 5)
+        expect_true(is.na(pred$clust[3]))
+        # the other observations are still assigned to a real cluster
+        expect_true(all(pred$clust[-3] %in% res$centers$clust))
+    }
 })
